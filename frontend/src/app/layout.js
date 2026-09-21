@@ -1,7 +1,7 @@
 import './globals.css';
-import Link from 'next/link';
-import { Zap, Sparkles } from 'lucide-react';
+import Header from '../components/Header';
 import MobileBottomNav from '../components/MobileBottomNav';
+import { AuthProvider } from '../context/AuthContext';
 
 export const metadata = {
   title: 'TransformAI | Edge Productivity Engine',
@@ -29,58 +29,18 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body>
-        <div className="app-shell">
-          <header className="app-header">
-            <Link href="/" className="brand-badge">
-              <div className="brand-logo">
-                <Zap size={22} fill="#ffffff" color="#ffffff" />
-              </div>
-              <div>
-                <div className="brand-title">
-                  <span>TransformAI</span>
-                  <span className="tag">Edge AI</span>
-                </div>
-                <div style={{ fontSize: '11px', color: 'var(--clay-primary-muted)', fontWeight: 600, marginTop: '-2px' }}>
-                  Headless Local AI Engine
-                </div>
-              </div>
-            </Link>
+        <AuthProvider>
+          <div className="app-shell">
+            <Header />
 
-            {/* Clay Tactile Pill Navigation */}
-            <nav className="desktop-nav-links">
-              <Link href="/" className="nav-link">
-                Overview
-              </Link>
-              <Link href="/capture" className="nav-link">
-                Capture
-              </Link>
-              <Link href="/studio" className="nav-link">
-                Deliverables
-              </Link>
-              <Link href="/slides" className="nav-link">
-                Deck Stage
-              </Link>
-            </nav>
+            <main style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+              {children}
+            </main>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <Link
-                href="/capture"
-                className="btn btn-primary btn-sm btn-pill"
-                style={{ gap: '6px' }}
-              >
-                <Sparkles size={14} />
-                <span>+ New Memo</span>
-              </Link>
-            </div>
-          </header>
-
-          <main style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-            {children}
-          </main>
-
-          {/* Persistent Claymorphic Mobile Bottom Nav for Phones */}
-          <MobileBottomNav />
-        </div>
+            {/* Persistent Claymorphic Mobile Bottom Nav for Phones */}
+            <MobileBottomNav />
+          </div>
+        </AuthProvider>
       </body>
     </html>
   );
