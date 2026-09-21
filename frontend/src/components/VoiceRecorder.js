@@ -34,16 +34,27 @@ export default function VoiceRecorder({ onTranscriptUpdate, currentText = '' }) 
 
       recog.onerror = (e) => {
         console.warn('Web Speech API Notice:', e.error);
-        setIsRecording(false);
-        if (e.error === 'not-allowed') {
-          setErrorMessage('Microphone permission denied. Please allow microphone access.');
-        } else {
-          setErrorMessage(`Microphone error: ${e.error}`);
+        // no-speech / network are non-fatal — recognition will auto-restart via onend
+        if (e.error === 'not-allowed' || e.error === 'audio-capture') {
+          setIsRecording(false);
+          setErrorMessage(
+            e.error === 'not-allowed'
+              ? 'Microphone permission denied. Please allow microphone access.'
+              : 'No microphone found. Please connect a microphone and try again.'
+          );
         }
+        // suppress no-speech / network silently
       };
 
       recog.onend = () => {
-        setIsRecording(false);
+        // If still supposed to be recording, restart automatically (handles no-speech timeout)
+        setIsRecording((prev) => {
+          if (prev) {
+            try { recog.start(); } catch (_) {}
+            return true;
+          }
+          return false;
+        });
       };
 
       setRecognition(recog);
@@ -58,8 +69,8 @@ export default function VoiceRecorder({ onTranscriptUpdate, currentText = '' }) 
     }
 
     if (isRecording) {
+      setIsRecording(false); // set false BEFORE stop() so onend doesn't restart
       recognition.stop();
-      setIsRecording(false);
     } else {
       try {
         recognition.start();
