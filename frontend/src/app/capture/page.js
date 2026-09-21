@@ -9,6 +9,7 @@ import Link from 'next/link';
 import VoiceRecorder from '../../components/VoiceRecorder';
 import OCRScanner from '../../components/OCRScanner';
 import FormatSelector from '../../components/FormatSelector';
+import { AppleSwitch } from '../../components/unlumen-ui/apple-switch';
 import { transformContent } from '../../lib/api';
 
 function CaptureContent() {
@@ -112,7 +113,7 @@ function CaptureContent() {
       <div className="bento-grid">
         {/* Left Column: Input Modes & Raw Telemetry Stream (7 cols on laptop) */}
         <div className="bento-span-7" style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-          {/* Capture Channel Switcher Card */}
+          {/* Capture Channel Switcher Card with Apple Switch */}
           <div className="bento-card" style={{ padding: '18px 22px' }}>
             <div style={{
               display: 'flex',
@@ -120,97 +121,126 @@ function CaptureContent() {
               justifyContent: 'space-between',
               marginBottom: '14px'
             }}>
-              <span style={{ fontSize: '13px', fontWeight: '800', color: 'var(--clay-primary-deep)', letterSpacing: '-0.2px' }}>
-                1. Choose Capture Channel
-              </span>
-              <span style={{ fontSize: '11px', color: 'var(--clay-primary-muted)', fontFamily: 'var(--font-mono)' }}>
-                Edge WASM / Web Speech
+              <div>
+                <span style={{ fontSize: '13.5px', fontWeight: '900', color: 'var(--clay-primary-deep)', letterSpacing: '-0.2px' }}>
+                  1. Capture Channel Switch
+                </span>
+                <div style={{ fontSize: '11px', color: 'var(--clay-primary-muted)', fontWeight: '500', marginTop: '1px' }}>
+                  Flip the Apple Switch to activate channel
+                </div>
+              </div>
+              <span style={{
+                fontSize: '11px',
+                fontFamily: 'var(--font-mono)',
+                color: 'var(--clay-primary)',
+                background: 'var(--clay-card-inset)',
+                boxShadow: 'var(--clay-shadow-inset)',
+                padding: '4px 10px',
+                borderRadius: 'var(--clay-radius-pill)',
+                fontWeight: '800'
+              }}>
+                {inputMode.toUpperCase()} ACTIVE
               </span>
             </div>
 
             <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(3, 1fr)',
-              gap: '8px',
-              background: 'var(--clay-card-inset)',
-              boxShadow: 'var(--clay-shadow-inset)',
-              padding: '6px',
-              borderRadius: 'var(--clay-radius-inner)'
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '10px'
             }}>
-              <button
-                type="button"
-                onClick={() => setInputMode('voice')}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '6px',
-                  padding: '11px 8px',
-                  borderRadius: '12px',
-                  border: inputMode === 'voice' ? '1px solid rgba(255, 255, 255, 0.8)' : 'none',
-                  background: inputMode === 'voice' ? '#ffffff' : 'transparent',
-                  boxShadow: inputMode === 'voice' ? '3px 5px 12px rgba(73, 80, 87, 0.08), inset 2px 2px 4px rgba(255, 255, 255, 0.95), inset -2px -2px 4px rgba(73, 80, 87, 0.04)' : 'none',
-                  cursor: 'pointer',
-                  fontWeight: '800',
-                  fontSize: '13px',
-                  color: inputMode === 'voice' ? 'var(--clay-primary-deep)' : 'var(--clay-primary-muted)',
-                  transition: 'all 0.18s cubic-bezier(0.16, 1, 0.3, 1)',
-                  transform: inputMode === 'voice' ? 'translateY(-1px)' : 'none'
-                }}
-              >
-                <Mic size={16} />
-                <span>Voice</span>
-              </button>
+              {[
+                {
+                  id: 'voice',
+                  label: 'Voice Memo',
+                  detail: 'Edge Web Speech STT',
+                  icon: Mic,
+                },
+                {
+                  id: 'camera',
+                  label: 'Whiteboard OCR',
+                  detail: 'On-device Tesseract.js WASM',
+                  icon: Camera,
+                },
+                {
+                  id: 'text',
+                  label: 'Text / Raw Notes',
+                  detail: 'Direct typing or paste stream',
+                  icon: Keyboard,
+                },
+              ].map((ch) => {
+                const isActive = inputMode === ch.id;
+                const Icon = ch.icon;
+                return (
+                  <div
+                    key={ch.id}
+                    onClick={() => setInputMode(ch.id)}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      padding: '12px 16px',
+                      borderRadius: 'var(--clay-radius-inner)',
+                      background: isActive ? '#ffffff' : 'var(--clay-card-inset)',
+                      border: isActive ? '1.5px solid rgba(73, 80, 87, 0.18)' : '1px solid rgba(255, 255, 255, 0.5)',
+                      boxShadow: isActive
+                        ? '6px 10px 22px rgba(73, 80, 87, 0.09), inset 2px 2px 4px rgba(255, 255, 255, 0.95), inset -2px -2px 4px rgba(73, 80, 87, 0.04)'
+                        : 'var(--clay-shadow-inset)',
+                      cursor: 'pointer',
+                      transform: isActive ? 'translateY(-1px)' : 'none',
+                      transition: 'all 0.18s cubic-bezier(0.16, 1, 0.3, 1)'
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                      <div style={{
+                        width: '38px',
+                        height: '38px',
+                        borderRadius: '11px',
+                        background: isActive ? 'var(--clay-primary)' : '#ffffff',
+                        color: isActive ? '#ffffff' : 'var(--clay-primary-dark)',
+                        boxShadow: isActive
+                          ? 'var(--clay-shadow-btn-primary)'
+                          : 'var(--clay-shadow-btn-secondary)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        transition: 'all 0.2s ease',
+                        flexShrink: 0
+                      }}>
+                        <Icon size={18} />
+                      </div>
+                      <div>
+                        <div style={{
+                          fontSize: '13.5px',
+                          fontWeight: '800',
+                          color: 'var(--clay-primary-deep)',
+                          letterSpacing: '-0.2px'
+                        }}>
+                          {ch.label}
+                        </div>
+                        <div style={{
+                          fontSize: '11px',
+                          color: 'var(--clay-primary-muted)',
+                          fontFamily: 'var(--font-mono)',
+                          fontWeight: '500'
+                        }}>
+                          {ch.detail}
+                        </div>
+                      </div>
+                    </div>
 
-              <button
-                type="button"
-                onClick={() => setInputMode('camera')}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '6px',
-                  padding: '11px 8px',
-                  borderRadius: '12px',
-                  border: inputMode === 'camera' ? '1px solid rgba(255, 255, 255, 0.8)' : 'none',
-                  background: inputMode === 'camera' ? '#ffffff' : 'transparent',
-                  boxShadow: inputMode === 'camera' ? '3px 5px 12px rgba(73, 80, 87, 0.08), inset 2px 2px 4px rgba(255, 255, 255, 0.95), inset -2px -2px 4px rgba(73, 80, 87, 0.04)' : 'none',
-                  cursor: 'pointer',
-                  fontWeight: '800',
-                  fontSize: '13px',
-                  color: inputMode === 'camera' ? 'var(--clay-primary-deep)' : 'var(--clay-primary-muted)',
-                  transition: 'all 0.18s cubic-bezier(0.16, 1, 0.3, 1)',
-                  transform: inputMode === 'camera' ? 'translateY(-1px)' : 'none'
-                }}
-              >
-                <Camera size={16} />
-                <span>OCR</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setInputMode('text')}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '6px',
-                  padding: '11px 8px',
-                  borderRadius: '12px',
-                  border: inputMode === 'text' ? '1px solid rgba(255, 255, 255, 0.8)' : 'none',
-                  background: inputMode === 'text' ? '#ffffff' : 'transparent',
-                  boxShadow: inputMode === 'text' ? '3px 5px 12px rgba(73, 80, 87, 0.08), inset 2px 2px 4px rgba(255, 255, 255, 0.95), inset -2px -2px 4px rgba(73, 80, 87, 0.04)' : 'none',
-                  cursor: 'pointer',
-                  fontWeight: '800',
-                  fontSize: '13px',
-                  color: inputMode === 'text' ? 'var(--clay-primary-deep)' : 'var(--clay-primary-muted)',
-                  transition: 'all 0.18s cubic-bezier(0.16, 1, 0.3, 1)',
-                  transform: inputMode === 'text' ? 'translateY(-1px)' : 'none'
-                }}
-              >
-                <Keyboard size={16} />
-                <span>Text</span>
-              </button>
+                    <div onClick={(e) => e.stopPropagation()} style={{ display: 'flex', alignItems: 'center' }}>
+                      <AppleSwitch
+                        size="sm"
+                        checked={isActive}
+                        onCheckedChange={(checked) => {
+                          if (checked) setInputMode(ch.id);
+                        }}
+                        aria-label={`Switch to ${ch.label}`}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
 
