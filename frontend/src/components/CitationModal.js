@@ -22,7 +22,7 @@ export default function CitationModal({ citation, rawText, onClose }) {
       animation: 'fadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1)'
     }}>
       <div style={{
-        background: '#ffffff',
+        background: 'rgb(233, 236, 239)',
         border: 'var(--clay-border)',
         boxShadow: 'var(--clay-shadow-card-hover)',
         borderRadius: 'var(--clay-radius-card)',
@@ -127,7 +127,7 @@ export default function CitationModal({ citation, rawText, onClose }) {
           <div style={{
             marginTop: '8px',
             padding: '14px 16px',
-            background: '#ffffff',
+            background: 'rgb(233, 236, 239)',
             borderRadius: 'var(--clay-radius-inner)',
             fontSize: '13.5px',
             fontWeight: '500',

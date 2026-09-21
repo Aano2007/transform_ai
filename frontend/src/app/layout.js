@@ -1,11 +1,10 @@
 import './globals.css';
-import OfficeKitBridge from '../components/OfficeKitBridge';
-import Link from 'next/link';
-import { Zap, Sparkles } from 'lucide-react';
-import AuthGuard from '../components/AuthGuard';
+import { AuthProvider } from '../context/AuthContext';
+import Header from '../components/Header';
+import MobileBottomNav from '../components/MobileBottomNav';
 
 export const metadata = {
-  title: 'TransformAI | iQOO Productivity Track',
+  title: 'TransformAI | Edge Productivity Engine',
   description: 'One voice memo to four finished deliverables in under 60 seconds.',
   manifest: '/manifest.json',
 };
@@ -30,58 +29,20 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body>
+        <AuthProvider>
         <div className="app-shell">
-          <header className="app-header">
-            <Link href="/" className="brand-badge">
-              <div className="brand-logo">
-                <Zap size={22} fill="#ffffff" color="#ffffff" />
-              </div>
-              <div>
-                <div className="brand-title">
-                  <span>TransformAI</span>
-                  <span className="tag">iQOO Edge</span>
-                </div>
-                <div style={{ fontSize: '11px', color: 'var(--clay-primary-muted)', fontWeight: 600, marginTop: '-2px' }}>
-                  Headless Local AI Engine
-                </div>
-              </div>
-            </Link>
-
-            {/* Clay Tactile Pill Navigation */}
-            <nav className="desktop-nav-links">
-              <Link href="/" className="nav-link">
-                Overview
-              </Link>
-              <Link href="/capture" className="nav-link">
-                Capture
-              </Link>
-              <Link href="/studio" className="nav-link">
-                Deliverables
-              </Link>
-              <Link href="/slides" className="nav-link">
-                Deck Stage
-              </Link>
-            </nav>
-
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <Link
-                href="/capture"
-                className="btn btn-primary btn-sm btn-pill"
-                style={{ gap: '6px' }}
-              >
-                <Sparkles size={14} />
-                <span>+ New Memo</span>
-              </Link>
-            </div>
-          </header>
-
-          <OfficeKitBridge />
+          <Header />
 
           <main style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-            <AuthGuard>{children}</AuthGuard>
+            {children}
           </main>
+
+          {/* Persistent Claymorphic Mobile Bottom Nav for Phones */}
+          <MobileBottomNav />
         </div>
+        </AuthProvider>
       </body>
     </html>
   );
 }
+

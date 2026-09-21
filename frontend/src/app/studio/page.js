@@ -165,7 +165,6 @@ Built for speed. Powered by edge compute.
         },
         pptx_url: "/api/download/pptx",
         docx_url: "/api/download/docx",
-        pdf_url: "/api/download/pdf",
         source_text: "Meeting notes with Mobile Lead and AI Squad on Q3 targets..."
       };
       setData(defaultData);
@@ -180,7 +179,7 @@ Built for speed. Powered by edge compute.
     );
   }
 
-  const { ico, outputs, pptx_url, docx_url, pdf_url, source_text } = data;
+  const { ico, outputs, pptx_url, docx_url, source_text } = data;
   const slides = outputs.slides_data || [];
 
   const handleRegenerateCurrentFormat = async () => {
@@ -624,7 +623,6 @@ Built for speed. Powered by edge compute.
         contentToCopy={getCurrentContentForCopy()}
         pptxUrl={pptx_url}
         docxUrl={docx_url}
-        pdfUrl={pdf_url}
         title={ico?.event_title || 'TransformAI Deliverable'}
       />
     </div>

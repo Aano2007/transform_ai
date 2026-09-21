@@ -6,7 +6,6 @@ export default function ExportBar({
   contentToCopy = '',
   pptxUrl = null,
   docxUrl = null,
-  pdfUrl = null,
   title = 'TransformAI Deliverable'
 }) {
   const [copied, setCopied] = useState(false);
@@ -43,26 +42,7 @@ export default function ExportBar({
 
   return (
     <>
-      <div style={{
-        position: 'fixed',
-        bottom: '20px',
-        left: '50%',
-        transform: 'translateX(-50%)',
-        width: 'calc(100% - 32px)',
-        maxWidth: '1000px',
-        background: 'rgba(255, 255, 255, 0.95)',
-        backdropFilter: 'blur(18px)',
-        WebkitBackdropFilter: 'blur(18px)',
-        border: 'var(--clay-border)',
-        borderRadius: 'var(--clay-radius-card)',
-        padding: '12px 22px',
-        display: 'flex',
-        gap: '12px',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        zIndex: 40,
-        boxShadow: 'var(--clay-shadow-card)'
-      }}>
+      <div className="export-bar-container">
         <button
           type="button"
           onClick={handleCopy}
@@ -100,18 +80,6 @@ export default function ExportBar({
           </a>
         )}
 
-        {pdfUrl && (
-          <a
-            href={pdfUrl}
-            download="TransformAI_Brief.pdf"
-            className="btn btn-secondary btn-sm btn-pill"
-            style={{ textDecoration: 'none', fontWeight: '800' }}
-          >
-            <FileDown size={14} />
-            <span>.PDF</span>
-          </a>
-        )}
-
         <button
           type="button"
           onClick={handleShare}
@@ -123,7 +91,7 @@ export default function ExportBar({
         </button>
       </div>
 
-      {/* iQOO Office Kit Cross-Device Shared Clipboard Toast */}
+      {/* Cross-Device Shared Clipboard Toast */}
       {showOfficeKitToast && (
         <div className="officekit-toast">
           <div style={{
@@ -141,7 +109,7 @@ export default function ExportBar({
           </div>
           <div>
             <div style={{ fontSize: '14px', fontWeight: '800', color: '#ffffff' }}>
-              iQOO Office Kit Synced!
+              Office Kit Synced!
             </div>
             <div style={{ fontSize: '11px', color: '#ced4da', fontWeight: '600', fontFamily: 'var(--font-mono)' }}>
               Clipboard auto-broadcasted to Laptop via Local Wi-Fi
