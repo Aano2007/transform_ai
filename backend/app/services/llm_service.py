@@ -188,6 +188,7 @@ def generate_heuristic_ico(raw_text: str) -> Dict[str, Any]:
         "executive_overview": executive_overview,
         "key_findings": key_findings if key_findings else [f"Comprehensive review of {title}."],
         "action_items": action_items,
+        "entities": {
             "teams": teams,
             "dates": dates if dates else ["Upcoming Review"],
             "metrics": metrics
