@@ -2,20 +2,20 @@
 import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import {
-  Mic, Camera, Keyboard, Sparkles, ArrowLeft, Loader2, Trash2,
-  Sliders, ShieldAlert, Cpu, Check, Activity
+  Mic, Camera, Keyboard, Sparkles, ArrowLeft, ArrowRight, Loader2, Trash2,
+  ShieldAlert, Check, Activity, Edit3, FileText
 } from 'lucide-react';
 import Link from 'next/link';
 import VoiceRecorder from '../../components/VoiceRecorder';
 import OCRScanner from '../../components/OCRScanner';
 import FormatSelector from '../../components/FormatSelector';
-import { AppleSwitch } from '../../components/unlumen-ui/apple-switch';
 import { transformContent } from '../../lib/api';
 
 function CaptureContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
+  const [step, setStep] = useState(1);
   const [inputMode, setInputMode] = useState('voice');
   const [rawText, setRawText] = useState('');
   const [formats, setFormats] = useState(['executive_summary', 'presentation', 'linkedin', 'twitter']);
@@ -43,9 +43,35 @@ function CaptureContent() {
     }
   }, [searchParams]);
 
+  const handleProceedToStep2 = () => {
+    if (!rawText.trim()) {
+      setErrorMsg('Please record speech, scan a whiteboard, or enter text before proceeding.');
+      return;
+    }
+    setErrorMsg('');
+    setStep(2);
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  const handleBackToStep1 = () => {
+    setErrorMsg('');
+    setStep(1);
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
   const handleTransform = async () => {
     if (!rawText.trim()) {
       setErrorMsg('Please record speech, scan a whiteboard, or enter text first.');
+      setStep(1);
+      return;
+    }
+
+    if (formats.length === 0) {
+      setErrorMsg('Please select at least one deliverable format.');
       return;
     }
 
@@ -85,48 +111,114 @@ function CaptureContent() {
     }
   };
 
+  const captureChannels = [
+    {
+      id: 'voice',
+      label: 'Voice Memo',
+      detail: 'Edge Web Speech STT (Zero latency)',
+      icon: Mic,
+    },
+    {
+      id: 'camera',
+      label: 'Whiteboard OCR',
+      detail: 'On-device Tesseract.js WASM Engine',
+      icon: Camera,
+    },
+    {
+      id: 'text',
+      label: 'Text / Raw Notes',
+      detail: 'Direct typing or paste stream',
+      icon: Keyboard,
+    },
+  ];
+
   return (
-    <div className="content-wrapper">
-      {/* Top Header & Breadcrumb */}
+    <div className="content-wrapper" style={{ paddingBottom: '90px' }}>
+      {/* Top Header & Step Progress Breadcrumb */}
       <div style={{
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        padding: '4px 0 16px 0'
+        padding: '4px 0 18px 0',
+        maxWidth: '860px',
+        margin: '0 auto',
+        width: '100%'
       }}>
-        <Link
-          href="/"
-          className="btn btn-secondary btn-sm btn-pill"
-          style={{ gap: '6px' }}
-        >
-          <ArrowLeft size={15} />
-          <span>Overview</span>
-        </Link>
+        {step === 1 ? (
+          <Link
+            href="/"
+            className="btn btn-secondary btn-sm btn-pill"
+            style={{ gap: '6px' }}
+          >
+            <ArrowLeft size={15} />
+            <span>Overview</span>
+          </Link>
+        ) : (
+          <button
+            type="button"
+            onClick={handleBackToStep1}
+            className="btn btn-secondary btn-sm btn-pill"
+            style={{ gap: '6px' }}
+          >
+            <ArrowLeft size={15} />
+            <span>Back to Capture</span>
+          </button>
+        )}
 
-        <div className="clay-pill" style={{ marginBottom: 0 }}>
-          <Activity size={12} />
-          <span>Step 1 of 2 // Raw Capture</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div
+            onClick={handleBackToStep1}
+            className="clay-pill"
+            style={{
+              marginBottom: 0,
+              cursor: step === 2 ? 'pointer' : 'default',
+              background: step === 1 ? '#ffffff' : 'var(--clay-card-inset)',
+              color: step === 1 ? 'var(--clay-primary-deep)' : 'var(--clay-primary-muted)',
+              border: step === 1 ? '1px solid rgba(255,255,255,0.9)' : 'none',
+              boxShadow: step === 1 ? 'var(--clay-shadow-btn-secondary)' : 'var(--clay-shadow-inset)'
+            }}
+          >
+            {step === 2 ? <Check size={12} color="var(--clay-accent-green)" /> : <Activity size={12} />}
+            <span>1. Raw Capture</span>
+          </div>
+
+          <div
+            onClick={() => {
+              if (rawText.trim()) setStep(2);
+            }}
+            className="clay-pill"
+            style={{
+              marginBottom: 0,
+              cursor: rawText.trim() ? 'pointer' : 'not-allowed',
+              background: step === 2 ? '#ffffff' : 'var(--clay-card-inset)',
+              color: step === 2 ? 'var(--clay-primary-deep)' : 'var(--clay-primary-muted)',
+              border: step === 2 ? '1px solid rgba(255,255,255,0.9)' : 'none',
+              boxShadow: step === 2 ? 'var(--clay-shadow-btn-secondary)' : 'var(--clay-shadow-inset)'
+            }}
+          >
+            <Sparkles size={12} />
+            <span>2. Deliverables</span>
+          </div>
         </div>
       </div>
 
-      {/* 2-Column Clay Workspace Grid (Laptop: 7/5 cols, Mobile: Stacked) */}
-      <div className="bento-grid">
-        {/* Left Column: Input Modes & Raw Telemetry Stream (7 cols on laptop) */}
-        <div className="bento-span-7" style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+      {/* STEP 1: RAW CAPTURE PAGE */}
+      {step === 1 && (
+        <div style={{ maxWidth: '860px', margin: '0 auto', width: '100%', display: 'flex', flexDirection: 'column', gap: '20px' }}>
           {/* Capture Channel Switcher Card with Apple Switch */}
-          <div className="bento-card" style={{ padding: '18px 22px' }}>
+          <div className="bento-card" style={{ padding: '22px 24px' }}>
             <div style={{
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              marginBottom: '14px'
+              marginBottom: '16px'
             }}>
               <div>
-                <span style={{ fontSize: '13.5px', fontWeight: '900', color: 'var(--clay-primary-deep)', letterSpacing: '-0.2px' }}>
-                  1. Capture Channel Switch
+                <span style={{ fontSize: '14px', fontWeight: '900', color: 'var(--clay-primary-deep)', letterSpacing: '-0.2px' }}>
+                  Choose Capture Channel
                 </span>
-                <div style={{ fontSize: '11px', color: 'var(--clay-primary-muted)', fontWeight: '500', marginTop: '1px' }}>
-                  Flip the Apple Switch to activate channel
+                <div style={{ fontSize: '11.5px', color: 'var(--clay-primary-muted)', fontWeight: '500', marginTop: '2px' }}>
+                  Select an input channel to begin capture
                 </div>
               </div>
               <span style={{
@@ -135,7 +227,7 @@ function CaptureContent() {
                 color: 'var(--clay-primary)',
                 background: 'var(--clay-card-inset)',
                 boxShadow: 'var(--clay-shadow-inset)',
-                padding: '4px 10px',
+                padding: '4px 12px',
                 borderRadius: 'var(--clay-radius-pill)',
                 fontWeight: '800'
               }}>
@@ -148,26 +240,7 @@ function CaptureContent() {
               flexDirection: 'column',
               gap: '10px'
             }}>
-              {[
-                {
-                  id: 'voice',
-                  label: 'Voice Memo',
-                  detail: 'Edge Web Speech STT',
-                  icon: Mic,
-                },
-                {
-                  id: 'camera',
-                  label: 'Whiteboard OCR',
-                  detail: 'On-device Tesseract.js WASM',
-                  icon: Camera,
-                },
-                {
-                  id: 'text',
-                  label: 'Text / Raw Notes',
-                  detail: 'Direct typing or paste stream',
-                  icon: Keyboard,
-                },
-              ].map((ch) => {
+              {captureChannels.map((ch) => {
                 const isActive = inputMode === ch.id;
                 const Icon = ch.icon;
                 return (
@@ -178,7 +251,7 @@ function CaptureContent() {
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'space-between',
-                      padding: '12px 16px',
+                      padding: '13px 18px',
                       borderRadius: 'var(--clay-radius-inner)',
                       background: isActive ? '#ffffff' : 'var(--clay-card-inset)',
                       border: isActive ? '1.5px solid rgba(73, 80, 87, 0.18)' : '1px solid rgba(255, 255, 255, 0.5)',
@@ -190,11 +263,11 @@ function CaptureContent() {
                       transition: 'all 0.18s cubic-bezier(0.16, 1, 0.3, 1)'
                     }}
                   >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
                       <div style={{
-                        width: '38px',
-                        height: '38px',
-                        borderRadius: '11px',
+                        width: '40px',
+                        height: '40px',
+                        borderRadius: '12px',
                         background: isActive ? 'var(--clay-primary)' : '#ffffff',
                         color: isActive ? '#ffffff' : 'var(--clay-primary-dark)',
                         boxShadow: isActive
@@ -206,11 +279,11 @@ function CaptureContent() {
                         transition: 'all 0.2s ease',
                         flexShrink: 0
                       }}>
-                        <Icon size={18} />
+                        <Icon size={19} />
                       </div>
                       <div>
                         <div style={{
-                          fontSize: '13.5px',
+                          fontSize: '14px',
                           fontWeight: '800',
                           color: 'var(--clay-primary-deep)',
                           letterSpacing: '-0.2px'
@@ -218,7 +291,7 @@ function CaptureContent() {
                           {ch.label}
                         </div>
                         <div style={{
-                          fontSize: '11px',
+                          fontSize: '11.5px',
                           color: 'var(--clay-primary-muted)',
                           fontFamily: 'var(--font-mono)',
                           fontWeight: '500'
@@ -228,16 +301,33 @@ function CaptureContent() {
                       </div>
                     </div>
 
-                    <div onClick={(e) => e.stopPropagation()} style={{ display: 'flex', alignItems: 'center' }}>
-                      <AppleSwitch
-                        size="sm"
-                        checked={isActive}
-                        onCheckedChange={(checked) => {
-                          if (checked) setInputMode(ch.id);
-                        }}
-                        aria-label={`Switch to ${ch.label}`}
-                      />
-                    </div>
+                    {isActive ? (
+                      <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        padding: '4px 12px',
+                        borderRadius: 'var(--clay-radius-pill)',
+                        background: 'var(--clay-primary)',
+                        color: '#ffffff',
+                        fontSize: '11px',
+                        fontWeight: '800',
+                        fontFamily: 'var(--font-mono)',
+                        boxShadow: 'var(--clay-shadow-btn-primary)'
+                      }}>
+                        <Check size={12} strokeWidth={3} />
+                        <span>ACTIVE</span>
+                      </div>
+                    ) : (
+                      <div style={{
+                        width: '18px',
+                        height: '18px',
+                        borderRadius: '50%',
+                        border: '2px solid rgba(73, 80, 87, 0.2)',
+                        background: 'var(--clay-card-inset)',
+                        boxShadow: 'var(--clay-shadow-inset)'
+                      }} />
+                    )}
                   </div>
                 );
               })}
@@ -262,7 +352,7 @@ function CaptureContent() {
               marginBottom: '12px'
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span style={{ fontSize: '13px', fontWeight: '800', color: 'var(--clay-primary-deep)' }}>
+                <span style={{ fontSize: '13.5px', fontWeight: '800', color: 'var(--clay-primary-deep)' }}>
                   Live Telemetry Stream
                 </span>
                 <span style={{
@@ -345,11 +435,123 @@ function CaptureContent() {
               }}
             />
           </div>
-        </div>
 
-        {/* Right Column: Target Format Selectors & CTA (5 cols on laptop) */}
-        <div className="bento-span-5" style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-          {/* Deliverables Format Selector */}
+          {/* Error Banner */}
+          {errorMsg && (
+            <div style={{
+              padding: '14px 18px',
+              borderRadius: 'var(--clay-radius-inner)',
+              background: 'var(--clay-accent-coral-bg)',
+              boxShadow: 'var(--clay-shadow-btn-secondary)',
+              border: '1px solid rgba(201, 42, 42, 0.2)',
+              color: 'var(--clay-accent-coral)',
+              fontSize: '13px',
+              fontWeight: '700',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '10px'
+            }}>
+              <ShieldAlert size={18} style={{ flexShrink: 0 }} />
+              <span>{errorMsg}</span>
+            </div>
+          )}
+
+          {/* Step 1 Next Button */}
+          <button
+            type="button"
+            onClick={handleProceedToStep2}
+            className="btn btn-primary"
+            style={{
+              width: '100%',
+              padding: '18px 24px',
+              fontSize: '15px',
+              fontWeight: '900',
+              borderRadius: 'var(--clay-radius-inner)',
+              letterSpacing: '0.3px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '10px'
+            }}
+          >
+            <span>NEXT // CONFIGURE DELIVERABLES</span>
+            <ArrowRight size={18} />
+          </button>
+        </div>
+      )}
+
+      {/* STEP 2: TARGET DELIVERABLES & PROFILES PAGE */}
+      {step === 2 && (
+        <div style={{ maxWidth: '860px', margin: '0 auto', width: '100%', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          {/* Confirmed Telemetry Snapshot Card */}
+          <div className="bento-card" style={{ padding: '20px 24px' }}>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              marginBottom: '10px'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ fontSize: '13.5px', fontWeight: '900', color: 'var(--clay-primary-deep)' }}>
+                  Confirmed Raw Telemetry
+                </span>
+                <span style={{
+                  fontSize: '11px',
+                  fontFamily: 'var(--font-mono)',
+                  color: 'var(--clay-accent-green)',
+                  background: 'var(--clay-accent-green-bg)',
+                  border: '1px solid rgba(43, 138, 62, 0.25)',
+                  padding: '2px 8px',
+                  borderRadius: 'var(--clay-radius-pill)',
+                  fontWeight: '800'
+                }}>
+                  READY FOR SYNTHESIS
+                </span>
+              </div>
+
+              <button
+                type="button"
+                onClick={handleBackToStep1}
+                className="btn btn-secondary btn-sm btn-pill"
+                style={{ padding: '4px 10px', fontSize: '11px', gap: '4px' }}
+              >
+                <Edit3 size={12} />
+                <span>Edit Input</span>
+              </button>
+            </div>
+
+            <div style={{
+              background: 'var(--clay-card-inset)',
+              boxShadow: 'var(--clay-shadow-inset)',
+              borderRadius: 'var(--clay-radius-inner)',
+              padding: '14px 18px',
+              fontSize: '13px',
+              color: 'var(--clay-primary-dark)',
+              fontFamily: 'var(--font-mono)',
+              lineHeight: 1.55,
+              maxHeight: '120px',
+              overflowY: 'auto',
+              border: '1px solid rgba(255, 255, 255, 0.6)',
+              whiteSpace: 'pre-wrap'
+            }}>
+              {rawText}
+            </div>
+
+            <div style={{
+              display: 'flex',
+              gap: '12px',
+              marginTop: '10px',
+              fontSize: '11.5px',
+              color: 'var(--clay-primary-muted)',
+              fontWeight: '600'
+            }}>
+              <span>• Channel: <strong>{inputMode.toUpperCase()}</strong></span>
+              <span>• Length: <strong>{rawText.length} characters</strong></span>
+              <span>• Words: <strong>{rawText.trim().split(/\s+/).filter(Boolean).length} words</strong></span>
+            </div>
+          </div>
+
+          {/* Deliverables Format Selector with Tone & Audience */}
           <div className="bento-card">
             <FormatSelector
               selectedFormats={formats}
@@ -381,35 +583,57 @@ function CaptureContent() {
             </div>
           )}
 
-          {/* Claymorphic 3D Transform Trigger Button */}
-          <button
-            type="button"
-            onClick={handleTransform}
-            disabled={isTransforming}
-            className="btn btn-primary"
-            style={{
-              width: '100%',
-              padding: '18px 24px',
-              fontSize: '15px',
-              fontWeight: '900',
-              borderRadius: 'var(--clay-radius-inner)',
-              letterSpacing: '0.3px'
-            }}
-          >
-            {isTransforming ? (
-              <>
-                <Loader2 size={20} className="animate-spin" />
-                <span>TRANSFORMING VIA HEADLESS ENGINE...</span>
-              </>
-            ) : (
-              <>
-                <Sparkles size={20} />
-                <span>TRANSFORM DELIVERABLES ({formats.length})</span>
-              </>
-            )}
-          </button>
+          {/* Bottom Action Controls: Back + Transform Button */}
+          <div style={{ display: 'flex', gap: '14px', alignItems: 'center' }}>
+            <button
+              type="button"
+              onClick={handleBackToStep1}
+              className="btn btn-secondary"
+              style={{
+                padding: '18px 22px',
+                fontSize: '14px',
+                fontWeight: '800',
+                borderRadius: 'var(--clay-radius-inner)',
+                gap: '6px'
+              }}
+            >
+              <ArrowLeft size={16} />
+              <span>Back</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={handleTransform}
+              disabled={isTransforming}
+              className="btn btn-primary"
+              style={{
+                flex: 1,
+                padding: '18px 24px',
+                fontSize: '15px',
+                fontWeight: '900',
+                borderRadius: 'var(--clay-radius-inner)',
+                letterSpacing: '0.3px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px'
+              }}
+            >
+              {isTransforming ? (
+                <>
+                  <Loader2 size={20} className="animate-spin" />
+                  <span>TRANSFORMING VIA HEADLESS ENGINE...</span>
+                </>
+              ) : (
+                <>
+                  <Sparkles size={20} />
+                  <span>TRANSFORM DELIVERABLES ({formats.length})</span>
+                </>
+              )}
+            </button>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
