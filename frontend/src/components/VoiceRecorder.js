@@ -1,84 +1,101 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Mic, MicOff } from 'lucide-react';
 
 export default function VoiceRecorder({ onTranscriptUpdate, currentText = '' }) {
   const [isRecording, setIsRecording] = useState(false);
-  const [recognition, setRecognition] = useState(null);
   const [interimText, setInterimText] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const recognitionRef = useRef(null);
+  const isRecordingRef = useRef(false); // ref mirror for use inside callbacks
+  const finalizedRef = useRef('');      // accumulates confirmed final sentences
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window)) {
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      const recog = new SpeechRecognition();
-      recog.continuous = true;
-      recog.interimResults = true;
-      recog.lang = 'en-US';
+    if (typeof window === 'undefined') return;
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) return;
 
-      recog.onresult = (event) => {
-        let full = '';
-        let interim = '';
-        for (let i = 0; i < event.results.length; i++) {
-          if (event.results[i].isFinal) {
-            full += event.results[i][0].transcript + ' ';
-          } else {
-            interim += event.results[i][0].transcript;
-          }
+    const recog = new SpeechRecognition();
+    recog.continuous = true;
+    recog.interimResults = true;
+    recog.lang = 'en-US';
+
+    recog.onresult = (event) => {
+      let newFinals = '';
+      let interim = '';
+
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        const transcript = event.results[i][0].transcript;
+        if (event.results[i].isFinal) {
+          newFinals += transcript + ' ';
+        } else {
+          interim += transcript;
         }
-        setInterimText(interim);
-        if (full) {
-          onTranscriptUpdate((prev) => (prev ? prev + ' ' + full : full).trim());
-        }
-      };
+      }
 
-      recog.onerror = (e) => {
-        console.warn('Web Speech API Notice:', e.error);
-        // no-speech / network are non-fatal — recognition will auto-restart via onend
-        if (e.error === 'not-allowed' || e.error === 'audio-capture') {
-          setIsRecording(false);
-          setErrorMessage(
-            e.error === 'not-allowed'
-              ? 'Microphone permission denied. Please allow microphone access.'
-              : 'No microphone found. Please connect a microphone and try again.'
-          );
-        }
-        // suppress no-speech / network silently
-      };
+      if (newFinals) {
+        finalizedRef.current = (finalizedRef.current + newFinals).trimStart();
+      }
 
-      recog.onend = () => {
-        // If still supposed to be recording, restart automatically (handles no-speech timeout)
-        setIsRecording((prev) => {
-          if (prev) {
-            try { recog.start(); } catch (_) {}
-            return true;
-          }
-          return false;
-        });
-      };
+      setInterimText(interim);
 
-      setRecognition(recog);
-    }
+      // Stream live: finalized sentences + current interim word(s)
+      const live = (finalizedRef.current + interim).trim();
+      onTranscriptUpdate(live);
+    };
+
+    recog.onerror = (e) => {
+      // no-speech and network are non-fatal — onend will auto-restart
+      if (e.error === 'not-allowed' || e.error === 'audio-capture') {
+        isRecordingRef.current = false;
+        setIsRecording(false);
+        setErrorMessage(
+          e.error === 'not-allowed'
+            ? 'Microphone permission denied. Please allow microphone access.'
+            : 'No microphone found. Please connect a microphone and try again.'
+        );
+      }
+    };
+
+    recog.onend = () => {
+      setInterimText('');
+      // Auto-restart if we're still supposed to be recording
+      if (isRecordingRef.current) {
+        try { recog.start(); } catch (_) {}
+      } else {
+        setIsRecording(false);
+      }
+    };
+
+    recognitionRef.current = recog;
   }, [onTranscriptUpdate]);
 
   const toggleRecording = () => {
     setErrorMessage('');
-    if (!recognition) {
+    const recog = recognitionRef.current;
+
+    if (!recog) {
       setErrorMessage('Speech recognition is not supported in this browser. Please type directly into the transcript box.');
       return;
     }
 
-    if (isRecording) {
-      setIsRecording(false); // set false BEFORE stop() so onend doesn't restart
-      recognition.stop();
+    if (isRecordingRef.current) {
+      // Stop: set ref first so onend doesn't restart
+      isRecordingRef.current = false;
+      setIsRecording(false);
+      setInterimText('');
+      recog.stop();
     } else {
+      // Reset finalized buffer to whatever is already in the textarea
+      finalizedRef.current = currentText ? currentText.trimEnd() + ' ' : '';
+      isRecordingRef.current = true;
+      setIsRecording(true);
       try {
-        recognition.start();
-        setIsRecording(true);
+        recog.start();
       } catch (err) {
-        console.error('Error starting recognition:', err);
-        setErrorMessage('Could not start microphone. Please check permissions.');
+        isRecordingRef.current = false;
         setIsRecording(false);
+        setErrorMessage('Could not start microphone. Please check permissions.');
       }
     }
   };
@@ -106,27 +123,16 @@ export default function VoiceRecorder({ onTranscriptUpdate, currentText = '' }) 
             borderRadius: 'var(--clay-radius-card-sm)'
           }}>
             <div className="audio-waves">
-              <div className="audio-bar" />
-              <div className="audio-bar" />
-              <div className="audio-bar" />
-              <div className="audio-bar" />
-              <div className="audio-bar" />
-              <div className="audio-bar" />
-              <div className="audio-bar" />
-              <div className="audio-bar" />
+              {[...Array(8)].map((_, i) => <div key={i} className="audio-bar" />)}
             </div>
           </div>
         ) : (
           <div style={{
-            width: '64px',
-            height: '64px',
-            borderRadius: '50%',
+            width: '64px', height: '64px', borderRadius: '50%',
             background: 'var(--clay-card-inset)',
             border: '2px solid rgba(255, 255, 255, 0.95)',
             boxShadow: '8px 12px 24px rgba(73, 80, 87, 0.12), inset 3px 3px 6px rgba(255, 255, 255, 0.9), inset -3px -3px 6px rgba(73, 80, 87, 0.06)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
             color: 'var(--clay-primary-dark)'
           }}>
             <Mic size={28} />
@@ -142,32 +148,26 @@ export default function VoiceRecorder({ onTranscriptUpdate, currentText = '' }) 
           </p>
         </div>
 
-        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center' }}>
-          <button
-            type="button"
-            onClick={toggleRecording}
-            className={`btn ${isRecording ? 'btn-secondary' : 'btn-primary'} btn-sm btn-pill`}
-            style={{
-              background: isRecording ? 'var(--clay-accent-coral-bg)' : undefined,
-              color: isRecording ? 'var(--clay-accent-coral)' : undefined,
-              borderColor: isRecording ? 'rgba(201, 42, 42, 0.2)' : undefined,
-              boxShadow: isRecording ? 'var(--clay-shadow-btn-secondary)' : undefined
-            }}
-          >
-            {isRecording ? <MicOff size={15} /> : <Mic size={15} />}
-            <span>{isRecording ? 'Stop Recording' : 'Start Microphone'}</span>
-          </button>
-        </div>
+        <button
+          type="button"
+          onClick={toggleRecording}
+          className={`btn ${isRecording ? 'btn-secondary' : 'btn-primary'} btn-sm btn-pill`}
+          style={{
+            background: isRecording ? 'var(--clay-accent-coral-bg)' : undefined,
+            color: isRecording ? 'var(--clay-accent-coral)' : undefined,
+            borderColor: isRecording ? 'rgba(201, 42, 42, 0.2)' : undefined,
+            boxShadow: isRecording ? 'var(--clay-shadow-btn-secondary)' : undefined
+          }}
+        >
+          {isRecording ? <MicOff size={15} /> : <Mic size={15} />}
+          <span>{isRecording ? 'Stop Recording' : 'Start Microphone'}</span>
+        </button>
 
         {errorMessage && (
           <div style={{
-            fontSize: '12px',
-            color: '#c92a2a',
-            background: '#ffe3e3',
-            border: '1px solid #ffa8a8',
-            padding: '6px 14px',
-            borderRadius: 'var(--clay-radius-pill)',
-            fontWeight: '600'
+            fontSize: '12px', color: '#c92a2a', background: '#ffe3e3',
+            border: '1px solid #ffa8a8', padding: '6px 14px',
+            borderRadius: 'var(--clay-radius-pill)', fontWeight: '600'
           }}>
             {errorMessage}
           </div>
@@ -175,15 +175,10 @@ export default function VoiceRecorder({ onTranscriptUpdate, currentText = '' }) 
 
         {interimText && (
           <div style={{
-            fontSize: '12px',
-            fontStyle: 'italic',
-            color: 'var(--clay-primary)',
-            background: 'var(--clay-card-inset)',
-            boxShadow: 'var(--clay-shadow-inset)',
-            border: '1px solid rgba(255, 255, 255, 0.6)',
-            padding: '8px 16px',
-            borderRadius: 'var(--clay-radius-pill)',
-            marginTop: '4px'
+            fontSize: '12px', fontStyle: 'italic', color: 'var(--clay-primary)',
+            background: 'var(--clay-card-inset)', boxShadow: 'var(--clay-shadow-inset)',
+            border: '1px solid rgba(255, 255, 255, 0.6)', padding: '8px 16px',
+            borderRadius: 'var(--clay-radius-pill)', marginTop: '4px'
           }}>
             "{interimText}"
           </div>
