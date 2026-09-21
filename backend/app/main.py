@@ -15,7 +15,7 @@ from app.models.auth import UserCreate, UserResponse, Token
 from app.services.auth_service import get_password_hash, verify_password, create_access_token, get_current_user, ACCESS_TOKEN_EXPIRE_MINUTES
 from datetime import timedelta
 
-from app.config import GENERATED_DIR, HOST, PORT, OLLAMA_HOST, OLLAMA_MODEL
+from app.config import GENERATED_DIR, HOST, PORT, OLLAMA_HOST, OLLAMA_MODEL, OPENAI_API_KEY
 from app.models.ico import (
     TransformRequest, TransformResponse, IntentContextObject,
     RegenerateSlideRequest, RegenerateFormatRequest, SlideItem,
@@ -150,7 +150,6 @@ def get_sample_templates():
 @app.post("/api/transform", response_model=TransformResponse)
 async def transform_raw_text(
     req: TransformRequest,
-    current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     if not req.raw_text or not req.raw_text.strip():
@@ -256,7 +255,7 @@ async def transform_raw_text(
 
         # Step 5: Save to Database
         db_session = TransformationSession(
-            user_id=current_user.id,
+            user_id=0,
             session_uuid=session_id,
             raw_text=req.raw_text,
             ico_json=ico_str,
@@ -297,13 +296,10 @@ async def transform_raw_text(
 @app.post("/api/regenerate-slide")
 async def regenerate_slide(
     req: RegenerateSlideRequest,
-    current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     """Regenerates an individual slide inside the active presentation."""
-    db_session = db.query(TransformationSession).filter(
-        TransformationSession.user_id == current_user.id
-    ).order_by(TransformationSession.id.desc()).first()
+    db_session = db.query(TransformationSession).order_by(TransformationSession.id.desc()).first()
     
     if not db_session or not db_session.slides_json:
         raise HTTPException(status_code=404, detail="No active presentation deck found")
@@ -357,8 +353,7 @@ Respond with ONLY a single JSON object:
 
 @app.post("/api/regenerate-format")
 async def regenerate_format(
-    req: RegenerateFormatRequest,
-    current_user: User = Depends(get_current_user)
+    req: RegenerateFormatRequest
 ):
     """Regenerates a single format (e.g. LinkedIn or Twitter) with modified tone/audience."""
     ico_str = json.dumps(req.ico.model_dump(), indent=2)
