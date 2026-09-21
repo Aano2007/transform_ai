@@ -59,7 +59,7 @@ export default function OfficeKitBridge() {
           <span className="pulse-dot" style={{
             background: health?.status === 'online' ? 'var(--clay-accent-green)' : 'var(--clay-accent-coral)'
           }} />
-          {health?.status === 'online' ? 'iQOO LINK ONLINE' : 'CONNECTING EDGE...'}
+          {health?.status === 'online' ? 'EDGE LINK ONLINE' : 'CONNECTING EDGE...'}
         </span>
 
         <span style={{

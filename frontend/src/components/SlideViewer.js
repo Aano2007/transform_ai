@@ -133,7 +133,7 @@ export default function SlideViewer({ slides = [], ico = null, pptxUrl = null, o
             borderRadius: 'var(--clay-radius-pill)',
             marginBottom: '10px'
           }}>
-            TRANSFORMAI // SLIDE {String(currentIdx + 1).padStart(2, '0')} // iQOO EDGE
+            TRANSFORMAI // SLIDE {String(currentIdx + 1).padStart(2, '0')} // EDGE ENGINE
           </div>
           <h3 style={{
             fontSize: 'clamp(18px, 2.5vw, 24px)',

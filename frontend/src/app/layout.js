@@ -4,7 +4,7 @@ import { Zap, Sparkles } from 'lucide-react';
 import MobileBottomNav from '../components/MobileBottomNav';
 
 export const metadata = {
-  title: 'TransformAI | iQOO Productivity Track',
+  title: 'TransformAI | Edge Productivity Engine',
   description: 'One voice memo to four finished deliverables in under 60 seconds.',
   manifest: '/manifest.json',
 };
@@ -38,7 +38,7 @@ export default function RootLayout({ children }) {
               <div>
                 <div className="brand-title">
                   <span>TransformAI</span>
-                  <span className="tag">iQOO Edge</span>
+                  <span className="tag">Edge AI</span>
                 </div>
                 <div style={{ fontSize: '11px', color: 'var(--clay-primary-muted)', fontWeight: 600, marginTop: '-2px' }}>
                   Headless Local AI Engine

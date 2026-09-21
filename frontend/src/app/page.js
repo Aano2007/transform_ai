@@ -23,7 +23,7 @@ export default function HomeScreen() {
       const defaultHistory = [
         {
           id: 'hist_1',
-          title: 'iQOO Product Strategy All-Hands',
+          title: 'Product Strategy All-Hands',
           timestamp: '10 mins ago',
           formatsCount: 4,
           primaryObjective: 'Align engineering deliverables and hit Q3 launch.'
@@ -55,11 +55,6 @@ export default function HomeScreen() {
       <div className="bento-grid">
         {/* Clay Cell 1: 3D Inflated Hero Banner (Span 12 on Laptop) */}
         <div className="bento-card bento-hero bento-span-12" style={{ justifyContent: 'center' }}>
-          <div className="bento-tag">
-            <Zap size={13} />
-            <span>iQOO HACKATHON // PRODUCTIVITY TRACK</span>
-          </div>
-
           <h1 style={{
             fontSize: 'clamp(28px, 3.8vw, 42px)',
             fontWeight: '900',

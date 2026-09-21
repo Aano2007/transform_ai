@@ -91,7 +91,7 @@ export default function ExportBar({
         </button>
       </div>
 
-      {/* iQOO Office Kit Cross-Device Shared Clipboard Toast */}
+      {/* Cross-Device Shared Clipboard Toast */}
       {showOfficeKitToast && (
         <div className="officekit-toast">
           <div style={{
@@ -109,7 +109,7 @@ export default function ExportBar({
           </div>
           <div>
             <div style={{ fontSize: '14px', fontWeight: '800', color: '#ffffff' }}>
-              iQOO Office Kit Synced!
+              Office Kit Synced!
             </div>
             <div style={{ fontSize: '11px', color: '#ced4da', fontWeight: '600', fontFamily: 'var(--font-mono)' }}>
               Clipboard auto-broadcasted to Laptop via Local Wi-Fi

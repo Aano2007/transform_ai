@@ -1,13 +1,12 @@
 'use client';
-import { useState, useEffect, useRef } from 'react';
-import { Mic, MicOff, Volume2, Sparkles } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Mic, MicOff } from 'lucide-react';
 
 export default function VoiceRecorder({ onTranscriptUpdate, currentText = '' }) {
   const [isRecording, setIsRecording] = useState(false);
   const [recognition, setRecognition] = useState(null);
   const [interimText, setInterimText] = useState('');
-  const [isSimulating, setIsSimulating] = useState(false);
-  const simInterval = useRef(null);
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     if (typeof window !== 'undefined' && ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window)) {
@@ -36,6 +35,11 @@ export default function VoiceRecorder({ onTranscriptUpdate, currentText = '' }) 
       recog.onerror = (e) => {
         console.warn('Web Speech API Notice:', e.error);
         setIsRecording(false);
+        if (e.error === 'not-allowed') {
+          setErrorMessage('Microphone permission denied. Please allow microphone access.');
+        } else {
+          setErrorMessage(`Microphone error: ${e.error}`);
+        }
       };
 
       recog.onend = () => {
@@ -47,8 +51,9 @@ export default function VoiceRecorder({ onTranscriptUpdate, currentText = '' }) 
   }, [onTranscriptUpdate]);
 
   const toggleRecording = () => {
+    setErrorMessage('');
     if (!recognition) {
-      simulateVoiceStream();
+      setErrorMessage('Speech recognition is not supported in this browser. Please type directly into the transcript box.');
       return;
     }
 
@@ -60,47 +65,20 @@ export default function VoiceRecorder({ onTranscriptUpdate, currentText = '' }) 
         recognition.start();
         setIsRecording(true);
       } catch (err) {
-        simulateVoiceStream();
+        console.error('Error starting recognition:', err);
+        setErrorMessage('Could not start microphone. Please check permissions.');
+        setIsRecording(false);
       }
     }
   };
-
-  const simulateVoiceStream = () => {
-    if (isSimulating) {
-      clearInterval(simInterval.current);
-      setIsSimulating(false);
-      return;
-    }
-
-    setIsSimulating(true);
-    const demoPhrases = [
-      "Starting product sync with Mobile Engineering lead.",
-      " We agreed that our Q3 launch target will be next Friday.",
-      " 45 minutes saved per engineer every day.",
-      " Action item: Priya will finalize the python-pptx templates by 5 PM.",
-      " Alex to connect the shared clipboard via iQOO Office Kit."
-    ];
-    let step = 0;
-    simInterval.current = setInterval(() => {
-      if (step < demoPhrases.length) {
-        onTranscriptUpdate((prev) => (prev ? prev + demoPhrases[step] : demoPhrases[step]));
-        step++;
-      } else {
-        clearInterval(simInterval.current);
-        setIsSimulating(false);
-      }
-    }, 900);
-  };
-
-  const active = isRecording || isSimulating;
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
       <div style={{
         background: 'rgb(233, 236, 239)',
-        border: active ? '1.5px solid var(--clay-primary)' : 'var(--clay-border)',
+        border: isRecording ? '1.5px solid var(--clay-primary)' : 'var(--clay-border)',
         borderRadius: 'var(--clay-radius-card)',
-        boxShadow: active ? 'var(--clay-shadow-card-hover)' : 'var(--clay-shadow-card)',
+        boxShadow: isRecording ? 'var(--clay-shadow-card-hover)' : 'var(--clay-shadow-card)',
         padding: '30px 24px',
         textAlign: 'center',
         display: 'flex',
@@ -109,7 +87,7 @@ export default function VoiceRecorder({ onTranscriptUpdate, currentText = '' }) 
         gap: '16px',
         transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)'
       }}>
-        {active ? (
+        {isRecording ? (
           <div style={{
             background: 'var(--clay-card-inset)',
             boxShadow: 'var(--clay-shadow-inset)',
@@ -146,7 +124,7 @@ export default function VoiceRecorder({ onTranscriptUpdate, currentText = '' }) 
 
         <div>
           <h4 style={{ fontSize: '16px', fontWeight: '900', color: 'var(--clay-primary-deep)', letterSpacing: '-0.3px' }}>
-            {active ? 'Listening (Web Speech API Edge)...' : 'Tap to Record Voice Memo'}
+            {isRecording ? 'Listening (Microphone Active)...' : 'Tap to Record Voice Memo'}
           </h4>
           <p style={{ fontSize: '12.5px', color: 'var(--clay-primary-muted)', marginTop: '4px', fontWeight: '500' }}>
             100% on-device speech-to-text. Zero audio leaves your phone.
@@ -157,30 +135,32 @@ export default function VoiceRecorder({ onTranscriptUpdate, currentText = '' }) 
           <button
             type="button"
             onClick={toggleRecording}
-            className={`btn ${active ? 'btn-secondary' : 'btn-primary'} btn-sm btn-pill`}
+            className={`btn ${isRecording ? 'btn-secondary' : 'btn-primary'} btn-sm btn-pill`}
             style={{
-              background: active ? 'var(--clay-accent-coral-bg)' : undefined,
-              color: active ? 'var(--clay-accent-coral)' : undefined,
-              borderColor: active ? 'rgba(201, 42, 42, 0.2)' : undefined,
-              boxShadow: active ? 'var(--clay-shadow-btn-secondary)' : undefined
+              background: isRecording ? 'var(--clay-accent-coral-bg)' : undefined,
+              color: isRecording ? 'var(--clay-accent-coral)' : undefined,
+              borderColor: isRecording ? 'rgba(201, 42, 42, 0.2)' : undefined,
+              boxShadow: isRecording ? 'var(--clay-shadow-btn-secondary)' : undefined
             }}
           >
-            {active ? <MicOff size={15} /> : <Mic size={15} />}
-            <span>{active ? 'Stop Recording' : 'Start Microphone'}</span>
+            {isRecording ? <MicOff size={15} /> : <Mic size={15} />}
+            <span>{isRecording ? 'Stop Recording' : 'Start Microphone'}</span>
           </button>
-
-          {!active && (
-            <button
-              type="button"
-              onClick={simulateVoiceStream}
-              className="btn btn-secondary btn-sm btn-pill"
-              title="Simulate realistic voice input stream"
-            >
-              <Sparkles size={14} color="var(--clay-primary)" />
-              <span>Simulate Voice</span>
-            </button>
-          )}
         </div>
+
+        {errorMessage && (
+          <div style={{
+            fontSize: '12px',
+            color: '#c92a2a',
+            background: '#ffe3e3',
+            border: '1px solid #ffa8a8',
+            padding: '6px 14px',
+            borderRadius: 'var(--clay-radius-pill)',
+            fontWeight: '600'
+          }}>
+            {errorMessage}
+          </div>
+        )}
 
         {interimText && (
           <div style={{

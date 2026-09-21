@@ -164,42 +164,6 @@ function CaptureContent() {
             <span>Back to Capture</span>
           </button>
         )}
-
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <div
-            onClick={handleBackToStep1}
-            className="clay-pill"
-            style={{
-              marginBottom: 0,
-              cursor: step === 2 ? 'pointer' : 'default',
-              background: step === 1 ? 'rgb(233, 236, 239)' : 'var(--clay-card-inset)',
-              color: step === 1 ? 'var(--clay-primary-deep)' : 'var(--clay-primary-muted)',
-              border: step === 1 ? '1px solid rgba(255,255,255,0.9)' : 'none',
-              boxShadow: step === 1 ? 'var(--clay-shadow-btn-secondary)' : 'var(--clay-shadow-inset)'
-            }}
-          >
-            {step === 2 ? <Check size={12} color="var(--clay-accent-green)" /> : <Activity size={12} />}
-            <span>1. Raw Capture</span>
-          </div>
-
-          <div
-            onClick={() => {
-              if (rawText.trim()) setStep(2);
-            }}
-            className="clay-pill"
-            style={{
-              marginBottom: 0,
-              cursor: rawText.trim() ? 'pointer' : 'not-allowed',
-              background: step === 2 ? 'rgb(233, 236, 239)' : 'var(--clay-card-inset)',
-              color: step === 2 ? 'var(--clay-primary-deep)' : 'var(--clay-primary-muted)',
-              border: step === 2 ? '1px solid rgba(255,255,255,0.9)' : 'none',
-              boxShadow: step === 2 ? 'var(--clay-shadow-btn-secondary)' : 'var(--clay-shadow-inset)'
-            }}
-          >
-            <Sparkles size={12} />
-            <span>2. Deliverables</span>
-          </div>
-        </div>
       </div>
 
       {/* STEP 1: RAW CAPTURE PAGE */}
@@ -401,7 +365,7 @@ function CaptureContent() {
               onChange={(e) => setRawText(e.target.value)}
               placeholder={
                 inputMode === 'voice'
-                  ? 'Voice transcript will stream here in real-time. Speak into microphone or tap Simulate...'
+                  ? 'Voice transcript will stream here in real-time. Speak into microphone...'
                   : inputMode === 'camera'
                   ? 'OCR transcribed text from whiteboard will appear here...'
                   : 'Type or paste rough meeting notes, voice transcripts, or raw bullet points here...'

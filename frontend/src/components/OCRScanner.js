@@ -11,7 +11,7 @@ export default function OCRScanner({ onOCRComplete }) {
 
   const sampleWhiteboardTexts = [
     `[WHITEBOARD OCR TRANSCRIBED]
-Project: iQOO Edge Engine 2.0
+Project: Edge Engine 2.0
 Goals:
 - 60s transformation SLA from voice to 4 formats
 - python-pptx templates ready by Friday EOD (Priya)
@@ -108,7 +108,7 @@ Topic: Enterprise Pilot Rollout
             {loading ? 'Processing via WASM OCR...' : 'Snap Whiteboard or Upload Document'}
           </h4>
           <p style={{ fontSize: '12.5px', color: 'var(--clay-primary-muted)', marginTop: '4px', fontWeight: '500' }}>
-            Tesseract.js WASM runs 100% in-browser on the iQOO client.
+            Tesseract.js WASM runs 100% in-browser on the mobile client.
           </p>
         </div>
 

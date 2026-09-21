@@ -38,10 +38,10 @@ export default function SlideDetailScreen() {
     {
       slide_number: 1,
       title: "TransformAI Executive Deck",
-      subtitle: "iQOO Hackathon Productivity Track",
+      subtitle: "Productivity Track",
       bullets: [
         "1 Voice Memo → 4 Polished Deliverables",
-        "Edge capture on iQOO + Local compute engine",
+        "Edge capture on mobile + Local compute engine",
         "Under 60 seconds end-to-end turnaround"
       ],
       speaker_notes: "Welcome to TransformAI. We demonstrate how to eliminate 45 minutes of manual summarization every day."
@@ -154,10 +154,10 @@ export default function SlideDetailScreen() {
           gap: '8px'
         }}>
           <Laptop size={16} />
-          <span>iQOO OFFICE KIT STRATEGY NOTE:</span>
+          <span>CROSS-DEVICE COLLABORATION NOTE:</span>
         </div>
         <div style={{ fontSize: '13px', color: 'var(--clay-primary-muted)', lineHeight: 1.55, fontWeight: '500' }}>
-          During the hackathon pitch, tap <strong>"Deck (.pptx)"</strong> to download on phone, then drag directly to your laptop display via iQOO Office Kit multi-screen collaboration.
+          Tap <strong>"Deck (.pptx)"</strong> to download on device, or sync directly to your display via multi-screen collaboration.
         </div>
       </div>
 
