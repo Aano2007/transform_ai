@@ -1,225 +1,118 @@
 'use client';
-
-import React, { useState } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { 
-  Mail, 
-  Lock, 
-  Eye, 
-  EyeOff, 
-  ArrowRight, 
-  Sparkles, 
-  AlertCircle, 
-  Zap, 
-  CheckCircle2,
-  ShieldCheck
-} from 'lucide-react';
+import { Zap, Eye, EyeOff, Sparkles } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
 export default function LoginPage() {
-  const router = useRouter();
   const { login, quickDemoLogin } = useAuth();
-
+  const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(true);
-  const [loading, setLoading] = useState(false);
+  const [showPw, setShowPw] = useState(false);
+  const [remember, setRemember] = useState(false);
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    setSuccess('');
-
-    if (!email.trim()) {
-      setError('Please enter your email address.');
-      return;
-    }
-    if (!password) {
-      setError('Please enter your password.');
-      return;
-    }
-
     setLoading(true);
-    try {
-      await login(email, password);
-      setSuccess('Signed in successfully! Redirecting...');
-      setTimeout(() => {
-        router.push('/');
-      }, 700);
-    } catch (err) {
-      setError(err.message || 'Invalid email or password.');
-      setLoading(false);
-    }
+    await new Promise(r => setTimeout(r, 400));
+    const res = login(email, password);
+    setLoading(false);
+    if (res.error) return setError(res.error);
+    router.push('/');
   };
 
-  const handleDemoLogin = () => {
-    setError('');
-    setSuccess('Entering as Pro Edge Demo Lead...');
+  const handleDemo = async () => {
+    setLoading(true);
+    await new Promise(r => setTimeout(r, 300));
     quickDemoLogin();
-    setTimeout(() => {
-      router.push('/');
-    }, 600);
+    router.push('/');
   };
 
   return (
-    <div className="auth-page-wrapper">
-      <div className="auth-container">
-        {/* Glow ambient background element */}
-        <div className="auth-ambient-glow" />
-
-        <div className="auth-card bento-card">
-          {/* Top Brand & Badge */}
-          <div className="auth-header">
-            <div className="auth-icon-badge">
-              <Zap size={26} color="#ffffff" fill="#ffffff" />
-            </div>
-            <h1 className="auth-title">Welcome Back</h1>
-            <p className="auth-subtitle">
-              Sign in to your local Edge AI workspace and saved transformations.
-            </p>
+    <div className="auth-container">
+      <div className="auth-card" style={{ animationDelay: '0ms' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '28px' }}>
+          <div className="brand-logo" style={{ width: 36, height: 36, borderRadius: 12 }}>
+            <Zap size={18} fill="#fff" color="#fff" />
           </div>
-
-          {/* 1-Click Instant Demo Login CTA */}
-          <div className="auth-demo-banner">
-            <div className="auth-demo-text">
-              <span className="auth-demo-tag">Quick Test</span>
-              <span className="auth-demo-desc">Instant access without typing credentials</span>
-            </div>
-            <button
-              type="button"
-              className="btn btn-secondary btn-sm btn-pill auth-demo-btn"
-              onClick={handleDemoLogin}
-            >
-              <Sparkles size={14} color="var(--clay-accent-green)" />
-              <span>1-Click Demo</span>
-            </button>
-          </div>
-
-          <div className="auth-divider">
-            <span>or sign in with credentials</span>
-          </div>
-
-          {/* Feedback Messages */}
-          {error && (
-            <div className="auth-alert auth-alert-error">
-              <AlertCircle size={16} />
-              <span>{error}</span>
-            </div>
-          )}
-
-          {success && (
-            <div className="auth-alert auth-alert-success">
-              <CheckCircle2 size={16} />
-              <span>{success}</span>
-            </div>
-          )}
-
-          {/* Form */}
-          <form onSubmit={handleLogin} className="auth-form">
-            {/* Email Field */}
-            <div className="auth-field">
-              <label className="auth-label" htmlFor="email-input">
-                Email Address
-              </label>
-              <div className="auth-input-wrapper">
-                <Mail size={18} className="auth-input-icon" />
-                <input
-                  id="email-input"
-                  type="email"
-                  className="auth-input"
-                  placeholder="name@organization.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  autoComplete="email"
-                />
-              </div>
-            </div>
-
-            {/* Password Field */}
-            <div className="auth-field">
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <label className="auth-label" htmlFor="password-input">
-                  Password
-                </label>
-                <Link href="/forgot-password" className="auth-forgot-link">
-                  Forgot password?
-                </Link>
-              </div>
-              <div className="auth-input-wrapper">
-                <Lock size={18} className="auth-input-icon" />
-                <input
-                  id="password-input"
-                  type={showPassword ? 'text' : 'password'}
-                  className="auth-input"
-                  placeholder="Enter your password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  autoComplete="current-password"
-                />
-                <button
-                  type="button"
-                  className="auth-eye-btn"
-                  onClick={() => setShowPassword(!showPassword)}
-                  aria-label={showPassword ? 'Hide password' : 'Show password'}
-                >
-                  {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
-                </button>
-              </div>
-            </div>
-
-            {/* Remember Me */}
-            <div className="auth-remember-row">
-              <label className="auth-checkbox-label">
-                <input
-                  type="checkbox"
-                  checked={rememberMe}
-                  onChange={(e) => setRememberMe(e.target.checked)}
-                  className="auth-checkbox"
-                />
-                <span>Keep me signed in on this edge device</span>
-              </label>
-            </div>
-
-            {/* Submit Button */}
-            <button
-              type="submit"
-              disabled={loading}
-              className="btn btn-primary btn-pill auth-submit-btn"
-            >
-              {loading ? (
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <div className="spinner-mini" />
-                  <span>Authenticating...</span>
-                </div>
-              ) : (
-                <>
-                  <span>Sign In</span>
-                  <ArrowRight size={16} />
-                </>
-              )}
-            </button>
-          </form>
-
-          {/* Security & Node Telemetry Footer */}
-          <div className="auth-security-footer">
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--clay-primary-muted)', fontSize: '11.5px' }}>
-              <ShieldCheck size={14} color="var(--clay-accent-green)" />
-              <span>Zero-Cloud Transmission &bull; 100% Local On-Device Identity</span>
-            </div>
-          </div>
-
-          {/* Sign Up Link */}
-          <div className="auth-switch-footer">
-            <span>Don't have an account yet?</span>
-            <Link href="/signup" className="auth-switch-link">
-              Create Account
-            </Link>
+          <div>
+            <div style={{ fontWeight: 800, fontSize: '16px', color: 'var(--clay-primary-deep)' }}>TransformAI</div>
+            <div style={{ fontSize: '11px', color: 'var(--clay-primary-muted)', fontWeight: 600 }}>Sign in to your account</div>
           </div>
         </div>
+
+        <button onClick={handleDemo} disabled={loading} className="btn btn-primary" style={{ width: '100%', marginBottom: '20px', gap: '8px', justifyContent: 'center' }}>
+          <Sparkles size={15} />
+          1-Click Instant Demo Login
+        </button>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
+          <div style={{ flex: 1, height: 1, background: 'var(--clay-card-inset)', boxShadow: 'var(--clay-shadow-inset)' }} />
+          <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--clay-primary-muted)' }}>OR SIGN IN</span>
+          <div style={{ flex: 1, height: 1, background: 'var(--clay-card-inset)', boxShadow: 'var(--clay-shadow-inset)' }} />
+        </div>
+
+        {error && <div className="auth-error">{error}</div>}
+
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+          <div className="auth-input-wrap">
+            <label className="auth-label">Email</label>
+            <input
+              type="email"
+              className="auth-input"
+              placeholder="you@example.com"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              required
+              autoComplete="email"
+            />
+          </div>
+
+          <div className="auth-input-wrap">
+            <label className="auth-label">Password</label>
+            <div style={{ position: 'relative' }}>
+              <input
+                type={showPw ? 'text' : 'password'}
+                className="auth-input"
+                placeholder="••••••••"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                required
+                autoComplete="current-password"
+                style={{ paddingRight: '44px' }}
+              />
+              <button type="button" onClick={() => setShowPw(v => !v)} className="auth-pw-toggle">
+                {showPw ? <EyeOff size={15} /> : <Eye size={15} />}
+              </button>
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '7px', fontSize: '12px', fontWeight: 600, color: 'var(--clay-primary-muted)', cursor: 'pointer' }}>
+              <input type="checkbox" checked={remember} onChange={e => setRemember(e.target.checked)} style={{ accentColor: 'var(--clay-primary)' }} />
+              Remember me
+            </label>
+            <Link href="/forgot-password" style={{ fontSize: '12px', fontWeight: 700, color: 'var(--clay-primary)', textDecoration: 'none' }}>
+              Forgot password?
+            </Link>
+          </div>
+
+          <button type="submit" disabled={loading} className="btn btn-secondary" style={{ width: '100%', marginTop: '4px' }}>
+            {loading ? 'Signing in…' : 'Sign In'}
+          </button>
+        </form>
+
+        <p style={{ textAlign: 'center', marginTop: '20px', fontSize: '13px', color: 'var(--clay-primary-muted)', fontWeight: 600 }}>
+          No account?{' '}
+          <Link href="/signup" style={{ color: 'var(--clay-primary-deep)', fontWeight: 800, textDecoration: 'none' }}>
+            Sign Up
+          </Link>
+        </p>
       </div>
     </div>
   );

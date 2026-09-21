@@ -1,7 +1,7 @@
 import './globals.css';
+import { AuthProvider } from '../context/AuthContext';
 import Header from '../components/Header';
 import MobileBottomNav from '../components/MobileBottomNav';
-import { AuthProvider } from '../context/AuthContext';
 
 export const metadata = {
   title: 'TransformAI | Edge Productivity Engine',
@@ -30,16 +30,16 @@ export default function RootLayout({ children }) {
       </head>
       <body>
         <AuthProvider>
-          <div className="app-shell">
-            <Header />
+        <div className="app-shell">
+          <Header />
 
-            <main style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-              {children}
-            </main>
+          <main style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+            {children}
+          </main>
 
-            {/* Persistent Claymorphic Mobile Bottom Nav for Phones */}
-            <MobileBottomNav />
-          </div>
+          {/* Persistent Claymorphic Mobile Bottom Nav for Phones */}
+          <MobileBottomNav />
+        </div>
         </AuthProvider>
       </body>
     </html>
