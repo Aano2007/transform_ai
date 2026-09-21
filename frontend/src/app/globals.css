@@ -4,10 +4,10 @@
      ========================================================= */
 
   /* Palette */
-  --clay-canvas: #eef1f6;
-  --clay-card-bg: #ffffff;
-  --clay-card-subtle: #f5f7fb;
-  --clay-card-inset: #e5e9f1;
+  --clay-canvas: #f8f9fa;
+  --clay-card-bg: rgb(233, 236, 239);
+  --clay-card-subtle: rgb(233, 236, 239);
+  --clay-card-inset: #dee2e6;
   --clay-primary: #495057;
   --clay-primary-dark: #343a40;
   --clay-primary-deep: #212529;
@@ -185,7 +185,7 @@ body::before {
   position: sticky;
   top: 0;
   z-index: 50;
-  background: rgba(255, 255, 255, 0.92);
+  background: rgba(233, 236, 239, 0.96);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   padding: 14px 22px;
@@ -293,7 +293,7 @@ body::before {
 }
 
 .nav-link.active {
-  background: #ffffff;
+  background: rgb(233, 236, 239);
   color: var(--clay-primary-deep);
   box-shadow: 
     3px 5px 12px rgba(73, 80, 87, 0.08),
@@ -344,7 +344,7 @@ body::before {
 }
 
 .bento-hero {
-  background: linear-gradient(135deg, #ffffff 0%, #f4f6fb 100%);
+  background: linear-gradient(135deg, rgb(233, 236, 239) 0%, #e2e6ea 100%);
 }
 
 /* Clay Inset Wells (Recessed Areas) */

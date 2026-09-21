@@ -14,7 +14,7 @@ export default function SlideViewer({ slides = [], ico = null, pptxUrl = null, o
         padding: '40px',
         textAlign: 'center',
         color: 'var(--clay-primary-muted)',
-        background: '#ffffff',
+        background: 'rgb(233, 236, 239)',
         border: 'var(--clay-border)',
         borderRadius: 'var(--clay-radius-card)',
         boxShadow: 'var(--clay-shadow-card)',
@@ -61,7 +61,7 @@ export default function SlideViewer({ slides = [], ico = null, pptxUrl = null, o
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        background: '#ffffff',
+        background: 'rgb(233, 236, 239)',
         padding: '12px 18px',
         borderRadius: 'var(--clay-radius-inner)',
         border: 'var(--clay-border)',
@@ -110,7 +110,7 @@ export default function SlideViewer({ slides = [], ico = null, pptxUrl = null, o
         position: 'relative',
         width: '100%',
         aspectRatio: '16/9',
-        background: 'linear-gradient(135deg, #ffffff 0%, #f7f9fd 100%)',
+        background: 'linear-gradient(135deg, rgb(233, 236, 239) 0%, #e2e6ea 100%)',
         border: 'var(--clay-border)',
         boxShadow: 'var(--clay-shadow-card)',
         borderRadius: 'var(--clay-radius-card)',
@@ -262,7 +262,7 @@ export default function SlideViewer({ slides = [], ico = null, pptxUrl = null, o
       {/* Speaker Notes Box */}
       {showNotes && (
         <div style={{
-          background: '#ffffff',
+          background: 'rgb(233, 236, 239)',
           border: 'var(--clay-border)',
           borderRadius: 'var(--clay-radius-inner)',
           padding: '18px 20px',

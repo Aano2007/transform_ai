@@ -97,7 +97,7 @@ export default function VoiceRecorder({ onTranscriptUpdate, currentText = '' }) 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
       <div style={{
-        background: active ? 'rgba(255, 255, 255, 0.95)' : '#ffffff',
+        background: 'rgb(233, 236, 239)',
         border: active ? '1.5px solid var(--clay-primary)' : 'var(--clay-border)',
         borderRadius: 'var(--clay-radius-card)',
         boxShadow: active ? 'var(--clay-shadow-card-hover)' : 'var(--clay-shadow-card)',

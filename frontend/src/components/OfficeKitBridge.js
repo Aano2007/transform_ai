@@ -29,7 +29,7 @@ export default function OfficeKitBridge() {
 
   return (
     <div style={{
-      background: '#ffffff',
+      background: 'rgb(233, 236, 239)',
       border: 'var(--clay-border)',
       borderRadius: 'var(--clay-radius-card-sm)',
       boxShadow: 'var(--clay-shadow-card)',

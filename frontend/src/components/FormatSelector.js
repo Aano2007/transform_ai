@@ -102,7 +102,7 @@ export default function FormatSelector({
                 gap: '12px',
                 padding: '12px 16px',
                 borderRadius: 'var(--clay-radius-inner)',
-                background: isSelected ? '#ffffff' : 'var(--clay-card-inset)',
+                background: isSelected ? 'rgb(233, 236, 239)' : 'var(--clay-card-inset)',
                 border: isSelected ? '1.5px solid rgba(73, 80, 87, 0.18)' : '1px solid rgba(255, 255, 255, 0.5)',
                 boxShadow: isSelected 
                   ? '6px 10px 22px rgba(73, 80, 87, 0.09), inset 2px 2px 4px rgba(255, 255, 255, 0.95), inset -2px -2px 4px rgba(73, 80, 87, 0.04)' 
@@ -116,7 +116,7 @@ export default function FormatSelector({
                 width: '22px',
                 height: '22px',
                 borderRadius: '7px',
-                background: isSelected ? 'var(--clay-primary)' : '#ffffff',
+                background: isSelected ? 'var(--clay-primary)' : 'rgb(233, 236, 239)',
                 border: isSelected ? 'none' : '1.5px solid rgba(73, 80, 87, 0.25)',
                 boxShadow: isSelected 
                   ? 'inset 1px 1px 2px rgba(255, 255, 255, 0.4), inset -1px -1px 2px rgba(0, 0, 0, 0.3)'
@@ -211,7 +211,7 @@ export default function FormatSelector({
             onChange={(e) => onChangeTone(e.target.value)}
             style={{
               width: '100%',
-              background: '#ffffff',
+              background: 'rgb(233, 236, 239)',
               border: '1px solid rgba(255, 255, 255, 0.8)',
               color: 'var(--clay-primary-deep)',
               padding: '10px 12px',
@@ -247,7 +247,7 @@ export default function FormatSelector({
             onChange={(e) => onChangeAudience(e.target.value)}
             style={{
               width: '100%',
-              background: '#ffffff',
+              background: 'rgb(233, 236, 239)',
               border: '1px solid rgba(255, 255, 255, 0.8)',
               color: 'var(--clay-primary-deep)',
               padding: '10px 12px',

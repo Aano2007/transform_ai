@@ -77,7 +77,7 @@ Topic: Enterprise Pilot Rollout
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
       <div style={{
-        background: '#ffffff',
+        background: 'rgb(233, 236, 239)',
         border: 'var(--clay-border)',
         borderRadius: 'var(--clay-radius-card)',
         boxShadow: 'var(--clay-shadow-card)',

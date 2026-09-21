@@ -176,7 +176,7 @@ export default function HomeScreen() {
                   alignItems: 'center',
                   justifyContent: 'space-between',
                   cursor: 'pointer',
-                  background: '#ffffff',
+                  background: 'rgb(233, 236, 239)',
                   border: 'var(--clay-border-subtle)',
                   borderRadius: 'var(--clay-radius-inner)',
                   boxShadow: 'var(--clay-shadow-btn-secondary)',

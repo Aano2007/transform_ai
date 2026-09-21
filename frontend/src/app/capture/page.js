@@ -172,7 +172,7 @@ function CaptureContent() {
             style={{
               marginBottom: 0,
               cursor: step === 2 ? 'pointer' : 'default',
-              background: step === 1 ? '#ffffff' : 'var(--clay-card-inset)',
+              background: step === 1 ? 'rgb(233, 236, 239)' : 'var(--clay-card-inset)',
               color: step === 1 ? 'var(--clay-primary-deep)' : 'var(--clay-primary-muted)',
               border: step === 1 ? '1px solid rgba(255,255,255,0.9)' : 'none',
               boxShadow: step === 1 ? 'var(--clay-shadow-btn-secondary)' : 'var(--clay-shadow-inset)'
@@ -190,7 +190,7 @@ function CaptureContent() {
             style={{
               marginBottom: 0,
               cursor: rawText.trim() ? 'pointer' : 'not-allowed',
-              background: step === 2 ? '#ffffff' : 'var(--clay-card-inset)',
+              background: step === 2 ? 'rgb(233, 236, 239)' : 'var(--clay-card-inset)',
               color: step === 2 ? 'var(--clay-primary-deep)' : 'var(--clay-primary-muted)',
               border: step === 2 ? '1px solid rgba(255,255,255,0.9)' : 'none',
               boxShadow: step === 2 ? 'var(--clay-shadow-btn-secondary)' : 'var(--clay-shadow-inset)'
@@ -253,7 +253,7 @@ function CaptureContent() {
                       justifyContent: 'space-between',
                       padding: '13px 18px',
                       borderRadius: 'var(--clay-radius-inner)',
-                      background: isActive ? '#ffffff' : 'var(--clay-card-inset)',
+                      background: isActive ? 'rgb(233, 236, 239)' : 'var(--clay-card-inset)',
                       border: isActive ? '1.5px solid rgba(73, 80, 87, 0.18)' : '1px solid rgba(255, 255, 255, 0.5)',
                       boxShadow: isActive
                         ? '6px 10px 22px rgba(73, 80, 87, 0.09), inset 2px 2px 4px rgba(255, 255, 255, 0.95), inset -2px -2px 4px rgba(73, 80, 87, 0.04)'
@@ -268,7 +268,7 @@ function CaptureContent() {
                         width: '40px',
                         height: '40px',
                         borderRadius: '12px',
-                        background: isActive ? 'var(--clay-primary)' : '#ffffff',
+                        background: isActive ? 'var(--clay-primary)' : 'rgb(233, 236, 239)',
                         color: isActive ? '#ffffff' : 'var(--clay-primary-dark)',
                         boxShadow: isActive
                           ? 'var(--clay-shadow-btn-primary)'
@@ -426,7 +426,7 @@ function CaptureContent() {
               onFocus={(e) => {
                 e.target.style.borderColor = 'var(--clay-primary)';
                 e.target.style.boxShadow = '6px 10px 24px rgba(73, 80, 87, 0.1), inset 2px 2px 5px rgba(255, 255, 255, 1)';
-                e.target.style.background = '#ffffff';
+                e.target.style.background = 'rgb(233, 236, 239)';
               }}
               onBlur={(e) => {
                 e.target.style.borderColor = 'rgba(255, 255, 255, 0.6)';
