@@ -10,7 +10,8 @@ from typing import Dict, Any
 from app.config import GENERATED_DIR, HOST, PORT, OLLAMA_HOST, OLLAMA_MODEL
 from app.models.ico import (
     TransformRequest, TransformResponse, IntentContextObject,
-    RegenerateSlideRequest, RegenerateFormatRequest, SlideItem
+    RegenerateSlideRequest, RegenerateFormatRequest, SlideItem,
+    SaveHistoryRequest
 )
 from app.services.llm_service import (
     extract_ico_from_text, generate_llm_response, clean_json_string,
@@ -18,6 +19,10 @@ from app.services.llm_service import (
 )
 from app.services.pptx_service import create_presentation_deck
 from app.services.docx_service import create_executive_docx
+from app.services.db_service import (
+    init_db, save_transformation_to_db, get_all_history,
+    get_history_by_id, delete_history_by_id
+)
 from app.prompts.exec_summary import EXEC_SUMMARY_PROMPT
 from app.prompts.presentation import PRESENTATION_PROMPT
 from app.prompts.linkedin import LINKEDIN_PROMPT
@@ -25,9 +30,13 @@ from app.prompts.twitter import TWITTER_PROMPT
 
 app = FastAPI(
     title="TransformAI Compute Engine",
-    description="Headless AI & Document Generator for iQOO Hackathon Productivity Track",
+    description="Headless AI & Document Generator for Productivity Track",
     version="2.0.0"
 )
+
+@app.on_event("startup")
+def on_startup():
+    init_db()
 
 # Enable CORS for Next.js PWA client
 app.add_middleware(
@@ -41,7 +50,7 @@ app.add_middleware(
 SAMPLE_TEMPLATES = [
     {
         "id": "strategy_sync",
-        "title": "iQOO Product Strategy All-Hands",
+        "title": "Product Strategy All-Hands",
         "category": "Strategy",
         "text": """Sync with Mobile Engineering and Product Strategy leads. Target launch is set for Q3 Sprint 4. 
 We noticed daily workflow friction where engineers spend 45 minutes every morning translating voice notes and whiteboard diagrams into PowerPoint slides, executive summaries, and LinkedIn updates. 
@@ -59,7 +68,7 @@ Leadership review scheduled for next Tuesday with VP of Product."""
 Objective: Scale user engagement across 12 product markets.
 - Retention benchmark: Lift 30-day active retention from 42% to 58% by end of Q3.
 - Core bottleneck: Complex onboarding and manual cross-device handoffs.
-- Solution: Leverage iQOO Office Kit shared clipboard and instant drag-and-drop file transfer.
+- Solution: Leverage shared clipboard and instant drag-and-drop file transfer.
 - Action items:
   1. Frontend Team (David): Implement continuous speech-to-text with interim visualizer. Deadline: Nov 15.
   2. Core Engine (Sarah): Benchmark Llama-3.2-3B vs Qwen-2.5-7B latency. Deadline: Nov 18.
@@ -179,7 +188,24 @@ async def transform_raw_text(req: TransformRequest):
             )
             docx_url = f"/api/download/docx?file={docx_filename}"
 
+        # Step 5: Persist to SQLite Database
+        item_id = f"hist_{session_id}"
+        save_transformation_to_db(
+            item_id=item_id,
+            title=ico.event_title or "Untitled Transformation",
+            primary_objective=ico.primary_objective or "Transform deliverable",
+            formats_count=len(outputs),
+            source_text=req.raw_text,
+            tone=req.tone,
+            audience=req.audience,
+            ico=ico.model_dump(),
+            outputs=outputs,
+            pptx_url=pptx_url,
+            docx_url=docx_url
+        )
+
         return TransformResponse(
+            id=item_id,
             ico=ico,
             outputs=outputs,
             pptx_url=pptx_url,
@@ -295,3 +321,44 @@ def download_docx(file: str = "transformai_brief.docx"):
         filename="TransformAI_Brief.docx",
         media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
     )
+
+@app.get("/api/history")
+async def get_history(limit: int = 30):
+    """Retrieve list of saved transformations from SQLite database."""
+    return get_all_history(limit=limit)
+
+@app.get("/api/history/{item_id}")
+async def get_single_history(item_id: str):
+    """Retrieve full saved transformation record by ID."""
+    record = get_history_by_id(item_id)
+    if not record:
+        raise HTTPException(status_code=404, detail="Transformation record not found")
+    return record
+
+@app.post("/api/history")
+async def save_history_item(req: SaveHistoryRequest):
+    """Manually save or update a transformation record in SQLite."""
+    item_id = req.id or f"hist_{uuid.uuid4().hex[:8]}"
+    saved = save_transformation_to_db(
+        item_id=item_id,
+        title=req.title,
+        primary_objective=req.primary_objective or "",
+        formats_count=req.formats_count,
+        source_text=req.source_text or "",
+        tone=req.tone or "professional",
+        audience=req.audience or "executive",
+        ico=req.ico,
+        outputs=req.outputs,
+        pptx_url=req.pptx_url,
+        docx_url=req.docx_url
+    )
+    return saved
+
+@app.delete("/api/history/{item_id}")
+async def delete_single_history(item_id: str):
+    """Delete a transformation record from SQLite database."""
+    deleted = delete_history_by_id(item_id)
+    if not deleted:
+        raise HTTPException(status_code=404, detail="Record not found")
+    return {"status": "deleted", "id": item_id}
+

@@ -23,7 +23,7 @@ def create_executive_docx(title: str, summary_markdown: str, ico_data: dict, out
     run_meta.font.name = "Arial"
     run_meta.font.size = Pt(9)
     run_meta.font.bold = True
-    run_meta.font.color.rgb = RGBColor(255, 107, 0) # iQOO Orange
+    run_meta.font.color.rgb = RGBColor(255, 107, 0) # Performance Orange
 
     # Main Title
     h1 = doc.add_heading(level=1)

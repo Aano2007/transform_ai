@@ -97,7 +97,7 @@ def generate_heuristic_ico(raw_text: str) -> Dict[str, Any]:
     return {
         "event_title": title,
         "timestamp": "Present Session",
-        "location": "iQOO Mobile Edge / Local Compute",
+        "location": "Mobile Edge / Local Compute",
         "primary_objective": f"Transform unstructured raw notes into aligned multi-format professional assets.",
         "executive_overview": f"Synthesized unstructured input into four high-conviction deliverables. Key priorities established across architecture, performance targets, and cross-team execution.",
         "key_findings": key_findings if key_findings else ["Input analyzed with high confidence across operational workstreams."],
@@ -142,7 +142,7 @@ def generate_heuristic_output(prompt: str, system_prompt: str) -> str:
 
         return f"""# EXECUTIVE BRIEFING: {title}
 
-**Date/Time:** Live Edge Session | **Context:** iQOO Mobile Compute Node | **Primary Goal:** Multi-Format Coherence
+**Date/Time:** Live Edge Session | **Context:** Mobile Compute Node | **Primary Goal:** Multi-Format Coherence
 
 ## 1. Strategic Context & Overview
 {overview}
@@ -198,7 +198,7 @@ All outputs are anchored to an immutable Intent Context Object (ICO), eliminatin
                 "title": "Next Steps & Immediate Horizon",
                 "subtitle": "Cross-Platform Velocity",
                 "bullets": [
-                    "iQOO Office Kit shared clipboard sync enabled",
+                    "Shared clipboard sync enabled",
                     "Slide deck ready for immediate boardroom presentation",
                     "Cross-device synchronization in progress"
                 ],
@@ -227,13 +227,13 @@ Unifying workflow capture on the edge. Everything we execute is grounded in veri
 
 What is the biggest bottleneck in your daily meeting-to-deliverable workflow? Drop your perspective below! 👇
 
-#Productivity #Leadership #TechInnovation #iQOO #FutureOfWork #AI"""
+#Productivity #Leadership #TechInnovation #FutureOfWork #AI"""
 
     elif "Twitter" in prompt or "thread" in prompt:
         t1 = f"1/4 🧵 1 voice memo → 4 finished deliverables.\n\nNo manual typing. No prompting ChatGPT. No 45-minute formatting grind.\n\nHere is how we transformed {title} into executive execution in <60 seconds: 👇"
         t2 = f"2/4 🔍 The Core Findings:\n\n" + "\n".join([f"• {f[:90]}" for f in findings[:2]]) + "\n\nAll anchored to a single Intent Context Object (ICO)."
         t3 = f"3/4 ⚡ Metrics & Milestones:\n\n" + " | ".join(metrics[:3]) + f"\n\nClear owners, verified timelines, zero hallucination drift."
-        t4 = f"4/4 🚀 Final Takeaway:\n\nTurn raw capture into polished slides, summaries, and social assets instantly.\n\nBuilt for speed. Powered by iQOO edge compute.\n\n#Productivity #AI #iQOO"
+        t4 = f"4/4 🚀 Final Takeaway:\n\nTurn raw capture into polished slides, summaries, and social assets instantly.\n\nBuilt for speed. Powered by edge compute.\n\n#Productivity #AI"
         return f"{t1}\n---\n{t2}\n---\n{t3}\n---\n{t4}"
 
     return "Deliverable generated successfully via TransformAI Engine."

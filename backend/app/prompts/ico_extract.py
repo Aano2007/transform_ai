@@ -1,5 +1,5 @@
 ICO_EXTRACTION_SYSTEM_PROMPT = """
-You are the Intent Context Object (ICO) Extraction Engine for TransformAI (iQOO Productivity Track).
+You are the Intent Context Object (ICO) Extraction Engine for TransformAI (Productivity Track).
 Your job is to parse unstructured raw text (voice transcripts, OCR whiteboard text, or notes) and extract a strictly structured JSON object adhering to the schema below.
 
 CRITICAL INSTRUCTIONS:

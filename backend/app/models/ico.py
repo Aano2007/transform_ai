@@ -43,11 +43,25 @@ class TransformRequest(BaseModel):
     audience: str = "executive"
 
 class TransformResponse(BaseModel):
+    id: Optional[str] = None
     ico: IntentContextObject
     outputs: Dict[str, Any]
     pptx_url: Optional[str] = None
     docx_url: Optional[str] = None
     source_text: str = ""
+
+class SaveHistoryRequest(BaseModel):
+    id: Optional[str] = None
+    title: str
+    primary_objective: Optional[str] = ""
+    formats_count: int = 4
+    source_text: Optional[str] = ""
+    tone: Optional[str] = "professional"
+    audience: Optional[str] = "executive"
+    ico: Dict[str, Any] = {}
+    outputs: Dict[str, Any] = {}
+    pptx_url: Optional[str] = None
+    docx_url: Optional[str] = None
 
 class RegenerateSlideRequest(BaseModel):
     ico: IntentContextObject

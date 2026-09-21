@@ -19,7 +19,7 @@ def create_presentation_deck(slides_data: list, output_path: str):
     
     # Palette definition
     DARK_BG = RGBColor(15, 23, 42)        # Deep Navy / Slate 900
-    ACCENT_ORANGE = RGBColor(255, 107, 0) # iQOO Performance Orange
+    ACCENT_ORANGE = RGBColor(255, 107, 0) # Performance Orange
     ACCENT_CYAN = RGBColor(56, 189, 248)  # Cyan 400
     TEXT_WHITE = RGBColor(248, 250, 252)  # Slate 50
     TEXT_MUTED = RGBColor(148, 163, 184)  # Slate 400
@@ -48,7 +48,7 @@ def create_presentation_deck(slides_data: list, output_path: str):
         header_box = slide.shapes.add_textbox(Inches(0.8), Inches(0.5), Inches(11.7), Inches(0.4))
         h_tf = header_box.text_frame
         h_p = h_tf.paragraphs[0]
-        h_p.text = f"TRANSFORMAI // SLIDE {idx + 1:02d} OF {len(slides_data):02d} // iQOO EDGE ENGINE"
+        h_p.text = f"TRANSFORMAI // SLIDE {idx + 1:02d} OF {len(slides_data):02d} // EDGE ENGINE"
         h_p.font.size = Pt(11)
         h_p.font.bold = True
         h_p.font.color.rgb = ACCENT_CYAN
