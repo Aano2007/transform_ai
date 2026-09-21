@@ -14,7 +14,7 @@ export const viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-  themeColor: '#ffdb59',
+  themeColor: '#495057',
 };
 
 export default function RootLayout({ children }) {
@@ -33,14 +33,14 @@ export default function RootLayout({ children }) {
           <header className="app-header">
             <Link href="/" className="brand-badge">
               <div className="brand-logo">
-                <Zap size={22} fill="var(--nb-yellow)" color="var(--nb-yellow)" />
+                <Zap size={22} fill="#ffffff" color="#ffffff" />
               </div>
               <div>
                 <div className="brand-title">
                   <span>TransformAI</span>
                   <span className="tag">iQOO</span>
                 </div>
-                <div style={{ fontSize: '11px', color: 'var(--nb-black)', opacity: 0.8, fontWeight: 700, marginTop: '-2px' }}>
+                <div style={{ fontSize: '11px', color: 'rgba(255, 255, 255, 0.85)', fontWeight: 700, marginTop: '-2px' }}>
                   Edge Capture • Headless AI
                 </div>
               </div>
@@ -65,10 +65,10 @@ export default function RootLayout({ children }) {
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <Link
                 href="/capture"
-                className="btn btn-dark btn-sm"
-                style={{ gap: '6px', fontWeight: 800 }}
+                className="btn btn-secondary btn-sm"
+                style={{ gap: '6px', fontWeight: 800, background: '#ffffff', color: '#121416' }}
               >
-                <Sparkles size={14} color="var(--nb-yellow)" />
+                <Sparkles size={14} color="#495057" />
                 <span>+ NEW</span>
               </Link>
             </div>

@@ -113,7 +113,7 @@ function CaptureContent() {
           fontFamily: 'var(--font-mono)',
           fontWeight: '800',
           background: 'var(--nb-yellow)',
-          color: 'var(--nb-black)',
+          color: '#ffffff',
           border: '1.5px solid var(--nb-black)',
           boxShadow: '1.5px 1.5px 0px var(--nb-black)',
           padding: '4px 10px',
@@ -165,7 +165,7 @@ function CaptureContent() {
                   cursor: 'pointer',
                   fontWeight: '800',
                   fontSize: '13px',
-                  color: 'var(--nb-black)',
+                  color: inputMode === 'voice' ? '#ffffff' : 'var(--nb-black)',
                   transition: 'all 0.1s ease',
                   transform: inputMode === 'voice' ? 'translate(-1px, -1px)' : 'none'
                 }}
@@ -190,7 +190,7 @@ function CaptureContent() {
                   cursor: 'pointer',
                   fontWeight: '800',
                   fontSize: '13px',
-                  color: 'var(--nb-black)',
+                  color: inputMode === 'camera' ? '#ffffff' : 'var(--nb-black)',
                   transition: 'all 0.1s ease',
                   transform: inputMode === 'camera' ? 'translate(-1px, -1px)' : 'none'
                 }}
@@ -215,7 +215,7 @@ function CaptureContent() {
                   cursor: 'pointer',
                   fontWeight: '800',
                   fontSize: '13px',
-                  color: 'var(--nb-black)',
+                  color: inputMode === 'text' ? '#ffffff' : 'var(--nb-black)',
                   transition: 'all 0.1s ease',
                   transform: inputMode === 'text' ? 'translate(-1px, -1px)' : 'none'
                 }}

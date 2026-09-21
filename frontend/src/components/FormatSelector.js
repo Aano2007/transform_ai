@@ -104,7 +104,7 @@ export default function FormatSelector({
               }}
             >
               <div style={{
-                color: 'var(--nb-black)',
+                color: isSelected ? '#ffffff' : 'var(--nb-black)',
                 display: 'flex',
                 alignItems: 'center'
               }}>
@@ -130,7 +130,7 @@ export default function FormatSelector({
                 <div style={{
                   fontSize: '14px',
                   fontWeight: '800',
-                  color: 'var(--nb-black)',
+                  color: isSelected ? '#ffffff' : 'var(--nb-black)',
                   display: 'flex',
                   alignItems: 'center',
                   gap: '8px'
@@ -139,8 +139,8 @@ export default function FormatSelector({
                   <span style={{
                     fontSize: '10px',
                     fontFamily: 'var(--font-mono)',
-                    background: isSelected ? 'var(--nb-black)' : 'var(--nb-yellow)',
-                    color: isSelected ? 'var(--nb-yellow)' : 'var(--nb-black)',
+                    background: isSelected ? '#ffffff' : 'var(--nb-yellow)',
+                    color: isSelected ? 'var(--nb-black)' : '#ffffff',
                     padding: '1px 5px',
                     borderRadius: '3px',
                     border: '1px solid var(--nb-black)',
@@ -149,7 +149,12 @@ export default function FormatSelector({
                     {item.badge}
                   </span>
                 </div>
-                <div style={{ fontSize: '11px', color: 'var(--nb-text-muted)', marginTop: '2px', fontWeight: '600' }}>
+                <div style={{
+                  fontSize: '11px',
+                  color: isSelected ? '#dee2e6' : 'var(--nb-text-muted)',
+                  marginTop: '2px',
+                  fontWeight: '600'
+                }}>
                   {item.description}
                 </div>
               </div>

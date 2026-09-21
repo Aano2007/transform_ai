@@ -46,6 +46,7 @@ export default function OfficeKitBridge() {
           alignItems: 'center',
           gap: '6px',
           background: health?.status === 'online' ? 'var(--nb-yellow)' : '#fecaca',
+          color: health?.status === 'online' ? '#ffffff' : 'var(--nb-black)',
           border: '1.5px solid var(--nb-black)',
           boxShadow: '1.5px 1.5px 0px var(--nb-black)',
           borderRadius: '4px',
@@ -82,7 +83,7 @@ export default function OfficeKitBridge() {
           border: '1px solid var(--nb-black)',
           padding: '2px 7px',
           borderRadius: '4px',
-          color: 'var(--nb-black)',
+          color: '#ffffff',
           fontSize: '10px',
           fontWeight: '800'
         }}>
@@ -95,7 +96,7 @@ export default function OfficeKitBridge() {
           title="Toggle Screen Mirroring for Pitch"
           style={{
             background: isMirroring ? 'var(--nb-black)' : '#fff',
-            color: isMirroring ? 'var(--nb-yellow)' : 'var(--nb-black)',
+            color: isMirroring ? '#ffffff' : 'var(--nb-black)',
             border: '1.5px solid var(--nb-black)',
             boxShadow: '1.5px 1.5px 0px var(--nb-black)',
             borderRadius: '4px',

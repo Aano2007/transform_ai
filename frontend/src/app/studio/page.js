@@ -346,7 +346,7 @@ Built for speed. Powered by iQOO edge compute.
                 background: 'var(--nb-yellow)',
                 border: '1.5px solid var(--nb-black)',
                 boxShadow: '1.5px 1.5px 0px var(--nb-black)',
-                color: 'var(--nb-black)',
+                color: '#ffffff',
                 padding: '3px 8px',
                 borderRadius: '4px'
               }}>
@@ -547,6 +547,7 @@ Built for speed. Powered by iQOO edge compute.
                     fontFamily: 'var(--font-mono)',
                     fontWeight: '900',
                     background: 'var(--nb-yellow)',
+                    color: '#ffffff',
                     border: '1.5px solid var(--nb-black)',
                     boxShadow: '1.5px 1.5px 0px var(--nb-black)',
                     padding: '2px 8px',
@@ -593,6 +594,7 @@ Built for speed. Powered by iQOO edge compute.
               fontSize: '11px',
               fontFamily: 'var(--font-mono)',
               background: 'var(--nb-yellow)',
+              color: '#ffffff',
               border: '1px solid var(--nb-black)',
               padding: '2px 6px',
               borderRadius: '4px',

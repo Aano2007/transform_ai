@@ -1,25 +1,38 @@
 :root {
-  /* Core Neobrutalism Color Palette (#ffdb59 and its shades) */
-  --nb-yellow-50: #fffdf2;
-  --nb-yellow-100: #fff9d6;
-  --nb-yellow-200: #ffef9e;
-  --nb-yellow-300: #ffe570;
-  --nb-yellow: #ffdb59;
-  --nb-yellow-500: #f2c730;
-  --nb-yellow-600: #d4a613;
-  --nb-yellow-700: #a37c05;
-  --nb-yellow-800: #574102;
-  --nb-yellow-900: #2b2001;
+  /* Core Neobrutalism Color Palette (#495057 Slate Charcoal and its shades) */
+  --nb-slate-50: #f8f9fa;
+  --nb-slate-100: #e9ecef;
+  --nb-slate-200: #dee2e6;
+  --nb-slate-300: #ced4da;
+  --nb-slate-400: #adb5bd;
+  --nb-slate-500: #6c757d;
+  --nb-slate: #495057;
+  --nb-slate-600: #495057;
+  --nb-slate-700: #343a40;
+  --nb-slate-800: #212529;
+  --nb-slate-900: #121416;
+
+  /* Aliasing legacy color tokens to the #495057 palette */
+  --nb-yellow-50: var(--nb-slate-50);
+  --nb-yellow-100: var(--nb-slate-100);
+  --nb-yellow-200: var(--nb-slate-200);
+  --nb-yellow-300: var(--nb-slate-300);
+  --nb-yellow: #495057;
+  --nb-yellow-500: #343a40;
+  --nb-yellow-600: #212529;
+  --nb-yellow-700: #1a1d20;
+  --nb-yellow-800: #121416;
+  --nb-yellow-900: #0a0b0c;
 
   /* Neobrutalism Neutrals & Canvas */
-  --nb-bg: #fcf9ee;
+  --nb-bg: #f8f9fa;
   --nb-surface: #ffffff;
   --nb-surface-card: #ffffff;
-  --nb-surface-alt: #fff9d6;
-  --nb-black: #121212;
-  --nb-text: #121212;
-  --nb-text-muted: #4a4a4a;
-  --nb-text-dim: #717171;
+  --nb-surface-alt: #e9ecef;
+  --nb-black: #121416;
+  --nb-text: #121416;
+  --nb-text-muted: #495057;
+  --nb-text-dim: #6c757d;
 
   /* Neobrutalism Borders & Hard Drop Shadows */
   --nb-border: 2.5px solid var(--nb-black);
@@ -31,22 +44,22 @@
   --nb-shadow-xl: 8px 8px 0px var(--nb-black);
 
   /* Neobrutalism Supporting Accents */
-  --nb-coral: #ff6584;
-  --nb-cyan: #38bdf8;
-  --nb-green: #22c55e;
-  --nb-purple: #c084fc;
-  --nb-blue: #3b82f6;
+  --nb-coral: #e03131;
+  --nb-cyan: #1971c2;
+  --nb-green: #2f9e44;
+  --nb-purple: #7950f2;
+  --nb-blue: #1864ab;
 
   /* Backward Compatibility Mappings for Existing Components */
   --bg-deep: var(--nb-bg);
   --bg-primary: var(--nb-surface);
   --bg-card: var(--nb-surface);
-  --bg-card-hover: var(--nb-yellow-100);
-  --border-subtle: rgba(18, 18, 18, 0.2);
+  --bg-card-hover: var(--nb-slate-100);
+  --border-subtle: rgba(18, 20, 22, 0.2);
   --border-glow: var(--nb-black);
-  --iqoo-orange: var(--nb-yellow-500);
-  --iqoo-orange-light: var(--nb-yellow);
-  --iqoo-cyan: #0284c7;
+  --iqoo-orange: #495057;
+  --iqoo-orange-light: #6c757d;
+  --iqoo-cyan: #1971c2;
   --iqoo-green: var(--nb-green);
   --text-main: var(--nb-text);
   --text-muted: var(--nb-text-muted);
@@ -90,7 +103,7 @@ body::before {
   background-image: 
     radial-gradient(var(--nb-black) 1px, transparent 1px);
   background-size: 24px 24px;
-  opacity: 0.08;
+  opacity: 0.07;
   pointer-events: none;
   z-index: 0;
 }
@@ -131,13 +144,13 @@ body::before {
 }
 
 /* =========================================================
-   HEADER & NAVIGATION
+   HEADER & NAVIGATION (#495057 Theme)
    ========================================================= */
 .app-header {
   position: sticky;
   top: 0;
   z-index: 50;
-  background: var(--nb-yellow);
+  background: var(--nb-slate-700);
   border-bottom: var(--nb-border-thick);
   padding: 14px 20px;
   display: flex;
@@ -157,22 +170,22 @@ body::before {
   align-items: center;
   gap: 12px;
   text-decoration: none;
-  color: var(--nb-black);
+  color: #ffffff;
 }
 
 .brand-logo {
   width: 40px;
   height: 40px;
   border-radius: var(--radius-sm);
-  background: var(--nb-black);
-  border: 2px solid var(--nb-black);
+  background: var(--nb-slate-900);
+  border: 2px solid #ffffff;
   box-shadow: 2px 2px 0px var(--nb-black);
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 900;
   font-size: 18px;
-  color: var(--nb-yellow);
+  color: #ffffff;
   transition: transform 0.15s ease;
 }
 
@@ -187,13 +200,14 @@ body::before {
   display: flex;
   align-items: center;
   gap: 8px;
+  color: #ffffff;
 }
 
 .brand-title .tag {
   font-size: 10px;
   font-weight: 800;
   color: var(--nb-black);
-  background: var(--nb-surface);
+  background: var(--nb-slate-100);
   border: 1.5px solid var(--nb-black);
   box-shadow: 1.5px 1.5px 0px var(--nb-black);
   padding: 2px 6px;
@@ -219,7 +233,7 @@ body::before {
   font-size: 13px;
   font-weight: 800;
   text-decoration: none;
-  color: var(--nb-black);
+  color: #ffffff;
   padding: 6px 12px;
   border-radius: var(--radius-sm);
   border: 1.5px solid transparent;
@@ -227,14 +241,16 @@ body::before {
 }
 
 .nav-link:hover {
-  background: var(--nb-surface);
+  background: #ffffff;
+  color: var(--nb-black);
   border-color: var(--nb-black);
   box-shadow: var(--nb-shadow-sm);
   transform: translate(-1px, -1px);
 }
 
 .nav-link.active {
-  background: var(--nb-surface);
+  background: #ffffff;
+  color: var(--nb-black);
   border-color: var(--nb-black);
   box-shadow: var(--nb-shadow-sm);
 }
@@ -307,11 +323,11 @@ body::before {
 }
 
 .card-yellow {
-  background: var(--nb-yellow-100);
+  background: var(--nb-slate-100);
 }
 
 .card-hero {
-  background: var(--nb-yellow-50);
+  background: var(--nb-slate-50);
   border: var(--nb-border-thick);
   box-shadow: var(--nb-shadow-lg);
 }
@@ -322,12 +338,12 @@ body::before {
   gap: 6px;
   padding: 3px 8px;
   border-radius: var(--radius-sm);
-  background: var(--nb-yellow);
+  background: var(--nb-slate);
   border: 1.5px solid var(--nb-black);
   font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 800;
-  color: var(--nb-black);
+  color: #ffffff;
   box-shadow: var(--nb-shadow-sm);
   margin-bottom: 8px;
   text-transform: uppercase;
@@ -366,14 +382,15 @@ body::before {
   box-shadow: 1px 1px 0px var(--nb-black);
 }
 
-/* Primary Button: Solid #ffdb59 Yellow with Black Border */
+/* Primary Button: Solid #495057 Slate with White Text & Black Border */
 .btn-primary {
-  background: var(--nb-yellow);
-  color: var(--nb-black);
+  background: var(--nb-slate);
+  color: #ffffff;
 }
 
 .btn-primary:hover {
-  background: var(--nb-yellow-300);
+  background: var(--nb-slate-700);
+  color: #ffffff;
 }
 
 /* Secondary Button: Crisp White with Black Border */
@@ -383,29 +400,29 @@ body::before {
 }
 
 .btn-secondary:hover {
-  background: var(--nb-yellow-50);
+  background: var(--nb-slate-100);
 }
 
-/* Dark Button: Ink Black with Yellow Accents */
+/* Dark Button: Ink Black */
 .btn-dark {
   background: var(--nb-black);
-  color: var(--nb-yellow);
+  color: #ffffff;
   border-color: var(--nb-black);
 }
 
 .btn-dark:hover {
-  background: #262626;
-  color: var(--nb-yellow);
+  background: var(--nb-slate-800);
+  color: #ffffff;
 }
 
 /* Cyan Action Button */
 .btn-cyan {
   background: var(--nb-cyan);
-  color: var(--nb-black);
+  color: #ffffff;
 }
 
 .btn-cyan:hover {
-  background: #7dd3fc;
+  background: #1864ab;
 }
 
 .btn-sm {
@@ -455,13 +472,14 @@ body::before {
 }
 
 .tab-btn:hover {
-  background: var(--nb-yellow-100);
+  background: var(--nb-slate-100);
   transform: translate(-1px, -1px);
   box-shadow: var(--nb-shadow);
 }
 
 .tab-btn.active {
-  background: var(--nb-yellow);
+  background: var(--nb-slate);
+  color: #ffffff;
   border: var(--nb-border);
   box-shadow: var(--nb-shadow);
   transform: translate(-1px, -1px);
@@ -474,8 +492,8 @@ body::before {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: var(--nb-yellow);
-  color: var(--nb-black);
+  background: var(--nb-slate);
+  color: #ffffff;
   border: 1.5px solid var(--nb-black);
   box-shadow: 1.5px 1.5px 0px var(--nb-black);
   border-radius: 4px;
@@ -491,7 +509,7 @@ body::before {
 
 .citation-pill:hover {
   background: var(--nb-black);
-  color: var(--nb-yellow);
+  color: #ffffff;
   transform: scale(1.1) rotate(-2deg);
 }
 
@@ -513,7 +531,7 @@ body::before {
 }
 
 .audio-bar:nth-child(even) {
-  background: var(--nb-yellow);
+  background: var(--nb-slate);
   border: 1px solid var(--nb-black);
 }
 
@@ -536,7 +554,7 @@ body::before {
   bottom: 24px;
   left: 50%;
   transform: translateX(-50%);
-  background: var(--nb-yellow);
+  background: var(--nb-slate-800);
   border: var(--nb-border-thick);
   box-shadow: var(--nb-shadow-lg);
   border-radius: var(--radius-md);
@@ -546,7 +564,7 @@ body::before {
   gap: 14px;
   z-index: 999;
   animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  color: var(--nb-black);
+  color: #ffffff;
 }
 
 @keyframes slideUp {
@@ -594,8 +612,8 @@ body::before {
 }
 .prose h2 { 
   font-size: 16px; 
-  background: var(--nb-yellow-100);
-  border-left: 4px solid var(--nb-black);
+  background: var(--nb-slate-100);
+  border-left: 4px solid var(--nb-slate);
   padding: 4px 10px;
   display: inline-block;
 }
@@ -637,8 +655,8 @@ body::before {
 }
 
 .prose th {
-  background: var(--nb-yellow);
-  color: var(--nb-black);
+  background: var(--nb-slate);
+  color: #ffffff;
   font-family: var(--font-mono);
   font-weight: 800;
   text-transform: uppercase;
@@ -691,7 +709,7 @@ body::before {
   height: 100%;
   border-radius: var(--radius-md) !important;
   overflow: hidden;
-  background: var(--nb-yellow-50) !important;
+  background: var(--nb-slate-50) !important;
   border: var(--nb-border) !important;
   box-shadow: var(--nb-shadow-sm) !important;
   display: flex;
@@ -701,14 +719,19 @@ body::before {
 }
 
 .magnetic-dock-item:hover .magnetic-dock-icon-box {
-  background: var(--nb-yellow-200) !important;
+  background: var(--nb-slate-200) !important;
 }
 
 .magnetic-dock-item-active .magnetic-dock-icon-box,
 .magnetic-dock-icon-box.active {
-  background: var(--nb-yellow) !important;
+  background: var(--nb-slate) !important;
   box-shadow: var(--nb-shadow) !important;
   transform: translate(-1px, -1px);
+}
+
+.magnetic-dock-item-active .magnetic-dock-icon-box svg,
+.magnetic-dock-icon-box.active svg {
+  color: #ffffff !important;
 }
 
 .magnetic-dock-badge {
@@ -720,7 +743,7 @@ body::before {
   padding: 0 5px;
   border-radius: 9999px;
   background: var(--nb-coral);
-  color: var(--nb-black);
+  color: #ffffff;
   font-size: 11px;
   font-weight: 900;
   font-family: var(--font-mono);
@@ -740,7 +763,7 @@ body::before {
   padding: 5px 12px;
   border-radius: 6px;
   background: var(--nb-black);
-  color: var(--nb-yellow);
+  color: #ffffff;
   font-size: 12px;
   font-weight: 800;
   font-family: var(--font-mono);

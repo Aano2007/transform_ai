@@ -94,6 +94,7 @@ export default function HomeScreen() {
         }}>
           Capture Raw. <span style={{
             background: 'var(--nb-yellow)',
+            color: '#ffffff',
             padding: '2px 8px',
             border: '2px solid var(--nb-black)',
             boxShadow: '2px 2px 0px var(--nb-black)',
@@ -210,6 +211,7 @@ export default function HomeScreen() {
                 fontSize: '11px',
                 fontFamily: 'var(--font-mono)',
                 background: 'var(--nb-yellow)',
+                color: '#ffffff',
                 border: '1px solid var(--nb-black)',
                 padding: '2px 6px',
                 borderRadius: '4px',
@@ -349,7 +351,7 @@ export default function HomeScreen() {
                         padding: '1px 5px',
                         borderRadius: '3px',
                         fontWeight: '800',
-                        color: 'var(--nb-black)'
+                        color: '#ffffff'
                       }}>
                         {item.formatsCount} Formats
                       </span>

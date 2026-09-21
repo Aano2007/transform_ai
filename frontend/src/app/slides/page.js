@@ -94,7 +94,7 @@ export default function SlideDetailScreen() {
           fontFamily: 'var(--font-mono)',
           fontWeight: '900',
           background: 'var(--nb-yellow)',
-          color: 'var(--nb-black)',
+          color: '#ffffff',
           border: '1.5px solid var(--nb-black)',
           boxShadow: '1.5px 1.5px 0px var(--nb-black)',
           padding: '3px 10px',
@@ -128,7 +128,7 @@ export default function SlideDetailScreen() {
           boxShadow: '2px 2px 0px var(--nb-black)',
           borderRadius: '4px',
           fontSize: '12px',
-          color: 'var(--nb-black)',
+          color: '#ffffff',
           fontWeight: '900',
           fontFamily: 'var(--font-mono)'
         }}>
