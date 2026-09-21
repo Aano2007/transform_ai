@@ -25,7 +25,20 @@ def create_presentation_deck(slides_data: list, output_path: str):
     TEXT_MUTED = RGBColor(148, 163, 184)  # Slate 400
     CARD_BG = RGBColor(30, 41, 59)        # Slate 800
 
-    for idx, slide_info in enumerate(slides_data):
+    # Sanitize slides_data
+    safe_slides = []
+    if isinstance(slides_data, list):
+        for item in slides_data:
+            if isinstance(item, dict):
+                safe_slides.append(item)
+            elif isinstance(item, str):
+                safe_slides.append({"title": item, "bullets": []})
+    if not safe_slides:
+        safe_slides = [
+            {"title": "TransformAI Executive Summary", "bullets": ["High-impact deliverable generated via edge intelligence."]}
+        ]
+
+    for idx, slide_info in enumerate(safe_slides):
         slide = prs.slides.add_slide(blank_layout)
         
         # 1. Background Fill Shape
@@ -48,7 +61,7 @@ def create_presentation_deck(slides_data: list, output_path: str):
         header_box = slide.shapes.add_textbox(Inches(0.8), Inches(0.5), Inches(11.7), Inches(0.4))
         h_tf = header_box.text_frame
         h_p = h_tf.paragraphs[0]
-        h_p.text = f"TRANSFORMAI // SLIDE {idx + 1:02d} OF {len(slides_data):02d} // iQOO EDGE ENGINE"
+        h_p.text = f"TRANSFORMAI // SLIDE {idx + 1:02d} OF {len(safe_slides):02d} // iQOO EDGE ENGINE"
         h_p.font.size = Pt(11)
         h_p.font.bold = True
         h_p.font.color.rgb = ACCENT_CYAN
@@ -58,7 +71,7 @@ def create_presentation_deck(slides_data: list, output_path: str):
         t_tf = title_box.text_frame
         t_tf.word_wrap = True
         t_p = t_tf.paragraphs[0]
-        t_p.text = slide_info.get("title", f"Deliverable Section {idx + 1}")
+        t_p.text = str(slide_info.get("title", f"Deliverable Section {idx + 1}"))
         t_p.font.size = Pt(32)
         t_p.font.bold = True
         t_p.font.color.rgb = TEXT_WHITE
@@ -67,7 +80,7 @@ def create_presentation_deck(slides_data: list, output_path: str):
         subtitle = slide_info.get("subtitle", "")
         if subtitle:
             s_p = t_tf.add_paragraph()
-            s_p.text = subtitle
+            s_p.text = str(subtitle)
             s_p.font.size = Pt(16)
             s_p.font.color.rgb = ACCENT_ORANGE
 
@@ -85,7 +98,14 @@ def create_presentation_deck(slides_data: list, output_path: str):
         b_tf = body_box.text_frame
         b_tf.word_wrap = True
 
-        bullets = slide_info.get("bullets", [])
+        raw_bullets = slide_info.get("bullets", [])
+        if isinstance(raw_bullets, str):
+            bullets = [b.strip("-*▸ \t") for b in raw_bullets.split("\n") if b.strip()]
+        elif isinstance(raw_bullets, list):
+            bullets = [str(b) for b in raw_bullets if b is not None]
+        else:
+            bullets = [str(raw_bullets)]
+
         if not bullets:
             bullets = ["Key insight captured and synthesized from source telemetry."]
 
@@ -102,7 +122,7 @@ def create_presentation_deck(slides_data: list, output_path: str):
         speaker_notes = slide_info.get("speaker_notes", "")
         if not speaker_notes:
             speaker_notes = f"Presentation notes for slide {idx + 1}: {slide_info.get('title')}. Focus on delivering the key points clearly."
-        tf_notes.text = speaker_notes
+        tf_notes.text = str(speaker_notes)
 
     os.makedirs(os.path.dirname(os.path.abspath(output_path)), exist_ok=True)
     prs.save(output_path)

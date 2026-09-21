@@ -1,11 +1,19 @@
-from fastapi import FastAPI, HTTPException, BackgroundTasks
+from fastapi import FastAPI, HTTPException, BackgroundTasks, Depends, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
+from fastapi.security import OAuth2PasswordRequestForm
+from sqlalchemy.orm import Session
 import asyncio
 import json
 import os
 import uuid
 from typing import Dict, Any
+
+from app.db import engine, Base, get_db
+from app.models.schema import User, TransformationSession
+from app.models.auth import UserCreate, UserResponse, Token
+from app.services.auth_service import get_password_hash, verify_password, create_access_token, get_current_user, ACCESS_TOKEN_EXPIRE_MINUTES
+from datetime import timedelta
 
 from app.config import GENERATED_DIR, HOST, PORT, OLLAMA_HOST, OLLAMA_MODEL
 from app.models.ico import (
@@ -14,10 +22,11 @@ from app.models.ico import (
 )
 from app.services.llm_service import (
     extract_ico_from_text, generate_llm_response, clean_json_string,
-    check_ollama_available, generate_heuristic_output
+    check_ollama_available, generate_heuristic_output, generate_heuristic_ico, check_active_llm_status
 )
 from app.services.pptx_service import create_presentation_deck
 from app.services.docx_service import create_executive_docx
+from app.services.pdf_service import create_executive_pdf
 from app.prompts.exec_summary import EXEC_SUMMARY_PROMPT
 from app.prompts.presentation import PRESENTATION_PROMPT
 from app.prompts.linkedin import LINKEDIN_PROMPT
@@ -28,6 +37,8 @@ app = FastAPI(
     description="Headless AI & Document Generator for iQOO Hackathon Productivity Track",
     version="2.0.0"
 )
+
+Base.metadata.create_all(bind=engine)
 
 # Enable CORS for Next.js PWA client
 app.add_middleware(
@@ -78,22 +89,50 @@ Action items: Send customized executive summary and slide deck by tomorrow morni
     }
 ]
 
-# In-memory storage for active presentation data to support slide regeneration
-CACHE_SLIDES: Dict[str, Any] = {}
-CACHE_ICO: Dict[str, Any] = {}
+# Removed in-memory cache in favor of SQLite DB
+# CACHE_SLIDES: Dict[str, Any] = {}
+# CACHE_ICO: Dict[str, Any] = {}
+
+@app.post("/auth/register", response_model=UserResponse)
+def register_user(user: UserCreate, db: Session = Depends(get_db)):
+    db_user = db.query(User).filter(User.username == user.username).first()
+    if db_user:
+        raise HTTPException(status_code=400, detail="Username already registered")
+    hashed_password = get_password_hash(user.password)
+    db_user = User(username=user.username, hashed_password=hashed_password)
+    db.add(db_user)
+    db.commit()
+    db.refresh(db_user)
+    return db_user
+
+@app.post("/auth/login", response_model=Token)
+def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.username == form_data.username).first()
+    if not user or not verify_password(form_data.password, user.hashed_password):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect username or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub": user.username}, expires_delta=access_token_expires
+    )
+    return {"access_token": access_token, "token_type": "bearer"}
 
 @app.get("/health")
 async def health_check():
-    ollama_online = await check_ollama_available()
+    llm_info = await check_active_llm_status()
     return {
         "status": "online",
         "engine": "TransformAI Headless Compute",
         "version": "2.0",
         "hardware_split": "Phone Edge Capture + Laptop Local Wi-Fi Compute",
-        "ollama_connected": ollama_online,
-        "ollama_host": OLLAMA_HOST,
-        "active_model": OLLAMA_MODEL,
-        "mode": "Live Local LLM" if ollama_online else "High-Fidelity Heuristic Fallback"
+        "provider": llm_info["provider"],
+        "active_model": llm_info["model"],
+        "mode": llm_info["mode"],
+        "ollama_connected": await check_ollama_available(),
+        "openai_configured": bool(OPENAI_API_KEY)
     }
 
 @app.get("/api/templates")
@@ -101,7 +140,11 @@ def get_sample_templates():
     return SAMPLE_TEMPLATES
 
 @app.post("/api/transform", response_model=TransformResponse)
-async def transform_raw_text(req: TransformRequest):
+async def transform_raw_text(
+    req: TransformRequest,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
     if not req.raw_text or not req.raw_text.strip():
         raise HTTPException(status_code=400, detail="raw_text cannot be empty")
 
@@ -110,9 +153,15 @@ async def transform_raw_text(req: TransformRequest):
     try:
         # Step 1: Structured Intent Context Object (ICO) Extraction
         ico_dict = await extract_ico_from_text(req.raw_text)
-        ico = IntentContextObject(**ico_dict)
+        if not isinstance(ico_dict, dict):
+            ico_dict = {}
+        try:
+            ico = IntentContextObject(**ico_dict)
+        except Exception as ve:
+            print(f"[ICO Validation Warning]: {ve}. Using robust fallback.")
+            fallback_dict = generate_heuristic_ico(req.raw_text)
+            ico = IntentContextObject(**fallback_dict)
         ico_str = json.dumps(ico.model_dump(), indent=2)
-        CACHE_ICO["latest"] = ico
 
         outputs = {}
         pptx_url = None
@@ -158,32 +207,62 @@ async def transform_raw_text(req: TransformRequest):
                 # Fallback to structured slides
                 fallback_str = generate_heuristic_output("Presentation Architect 4-6 slide", "")
                 slides_data = json.loads(clean_json_string(fallback_str))
-
-            CACHE_SLIDES["latest"] = slides_data
             outputs["slides_data"] = slides_data
 
             pptx_filename = f"transformai_presentation_{session_id}.pptx"
             pptx_filepath = os.path.join(GENERATED_DIR, pptx_filename)
-            create_presentation_deck(slides_data, pptx_filepath)
-            pptx_url = f"/api/download/pptx?file={pptx_filename}"
+            try:
+                create_presentation_deck(slides_data, pptx_filepath)
+                pptx_url = f"/api/download/pptx?file={pptx_filename}"
+            except Exception as pe:
+                print(f"[PPTX Generation Warning]: {pe}")
 
-        # Step 4: Build Executive Word Document (.docx)
+        # Step 4: Build Executive Word Document (.docx) & Native PDF (.pdf)
+        pdf_url = None
         if "executive_summary" in outputs:
             docx_filename = f"transformai_brief_{session_id}.docx"
             docx_filepath = os.path.join(GENERATED_DIR, docx_filename)
-            create_executive_docx(
-                title=ico.event_title,
-                summary_markdown=outputs["executive_summary"],
-                ico_data=ico.model_dump(),
-                output_path=docx_filepath
-            )
-            docx_url = f"/api/download/docx?file={docx_filename}"
+            try:
+                create_executive_docx(
+                    title=ico.event_title,
+                    summary_markdown=outputs["executive_summary"],
+                    ico_data=ico.model_dump(),
+                    output_path=docx_filepath
+                )
+                docx_url = f"/api/download/docx?file={docx_filename}"
+            except Exception as de:
+                print(f"[DOCX Generation Warning]: {de}")
+
+            pdf_filename = f"transformai_brief_{session_id}.pdf"
+            pdf_filepath = os.path.join(GENERATED_DIR, pdf_filename)
+            try:
+                create_executive_pdf(
+                    title=ico.event_title,
+                    summary_markdown=outputs["executive_summary"],
+                    ico_data=ico.model_dump(),
+                    output_path=pdf_filepath
+                )
+                pdf_url = f"/api/download/pdf?file={pdf_filename}"
+            except Exception as pe:
+                print(f"[PDF Generation Warning]: {pe}")
+
+        # Step 5: Save to Database
+        db_session = TransformationSession(
+            user_id=current_user.id,
+            session_uuid=session_id,
+            raw_text=req.raw_text,
+            ico_json=ico_str,
+            slides_json=json.dumps(slides_data) if "slides_data" in outputs else "{}"
+        )
+        db.add(db_session)
+        db.commit()
 
         return TransformResponse(
             ico=ico,
             outputs=outputs,
             pptx_url=pptx_url,
             docx_url=docx_url,
+            pdf_url=pdf_url,
             source_text=req.raw_text
         )
     except Exception as e:
@@ -191,11 +270,20 @@ async def transform_raw_text(req: TransformRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/api/regenerate-slide")
-async def regenerate_slide(req: RegenerateSlideRequest):
+async def regenerate_slide(
+    req: RegenerateSlideRequest,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
     """Regenerates an individual slide inside the active presentation."""
-    slides = CACHE_SLIDES.get("latest", [])
-    if not slides:
+    db_session = db.query(TransformationSession).filter(
+        TransformationSession.user_id == current_user.id
+    ).order_by(TransformationSession.id.desc()).first()
+    
+    if not db_session or not db_session.slides_json:
         raise HTTPException(status_code=404, detail="No active presentation deck found")
+
+    slides = json.loads(db_session.slides_json)
 
     slide_idx = req.slide_number - 1
     if slide_idx < 0 or slide_idx >= len(slides):
@@ -231,6 +319,10 @@ Respond with ONLY a single JSON object:
     pptx_filename = f"transformai_presentation_{session_id}.pptx"
     pptx_filepath = os.path.join(GENERATED_DIR, pptx_filename)
     create_presentation_deck(slides, pptx_filepath)
+    
+    # Update DB
+    db_session.slides_json = json.dumps(slides)
+    db.commit()
 
     return {
         "slide": slides[slide_idx],
@@ -239,7 +331,10 @@ Respond with ONLY a single JSON object:
     }
 
 @app.post("/api/regenerate-format")
-async def regenerate_format(req: RegenerateFormatRequest):
+async def regenerate_format(
+    req: RegenerateFormatRequest,
+    current_user: User = Depends(get_current_user)
+):
     """Regenerates a single format (e.g. LinkedIn or Twitter) with modified tone/audience."""
     ico_str = json.dumps(req.ico.model_dump(), indent=2)
     format_type = req.format_type
@@ -295,3 +390,173 @@ def download_docx(file: str = "transformai_brief.docx"):
         filename="TransformAI_Brief.docx",
         media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
     )
+
+@app.get("/api/download/pdf")
+def download_pdf(file: str = "transformai_brief.pdf"):
+    safe_name = os.path.basename(file)
+    filepath = os.path.join(GENERATED_DIR, safe_name)
+    if not os.path.exists(filepath):
+        default_files = [f for f in os.listdir(GENERATED_DIR) if f.endswith(".pdf")]
+        if default_files:
+            filepath = os.path.join(GENERATED_DIR, default_files[-1])
+        else:
+            raise HTTPException(status_code=404, detail="PDF file not found")
+
+    return FileResponse(
+        filepath,
+        filename="TransformAI_Brief.pdf",
+        media_type="application/pdf"
+    )
+
+
+# ═══════════════════════════════════════════════════
+# User Profile & Session History Endpoints
+# ═══════════════════════════════════════════════════
+
+@app.get("/auth/me", response_model=UserResponse)
+async def get_current_user_profile(current_user: User = Depends(get_current_user)):
+    """Returns the currently authenticated user's profile."""
+    return current_user
+
+
+@app.get("/api/sessions")
+def list_user_sessions(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+    limit: int = 20,
+    offset: int = 0
+):
+    """
+    Lists all transformation sessions for the authenticated user,
+    ordered by most recent first. Supports pagination via limit/offset.
+    """
+    sessions = (
+        db.query(TransformationSession)
+        .filter(TransformationSession.user_id == current_user.id)
+        .order_by(TransformationSession.id.desc())
+        .offset(offset)
+        .limit(limit)
+        .all()
+    )
+    total = (
+        db.query(TransformationSession)
+        .filter(TransformationSession.user_id == current_user.id)
+        .count()
+    )
+    return {
+        "sessions": [
+            {
+                "id": s.id,
+                "session_uuid": s.session_uuid,
+                "raw_text_preview": (s.raw_text[:120] + "...") if s.raw_text and len(s.raw_text) > 120 else s.raw_text,
+                "created_at": str(s.created_at) if s.created_at else None,
+                "has_slides": bool(s.slides_json and s.slides_json != "{}"),
+                "has_ico": bool(s.ico_json),
+            }
+            for s in sessions
+        ],
+        "total": total,
+        "limit": limit,
+        "offset": offset,
+    }
+
+
+@app.get("/api/sessions/{session_id}")
+def get_session_detail(
+    session_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Retrieves full details of a specific transformation session,
+    including the ICO JSON, slides JSON, and download links for
+    any generated files still on disk.
+    """
+    session = (
+        db.query(TransformationSession)
+        .filter(
+            TransformationSession.id == session_id,
+            TransformationSession.user_id == current_user.id,
+        )
+        .first()
+    )
+    if not session:
+        raise HTTPException(status_code=404, detail="Session not found")
+
+    # Check if generated files still exist on disk
+    pptx_files = [
+        f for f in os.listdir(GENERATED_DIR)
+        if f.startswith(f"transformai_presentation_{session.session_uuid}") and f.endswith(".pptx")
+    ] if os.path.isdir(GENERATED_DIR) else []
+
+    docx_files = [
+        f for f in os.listdir(GENERATED_DIR)
+        if f.startswith(f"transformai_brief_{session.session_uuid}") and f.endswith(".docx")
+    ] if os.path.isdir(GENERATED_DIR) else []
+
+    pdf_files = [
+        f for f in os.listdir(GENERATED_DIR)
+        if f.startswith(f"transformai_brief_{session.session_uuid}") and f.endswith(".pdf")
+    ] if os.path.isdir(GENERATED_DIR) else []
+
+    ico_data = None
+    if session.ico_json:
+        try:
+            ico_data = json.loads(session.ico_json)
+        except Exception:
+            ico_data = session.ico_json
+
+    slides_data = None
+    if session.slides_json and session.slides_json != "{}":
+        try:
+            slides_data = json.loads(session.slides_json)
+        except Exception:
+            slides_data = session.slides_json
+
+    return {
+        "id": session.id,
+        "session_uuid": session.session_uuid,
+        "raw_text": session.raw_text,
+        "ico": ico_data,
+        "slides": slides_data,
+        "created_at": str(session.created_at) if session.created_at else None,
+        "pptx_url": f"/api/download/pptx?file={pptx_files[0]}" if pptx_files else None,
+        "docx_url": f"/api/download/docx?file={docx_files[0]}" if docx_files else None,
+        "pdf_url": f"/api/download/pdf?file={pdf_files[0]}" if pdf_files else None,
+    }
+
+
+@app.delete("/api/sessions/{session_id}")
+def delete_session(
+    session_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Deletes a transformation session and removes any associated
+    generated files (.pptx, .docx) from disk.
+    """
+    session = (
+        db.query(TransformationSession)
+        .filter(
+            TransformationSession.id == session_id,
+            TransformationSession.user_id == current_user.id,
+        )
+        .first()
+    )
+    if not session:
+        raise HTTPException(status_code=404, detail="Session not found")
+
+    # Clean up generated files from disk
+    if os.path.isdir(GENERATED_DIR):
+        for f in os.listdir(GENERATED_DIR):
+            if session.session_uuid in f:
+                try:
+                    os.remove(os.path.join(GENERATED_DIR, f))
+                except OSError:
+                    pass
+
+    db.delete(session)
+    db.commit()
+
+    return {"detail": "Session deleted", "session_id": session_id}
