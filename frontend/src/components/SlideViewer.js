@@ -13,12 +13,12 @@ export default function SlideViewer({ slides = [], ico = null, pptxUrl = null, o
       <div style={{
         padding: '36px',
         textAlign: 'center',
-        color: 'var(--nb-black)',
-        background: 'var(--nb-yellow-50)',
-        border: '2px solid var(--nb-black)',
-        borderRadius: 'var(--radius-md)',
-        boxShadow: '3px 3px 0px var(--nb-black)',
-        fontWeight: '700'
+        color: 'var(--bento-primary-muted)',
+        background: '#ffffff',
+        border: 'var(--bento-border)',
+        borderRadius: 'var(--bento-radius-lg)',
+        boxShadow: 'var(--bento-shadow)',
+        fontWeight: '600'
       }}>
         No slide data available.
       </div>
@@ -55,51 +55,51 @@ export default function SlideViewer({ slides = [], ico = null, pptxUrl = null, o
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
       {/* Slide Navigation Header */}
       <div style={{
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        background: 'var(--nb-yellow-50)',
-        padding: '12px 16px',
-        borderRadius: 'var(--radius-md)',
-        border: '2px solid var(--nb-black)',
-        boxShadow: '2px 2px 0px var(--nb-black)'
+        background: '#ffffff',
+        padding: '10px 16px',
+        borderRadius: 'var(--bento-radius-md)',
+        border: 'var(--bento-border)',
+        boxShadow: 'var(--bento-shadow-xs)'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <MonitorPlay size={18} color="var(--nb-black)" />
+          <MonitorPlay size={17} color="var(--bento-primary)" />
           <span style={{
-            fontSize: '13px',
-            fontWeight: '900',
+            fontSize: '12px',
+            fontWeight: '800',
             fontFamily: 'var(--font-mono)',
-            background: 'var(--nb-yellow)',
-            border: '1.5px solid var(--nb-black)',
-            padding: '2px 8px',
-            borderRadius: '4px'
+            background: 'var(--bento-primary-subtle)',
+            color: 'var(--bento-primary-deep)',
+            padding: '2px 9px',
+            borderRadius: 'var(--bento-radius-full)'
           }}>
             SLIDE {currentIdx + 1} OF {slides.length}
           </span>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
           <button
             type="button"
             onClick={handlePrev}
-            className="btn btn-secondary btn-sm"
+            className="btn btn-secondary btn-sm btn-pill"
             style={{ padding: '6px 10px' }}
             title="Previous Slide"
           >
-            <ChevronLeft size={16} />
+            <ChevronLeft size={15} />
           </button>
           <button
             type="button"
             onClick={handleNext}
-            className="btn btn-secondary btn-sm"
+            className="btn btn-secondary btn-sm btn-pill"
             style={{ padding: '6px 10px' }}
             title="Next Slide"
           >
-            <ChevronRight size={16} />
+            <ChevronRight size={15} />
           </button>
         </div>
       </div>
@@ -109,41 +109,39 @@ export default function SlideViewer({ slides = [], ico = null, pptxUrl = null, o
         position: 'relative',
         width: '100%',
         aspectRatio: '16/9',
-        background: '#ffffff',
-        border: '3px solid var(--nb-black)',
-        boxShadow: '6px 6px 0px var(--nb-black)',
-        borderRadius: 'var(--radius-md)',
-        padding: '24px 28px',
+        background: 'linear-gradient(135deg, #ffffff 0%, #fbfcfd 100%)',
+        border: 'var(--bento-border)',
+        boxShadow: 'var(--bento-shadow-lg)',
+        borderRadius: 'var(--bento-radius-lg)',
+        padding: '28px 32px',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
         overflow: 'hidden'
       }}>
-        {/* Top Neobrutalist Accent Strip */}
+        {/* Top Accent Gradient Line */}
         <div style={{
           position: 'absolute',
           top: 0,
           left: 0,
           right: 0,
-          height: '8px',
-          background: 'var(--nb-yellow)',
-          borderBottom: '2px solid var(--nb-black)'
+          height: '4px',
+          background: 'linear-gradient(90deg, var(--bento-primary), var(--bento-primary-light))'
         }} />
 
-        <div style={{ marginTop: '6px' }}>
+        <div>
           <div style={{
-            fontSize: '11px',
+            fontSize: '10px',
             fontFamily: 'var(--font-mono)',
-            color: 'var(--nb-black)',
-            fontWeight: '900',
+            color: 'var(--bento-primary)',
+            fontWeight: '800',
             letterSpacing: '0.8px',
             display: 'inline-flex',
             alignItems: 'center',
             gap: '6px',
-            background: 'var(--nb-yellow-100)',
-            border: '1.5px solid var(--nb-black)',
+            background: 'var(--bento-primary-subtle)',
             padding: '2px 8px',
-            borderRadius: '4px',
+            borderRadius: 'var(--bento-radius-full)',
             marginBottom: '8px'
           }}>
             TRANSFORMAI // SLIDE {String(currentIdx + 1).padStart(2, '0')} // iQOO EDGE
@@ -151,18 +149,18 @@ export default function SlideViewer({ slides = [], ico = null, pptxUrl = null, o
           <h3 style={{
             fontSize: 'clamp(18px, 2.5vw, 24px)',
             fontWeight: '900',
-            color: 'var(--nb-black)',
-            lineHeight: 1.2
+            color: 'var(--bento-primary-deep)',
+            lineHeight: 1.25,
+            letterSpacing: '-0.5px'
           }}>
             {slide.title}
           </h3>
           {slide.subtitle && (
             <div style={{
               fontSize: '13px',
-              color: 'var(--nb-black)',
-              marginTop: '4px',
-              fontWeight: '700',
-              opacity: 0.8
+              color: 'var(--bento-primary-muted)',
+              marginTop: '3px',
+              fontWeight: '600'
             }}>
               {slide.subtitle}
             </div>
@@ -175,35 +173,26 @@ export default function SlideViewer({ slides = [], ico = null, pptxUrl = null, o
           marginTop: '16px',
           display: 'flex',
           flexDirection: 'column',
-          gap: '10px',
+          gap: '8px',
           overflowY: 'auto'
         }}>
           {(slide.bullets || []).map((b, i) => (
             <div key={i} style={{
               display: 'flex',
               alignItems: 'flex-start',
-              gap: '10px',
-              fontSize: '14px',
-              fontWeight: '700',
-              color: 'var(--nb-black)',
+              gap: '8px',
+              fontSize: '13.5px',
+              fontWeight: '600',
+              color: 'var(--bento-primary-dark)',
               lineHeight: 1.4
             }}>
               <span style={{
-                background: 'var(--nb-yellow)',
-                border: '1.5px solid var(--nb-black)',
-                color: 'var(--nb-black)',
+                color: 'var(--bento-primary)',
                 fontWeight: '900',
-                width: '18px',
-                height: '18px',
-                display: 'inline-flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderRadius: '3px',
-                fontSize: '10px',
-                flexShrink: 0,
-                marginTop: '1px'
+                fontSize: '14px',
+                lineHeight: 1
               }}>
-                ▸
+                •
               </span>
               <span>{b}</span>
             </div>
@@ -215,22 +204,18 @@ export default function SlideViewer({ slides = [], ico = null, pptxUrl = null, o
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          borderTop: '2px solid var(--nb-black)',
+          borderTop: '1px solid rgba(73, 80, 87, 0.08)',
           paddingTop: '8px',
           marginTop: '8px'
         }}>
-          <span style={{ fontSize: '11px', color: 'var(--nb-text-muted)', fontWeight: '700' }}>
+          <span style={{ fontSize: '11px', color: 'var(--bento-primary-muted)', fontWeight: '500' }}>
             Factual Grounding • Single ICO Model
           </span>
           <span style={{
             fontSize: '11px',
-            color: 'var(--nb-black)',
+            color: 'var(--bento-primary-muted)',
             fontFamily: 'var(--font-mono)',
-            fontWeight: '800',
-            background: 'var(--nb-yellow)',
-            border: '1px solid var(--nb-black)',
-            padding: '1px 6px',
-            borderRadius: '3px'
+            fontWeight: '600'
           }}>
             16:9 Widescreen (.PPTX)
           </span>
@@ -238,36 +223,36 @@ export default function SlideViewer({ slides = [], ico = null, pptxUrl = null, o
       </div>
 
       {/* Slide Actions Bar */}
-      <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+      <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
         <button
           type="button"
           onClick={handleRegenerateCurrentSlide}
           disabled={isRegenerating}
-          className="btn btn-secondary btn-sm"
+          className="btn btn-secondary btn-sm btn-pill"
           style={{ flex: 1 }}
         >
-          <RefreshCw size={14} className={isRegenerating ? 'animate-spin' : ''} />
-          <span>{isRegenerating ? 'Refining...' : 'Refine Slide Content'}</span>
+          <RefreshCw size={13} className={isRegenerating ? 'animate-spin' : ''} />
+          <span>{isRegenerating ? 'Refining...' : 'Refine Slide'}</span>
         </button>
 
         <button
           type="button"
           onClick={() => setShowNotes(!showNotes)}
-          className="btn btn-secondary btn-sm"
+          className="btn btn-secondary btn-sm btn-pill"
         >
-          <MessageSquare size={14} />
-          <span>{showNotes ? 'Hide Speaker Notes' : 'Show Speaker Notes'}</span>
+          <MessageSquare size={13} />
+          <span>{showNotes ? 'Hide Notes' : 'Speaker Notes'}</span>
         </button>
 
         {pptxUrl && (
           <a
             href={pptxUrl}
             download="TransformAI_Presentation.pptx"
-            className="btn btn-primary btn-sm"
+            className="btn btn-primary btn-sm btn-pill"
             style={{ textDecoration: 'none' }}
           >
-            <Download size={14} />
-            <span>Download Deck (.pptx)</span>
+            <Download size={13} />
+            <span>Deck (.pptx)</span>
           </a>
         )}
       </div>
@@ -275,27 +260,27 @@ export default function SlideViewer({ slides = [], ico = null, pptxUrl = null, o
       {/* Speaker Notes Box */}
       {showNotes && (
         <div style={{
-          background: 'var(--nb-yellow-50)',
-          border: '2px solid var(--nb-black)',
-          borderRadius: 'var(--radius-md)',
+          background: '#ffffff',
+          border: 'var(--bento-border)',
+          borderRadius: 'var(--bento-radius-md)',
           padding: '16px',
-          borderLeft: '6px solid var(--nb-yellow)',
-          boxShadow: '2px 2px 0px var(--nb-black)'
+          borderLeft: '4px solid var(--bento-primary)',
+          boxShadow: 'var(--bento-shadow-xs)'
         }}>
           <div style={{
             fontSize: '11px',
             fontFamily: 'var(--font-mono)',
-            fontWeight: '900',
-            color: 'var(--nb-black)',
+            fontWeight: '700',
+            color: 'var(--bento-primary)',
             display: 'flex',
             alignItems: 'center',
             gap: '6px',
             marginBottom: '6px'
           }}>
-            <MessageSquare size={13} />
-            <span>SPEAKER SCRIPT / PRESENTER NOTES:</span>
+            <MessageSquare size={12} />
+            <span>SPEAKER SCRIPT / SCRIPT NOTES:</span>
           </div>
-          <p style={{ fontSize: '14px', color: 'var(--nb-black)', fontStyle: 'italic', lineHeight: 1.6, fontWeight: '600' }}>
+          <p style={{ fontSize: '13.5px', color: 'var(--bento-primary-deep)', fontStyle: 'italic', lineHeight: 1.6, fontWeight: '500' }}>
             "{slide.speaker_notes || 'Deliver the core slide takeaways with confidence and conviction.'}"
           </p>
         </div>

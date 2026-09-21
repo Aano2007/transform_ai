@@ -1,7 +1,7 @@
 import './globals.css';
 import OfficeKitBridge from '../components/OfficeKitBridge';
 import Link from 'next/link';
-import { Zap, Sparkles, Home, Camera, FileText, Presentation } from 'lucide-react';
+import { Zap, Sparkles } from 'lucide-react';
 
 export const metadata = {
   title: 'TransformAI | iQOO Productivity Track',
@@ -14,7 +14,7 @@ export const viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-  themeColor: '#495057',
+  themeColor: '#f8f9fa',
 };
 
 export default function RootLayout({ children }) {
@@ -33,23 +33,23 @@ export default function RootLayout({ children }) {
           <header className="app-header">
             <Link href="/" className="brand-badge">
               <div className="brand-logo">
-                <Zap size={22} fill="#ffffff" color="#ffffff" />
+                <Zap size={20} fill="#ffffff" color="#ffffff" />
               </div>
               <div>
                 <div className="brand-title">
                   <span>TransformAI</span>
-                  <span className="tag">iQOO</span>
+                  <span className="tag">iQOO Edge</span>
                 </div>
-                <div style={{ fontSize: '11px', color: 'rgba(255, 255, 255, 0.85)', fontWeight: 700, marginTop: '-2px' }}>
-                  Edge Capture • Headless AI
+                <div style={{ fontSize: '11px', color: 'var(--bento-primary-muted)', fontWeight: 600, marginTop: '-2px' }}>
+                  Headless Local Compute
                 </div>
               </div>
             </Link>
 
-            {/* Laptop / Desktop Navigation Links */}
+            {/* Bento Pill Navigation Links */}
             <nav className="desktop-nav-links">
               <Link href="/" className="nav-link">
-                Home
+                Overview
               </Link>
               <Link href="/capture" className="nav-link">
                 Capture
@@ -58,18 +58,18 @@ export default function RootLayout({ children }) {
                 Deliverables
               </Link>
               <Link href="/slides" className="nav-link">
-                Slide Deck
+                Deck Stage
               </Link>
             </nav>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <Link
                 href="/capture"
-                className="btn btn-secondary btn-sm"
-                style={{ gap: '6px', fontWeight: 800, background: '#ffffff', color: '#121416' }}
+                className="btn btn-primary btn-sm btn-pill"
+                style={{ gap: '6px' }}
               >
-                <Sparkles size={14} color="#495057" />
-                <span>+ NEW</span>
+                <Sparkles size={14} />
+                <span>+ New Capture</span>
               </Link>
             </div>
           </header>

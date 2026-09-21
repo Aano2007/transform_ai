@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import {
   Mic, Camera, Keyboard, Sparkles, ArrowRight, Clock,
   FileText, Presentation, CheckCircle2, ChevronRight, Zap, Layers,
-  Terminal, Smartphone, Laptop
+  Terminal, Smartphone, Laptop, Cpu, ShieldCheck, Activity
 } from 'lucide-react';
 import { fetchSampleTemplates } from '../lib/api';
 import { MagneticDock } from '../components/ui/magnetic-dock';
@@ -71,352 +71,374 @@ export default function HomeScreen() {
 
   return (
     <div className="content-wrapper">
-      {/* Neobrutalist Hero Banner */}
-      <div className="card card-hero" style={{
-        textAlign: 'center',
-        padding: '36px 20px',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        gap: '16px'
-      }}>
-        <div className="card-badge-header">
-          <Zap size={14} fill="var(--nb-black)" />
-          <span>iQOO HACKATHON // PRODUCTIVITY TRACK</span>
+      {/* 12-Column Responsive Bento Box Grid */}
+      <div className="bento-grid">
+        {/* Bento Cell 1: Hero Compartment (Span 8 on Laptop) */}
+        <div className="bento-card bento-hero bento-span-8" style={{ justifyContent: 'center' }}>
+          <div className="bento-tag">
+            <Zap size={13} />
+            <span>iQOO HACKATHON // PRODUCTIVITY TRACK</span>
+          </div>
+
+          <h1 style={{
+            fontSize: 'clamp(28px, 3.8vw, 42px)',
+            fontWeight: '900',
+            lineHeight: '1.15',
+            letterSpacing: '-1.2px',
+            color: 'var(--bento-primary-deep)',
+            marginBottom: '12px'
+          }}>
+            Capture Raw.{' '}
+            <span style={{
+              background: 'linear-gradient(135deg, var(--bento-primary), var(--bento-primary-dark))',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent'
+            }}>
+              Deliver Polished.
+            </span>
+          </h1>
+
+          <p style={{
+            fontSize: '15px',
+            color: 'var(--bento-primary-muted)',
+            maxWidth: '520px',
+            lineHeight: '1.55',
+            fontWeight: '500',
+            marginBottom: '20px'
+          }}>
+            One voice memo → 4 boardroom-ready deliverables in under 60 seconds.
+            Zero prompt engineering. Powered by The Honest Split hardware architecture.
+          </p>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+            <Link
+              href="/capture"
+              className="btn btn-primary btn-pill"
+              style={{ padding: '14px 28px', fontSize: '15px' }}
+            >
+              <Sparkles size={17} />
+              <span>+ Start Transformation</span>
+            </Link>
+
+            <Link
+              href="/slides"
+              className="btn btn-secondary btn-pill"
+              style={{ padding: '14px 22px', fontSize: '14px' }}
+            >
+              <Presentation size={16} />
+              <span>Deck Stage</span>
+            </Link>
+          </div>
         </div>
 
-        <h1 style={{
-          fontSize: 'clamp(28px, 4vw, 44px)',
-          fontWeight: '900',
-          lineHeight: '1.1',
-          letterSpacing: '-1.2px',
-          color: 'var(--nb-black)'
+        {/* Bento Cell 2: Hardware Telemetry Bento (Span 4 on Laptop) */}
+        <div className="bento-card bento-span-4" style={{
+          background: 'linear-gradient(180deg, #ffffff 0%, var(--bento-canvas) 100%)',
+          justifyContent: 'space-between'
         }}>
-          Capture Raw. <span style={{
-            background: 'var(--nb-yellow)',
-            color: '#ffffff',
-            padding: '2px 8px',
-            border: '2px solid var(--nb-black)',
-            boxShadow: '2px 2px 0px var(--nb-black)',
-            borderRadius: '6px',
-            display: 'inline-block'
-          }}>Deliver Polished.</span>
-        </h1>
-
-        <p style={{
-          fontSize: '15px',
-          color: 'var(--nb-text-muted)',
-          maxWidth: '560px',
-          lineHeight: '1.5',
-          fontWeight: '600'
-        }}>
-          One voice memo → 4 boardroom-ready deliverables in under 60 seconds.
-          Zero prompt engineering. Powered by The Honest Split architecture.
-        </p>
-
-        {/* Primary CTA Button */}
-        <Link
-          href="/capture"
-          className="btn btn-primary"
-          style={{
-            fontSize: '16px',
-            padding: '16px 32px',
-            marginTop: '8px'
-          }}
-        >
-          <Sparkles size={18} />
-          <span>+ START NEW TRANSFORMATION</span>
-        </Link>
-      </div>
-
-      {/* 2-Column Responsive Dashboard Layout for Laptops / Desktops */}
-      <div className="desktop-grid-2">
-        {/* Left Column: Quick Capture Dock & 1-Click Demo Benchmarks */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-          {/* Quick Capture Magnetic Dock Card */}
-          <div className="card" style={{ textAlign: 'center', padding: '24px 18px' }}>
-            <div style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '6px',
-              fontSize: '12px',
-              fontWeight: '800',
-              fontFamily: 'var(--font-mono)',
-              color: 'var(--nb-black)',
-              background: 'var(--nb-yellow-100)',
-              border: '1.5px solid var(--nb-black)',
-              padding: '3px 10px',
-              borderRadius: '4px',
-              marginBottom: '16px',
-              textTransform: 'uppercase'
-            }}>
-              <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--nb-black)' }} />
-              <span>Magnetic Dock // Quick Capture Modes</span>
+          <div>
+            <div className="bento-tag" style={{ background: 'var(--bento-accent-green-bg)', color: 'var(--bento-accent-green)' }}>
+              <Activity size={13} />
+              <span>Edge Telemetry</span>
             </div>
 
-            <div style={{ display: 'flex', justifyContent: 'center' }}>
-              <MagneticDock
-                items={[
-                  {
-                    id: 'voice',
-                    label: 'Voice Memo',
-                    icon: <Mic size={26} color="var(--nb-black)" />,
-                    onClick: () => router.push('/capture?mode=voice'),
-                    badge: 1
-                  },
-                  {
-                    id: 'camera',
-                    label: 'Scan OCR (Whiteboard)',
-                    icon: <Camera size={26} color="var(--nb-black)" />,
-                    onClick: () => router.push('/capture?mode=camera')
-                  },
-                  {
-                    id: 'text',
-                    label: 'Type / Paste Text',
-                    icon: <Keyboard size={26} color="var(--nb-black)" />,
-                    onClick: () => router.push('/capture?mode=text')
-                  }
-                ]}
-                iconSize={56}
-                maxScale={1.35}
-                magneticDistance={140}
-                variant="glass"
-              />
+            <div style={{ fontSize: '16px', fontWeight: '800', color: 'var(--bento-primary-deep)' }}>
+              iQOO Compute Engine
+            </div>
+            <div style={{ fontSize: '12px', color: 'var(--bento-primary-muted)', marginTop: '2px' }}>
+              Headless local inference over Wi-Fi
             </div>
           </div>
 
-          {/* 1-Click Demo Scenarios (Hackathon Pitch Benchmarks) */}
-          <div className="card">
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', margin: '18px 0' }}>
+            <div style={{
+              background: '#ffffff',
+              border: 'var(--bento-border)',
+              borderRadius: 'var(--bento-radius-sm)',
+              padding: '12px',
+              boxShadow: 'var(--bento-shadow-xs)'
+            }}>
+              <div style={{ fontSize: '11px', color: 'var(--bento-primary-muted)', fontWeight: '600' }}>SLA Latency</div>
+              <div style={{ fontSize: '20px', fontWeight: '900', color: 'var(--bento-primary-deep)', marginTop: '2px' }}>&lt;60s</div>
+              <div style={{ fontSize: '10px', color: 'var(--bento-accent-green)', fontWeight: '700', marginTop: '2px' }}>⚡ Real-time</div>
+            </div>
+
+            <div style={{
+              background: '#ffffff',
+              border: 'var(--bento-border)',
+              borderRadius: 'var(--bento-radius-sm)',
+              padding: '12px',
+              boxShadow: 'var(--bento-shadow-xs)'
+            }}>
+              <div style={{ fontSize: '11px', color: 'var(--bento-primary-muted)', fontWeight: '600' }}>Hallucination</div>
+              <div style={{ fontSize: '20px', fontWeight: '900', color: 'var(--bento-primary-deep)', marginTop: '2px' }}>0%</div>
+              <div style={{ fontSize: '10px', color: 'var(--bento-accent-green)', fontWeight: '700', marginTop: '2px' }}>✓ ICO Grounded</div>
+            </div>
+          </div>
+
+          <div style={{
+            fontSize: '11px',
+            fontFamily: 'var(--font-mono)',
+            color: 'var(--bento-primary-muted)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            paddingTop: '8px',
+            borderTop: '1px solid rgba(73, 80, 87, 0.08)'
+          }}>
+            <span>ENGINE: OLLAMA 3.2</span>
+            <span style={{ color: 'var(--bento-accent-green)', fontWeight: '700' }}>ONLINE</span>
+          </div>
+        </div>
+
+        {/* Bento Cell 3: Magnetic Dock Quick Capture (Span 6 on Laptop) */}
+        <div className="bento-card bento-span-6" style={{ alignItems: 'center', textAlign: 'center', padding: '24px 20px' }}>
+          <div className="bento-tag">
+            <span className="pulse-dot" style={{ width: '6px', height: '6px' }} />
+            <span>Magnetic Dock // Quick Capture Modes</span>
+          </div>
+
+          <div style={{ fontSize: '15px', fontWeight: '800', color: 'var(--bento-primary-deep)', marginBottom: '4px' }}>
+            Choose an Input Channel
+          </div>
+          <div style={{ fontSize: '12px', color: 'var(--bento-primary-muted)', marginBottom: '16px' }}>
+            Interactive tactile macOS-spring dock for instant capture
+          </div>
+
+          <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+            <MagneticDock
+              items={[
+                {
+                  id: 'voice',
+                  label: 'Voice Memo',
+                  icon: <Mic size={24} color="var(--bento-primary-deep)" />,
+                  onClick: () => router.push('/capture?mode=voice'),
+                  badge: 1
+                },
+                {
+                  id: 'camera',
+                  label: 'Whiteboard OCR',
+                  icon: <Camera size={24} color="var(--bento-primary-deep)" />,
+                  onClick: () => router.push('/capture?mode=camera')
+                },
+                {
+                  id: 'text',
+                  label: 'Type / Paste',
+                  icon: <Keyboard size={24} color="var(--bento-primary-deep)" />,
+                  onClick: () => router.push('/capture?mode=text')
+                }
+              ]}
+              iconSize={54}
+              maxScale={1.3}
+              magneticDistance={140}
+              variant="glass"
+            />
+          </div>
+        </div>
+
+        {/* Bento Cell 4: 1-Click Demo Scenarios (Span 6 on Laptop) */}
+        <div className="bento-card bento-span-6">
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginBottom: '12px'
+          }}>
+            <div className="bento-tag" style={{ marginBottom: 0 }}>
+              <Zap size={12} />
+              <span>1-Click Benchmarks</span>
+            </div>
+            <span style={{ fontSize: '11px', color: 'var(--bento-primary-muted)', fontWeight: '600' }}>
+              Instant Test
+            </span>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            {templates.map((tpl) => (
+              <button
+                key={tpl.id}
+                type="button"
+                onClick={() => handleStartTemplate(tpl)}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  background: '#ffffff',
+                  border: 'var(--bento-border)',
+                  borderRadius: 'var(--bento-radius-sm)',
+                  boxShadow: 'var(--bento-shadow-xs)',
+                  padding: '11px 14px',
+                  textAlign: 'left',
+                  cursor: 'pointer',
+                  color: 'var(--bento-primary-deep)',
+                  transition: 'all 0.15s ease'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-1px)';
+                  e.currentTarget.style.boxShadow = 'var(--bento-shadow-sm)';
+                  e.currentTarget.style.borderColor = 'rgba(73, 80, 87, 0.25)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'none';
+                  e.currentTarget.style.boxShadow = 'var(--bento-shadow-xs)';
+                  e.currentTarget.style.borderColor = 'rgba(73, 80, 87, 0.12)';
+                }}
+              >
+                <div>
+                  <div style={{ fontSize: '13px', fontWeight: '800', color: 'var(--bento-primary-deep)' }}>
+                    {tpl.title}
+                  </div>
+                  <div style={{ fontSize: '11px', color: 'var(--bento-primary-muted)', marginTop: '2px' }}>
+                    {tpl.category} • Under 60s transformation
+                  </div>
+                </div>
+                <ChevronRight size={16} color="var(--bento-primary-muted)" />
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Bento Cell 5: Recent Deliverables History (Span 7 on Laptop) */}
+        <div className="bento-card bento-span-7">
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginBottom: '14px'
+          }}>
+            <div className="bento-tag" style={{ marginBottom: 0 }}>
+              <Clock size={12} />
+              <span>Recent Transformations ({recentTrans.length})</span>
+            </div>
+            <span style={{ fontSize: '11px', color: 'var(--bento-primary-muted)', fontWeight: '600' }}>
+              Persisted
+            </span>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            {recentTrans.map((item) => (
+              <div
+                key={item.id}
+                onClick={() => router.push('/studio')}
+                style={{
+                  padding: '13px 15px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  cursor: 'pointer',
+                  background: '#ffffff',
+                  border: 'var(--bento-border)',
+                  borderRadius: 'var(--bento-radius-sm)',
+                  boxShadow: 'var(--bento-shadow-xs)',
+                  transition: 'all 0.15s ease'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-1px)';
+                  e.currentTarget.style.boxShadow = 'var(--bento-shadow-sm)';
+                  e.currentTarget.style.borderColor = 'rgba(73, 80, 87, 0.25)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'none';
+                  e.currentTarget.style.boxShadow = 'var(--bento-shadow-xs)';
+                  e.currentTarget.style.borderColor = 'rgba(73, 80, 87, 0.12)';
+                }}
+              >
+                <div style={{ flex: 1, paddingRight: '10px' }}>
+                  <div style={{ fontSize: '14px', fontWeight: '800', color: 'var(--bento-primary-deep)' }}>
+                    {item.title}
+                  </div>
+                  <div style={{
+                    fontSize: '11px',
+                    color: 'var(--bento-primary-muted)',
+                    marginTop: '3px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px'
+                  }}>
+                    <Clock size={11} />
+                    <span>{item.timestamp}</span>
+                    <span>•</span>
+                    <span style={{
+                      background: 'var(--bento-primary-subtle)',
+                      padding: '1px 6px',
+                      borderRadius: '4px',
+                      fontWeight: '700',
+                      color: 'var(--bento-primary-dark)'
+                    }}>
+                      {item.formatsCount} Formats
+                    </span>
+                  </div>
+                </div>
+                <ChevronRight size={16} color="var(--bento-primary-muted)" />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Bento Cell 6: The Honest Split Architecture (Span 5 on Laptop) */}
+        <div className="bento-card bento-span-5" style={{ background: 'linear-gradient(135deg, #ffffff 0%, var(--bento-canvas) 100%)' }}>
+          <div className="bento-tag">
+            <Terminal size={12} />
+            <span>The Honest Split Architecture</span>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '13px' }}>
             <div style={{
               display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              marginBottom: '14px',
-              borderBottom: '2px solid var(--nb-black)',
-              paddingBottom: '8px'
+              alignItems: 'flex-start',
+              gap: '10px',
+              background: '#ffffff',
+              padding: '12px',
+              borderRadius: 'var(--bento-radius-sm)',
+              border: 'var(--bento-border)',
+              boxShadow: 'var(--bento-shadow-xs)'
             }}>
               <div style={{
-                fontSize: '13px',
-                fontWeight: '900',
-                color: 'var(--nb-black)',
-                fontFamily: 'var(--font-mono)',
+                width: '32px',
+                height: '32px',
+                borderRadius: '8px',
+                background: 'var(--bento-primary-subtle)',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '6px'
+                justifyContent: 'center',
+                flexShrink: 0
               }}>
-                <Zap size={15} fill="var(--nb-yellow)" />
-                <span>1-CLICK DEMO BENCHMARKS</span>
+                <Smartphone size={17} color="var(--bento-primary-dark)" />
               </div>
-              <span style={{
-                fontSize: '11px',
-                fontFamily: 'var(--font-mono)',
-                background: 'var(--nb-yellow)',
-                color: '#ffffff',
-                border: '1px solid var(--nb-black)',
-                padding: '2px 6px',
-                borderRadius: '4px',
-                fontWeight: '800'
-              }}>
-                INSTANT
-              </span>
-            </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              {templates.map((tpl) => (
-                <button
-                  key={tpl.id}
-                  type="button"
-                  onClick={() => handleStartTemplate(tpl)}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    background: 'var(--nb-surface)',
-                    border: '2px solid var(--nb-black)',
-                    borderRadius: 'var(--radius-sm)',
-                    boxShadow: '2px 2px 0px var(--nb-black)',
-                    padding: '12px 14px',
-                    textAlign: 'left',
-                    cursor: 'pointer',
-                    color: 'var(--nb-black)',
-                    transition: 'all 0.12s ease'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = 'translate(-2px, -2px)';
-                    e.currentTarget.style.boxShadow = '4px 4px 0px var(--nb-black)';
-                    e.currentTarget.style.background = 'var(--nb-yellow-100)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = 'translate(0, 0)';
-                    e.currentTarget.style.boxShadow = '2px 2px 0px var(--nb-black)';
-                    e.currentTarget.style.background = 'var(--nb-surface)';
-                  }}
-                >
-                  <div>
-                    <div style={{ fontSize: '14px', fontWeight: '800', color: 'var(--nb-black)' }}>
-                      {tpl.title}
-                    </div>
-                    <div style={{ fontSize: '12px', color: 'var(--nb-text-muted)', marginTop: '2px', fontWeight: '600' }}>
-                      {tpl.category} • Under 60s transformation
-                    </div>
-                  </div>
-                  <ChevronRight size={18} color="var(--nb-black)" />
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Right Column: Recent Transformations & Honest Split Architecture */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-          {/* Recent Transformations */}
-          <div className="card">
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              marginBottom: '14px',
-              borderBottom: '2px solid var(--nb-black)',
-              paddingBottom: '8px'
-            }}>
-              <h3 style={{
-                fontSize: '13px',
-                fontWeight: '900',
-                color: 'var(--nb-black)',
-                textTransform: 'uppercase',
-                fontFamily: 'var(--font-mono)'
-              }}>
-                Recent Transformations ({recentTrans.length})
-              </h3>
-              <span style={{
-                fontSize: '11px',
-                fontFamily: 'var(--font-mono)',
-                background: 'var(--nb-yellow-100)',
-                border: '1px solid var(--nb-black)',
-                padding: '2px 6px',
-                borderRadius: '4px',
-                fontWeight: '700'
-              }}>
-                Persisted
-              </span>
-            </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              {recentTrans.map((item) => (
-                <div
-                  key={item.id}
-                  onClick={() => router.push('/studio')}
-                  style={{
-                    padding: '14px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    cursor: 'pointer',
-                    background: 'var(--nb-surface)',
-                    border: '2px solid var(--nb-black)',
-                    borderRadius: 'var(--radius-sm)',
-                    boxShadow: '2px 2px 0px var(--nb-black)',
-                    transition: 'all 0.12s ease'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = 'translate(-2px, -2px)';
-                    e.currentTarget.style.boxShadow = '4px 4px 0px var(--nb-black)';
-                    e.currentTarget.style.background = 'var(--nb-yellow-50)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = 'translate(0, 0)';
-                    e.currentTarget.style.boxShadow = '2px 2px 0px var(--nb-black)';
-                    e.currentTarget.style.background = 'var(--nb-surface)';
-                  }}
-                >
-                  <div style={{ flex: 1, paddingRight: '12px' }}>
-                    <div style={{ fontSize: '14px', fontWeight: '800', color: 'var(--nb-black)' }}>
-                      {item.title}
-                    </div>
-                    <div style={{
-                      fontSize: '11px',
-                      color: 'var(--nb-text-dim)',
-                      marginTop: '4px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '6px',
-                      fontFamily: 'var(--font-mono)'
-                    }}>
-                      <Clock size={12} color="var(--nb-black)" />
-                      <span>{item.timestamp}</span>
-                      <span>•</span>
-                      <span style={{
-                        background: 'var(--nb-yellow)',
-                        border: '1px solid var(--nb-black)',
-                        padding: '1px 5px',
-                        borderRadius: '3px',
-                        fontWeight: '800',
-                        color: '#ffffff'
-                      }}>
-                        {item.formatsCount} Formats
-                      </span>
-                    </div>
-                  </div>
-                  <ChevronRight size={18} color="var(--nb-black)" />
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Honest Split Hardware Architecture Card */}
-          <div className="card card-yellow" style={{ padding: '18px' }}>
-            <div style={{
-              color: 'var(--nb-black)',
-              fontWeight: '900',
-              fontFamily: 'var(--font-mono)',
-              fontSize: '12px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              marginBottom: '10px',
-              borderBottom: '2px solid var(--nb-black)',
-              paddingBottom: '6px'
-            }}>
-              <Terminal size={15} />
-              <span>THE HONEST SPLIT ARCHITECTURE</span>
-            </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '13px' }}>
-              <div style={{
-                display: 'flex',
-                alignItems: 'flex-start',
-                gap: '8px',
-                background: '#fff',
-                padding: '10px',
-                borderRadius: '6px',
-                border: '1.5px solid var(--nb-black)',
-                boxShadow: '1.5px 1.5px 0px var(--nb-black)'
-              }}>
-                <Smartphone size={18} color="var(--nb-black)" style={{ flexShrink: 0, marginTop: '2px' }} />
-                <div>
-                  <strong style={{ color: 'var(--nb-black)' }}>iQOO Mobile Edge:</strong>
-                  <div style={{ fontSize: '12px', color: 'var(--nb-text-muted)', marginTop: '2px' }}>
-                    100% on-device Web Speech STT and Tesseract WASM OCR. Zero raw audio uploaded to cloud.
-                  </div>
+              <div>
+                <strong style={{ color: 'var(--bento-primary-deep)', fontSize: '13px' }}>iQOO Mobile Edge:</strong>
+                <div style={{ fontSize: '11.5px', color: 'var(--bento-primary-muted)', marginTop: '2px', lineHeight: 1.4 }}>
+                  On-device Web Speech STT and Tesseract WASM OCR. Zero audio leaves the phone.
                 </div>
               </div>
+            </div>
 
+            <div style={{
+              display: 'flex',
+              alignItems: 'flex-start',
+              gap: '10px',
+              background: '#ffffff',
+              padding: '12px',
+              borderRadius: 'var(--bento-radius-sm)',
+              border: 'var(--bento-border)',
+              boxShadow: 'var(--bento-shadow-xs)'
+            }}>
               <div style={{
+                width: '32px',
+                height: '32px',
+                borderRadius: '8px',
+                background: 'var(--bento-primary-subtle)',
                 display: 'flex',
-                alignItems: 'flex-start',
-                gap: '8px',
-                background: '#fff',
-                padding: '10px',
-                borderRadius: '6px',
-                border: '1.5px solid var(--nb-black)',
-                boxShadow: '1.5px 1.5px 0px var(--nb-black)'
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0
               }}>
-                <Laptop size={18} color="var(--nb-black)" style={{ flexShrink: 0, marginTop: '2px' }} />
-                <div>
-                  <strong style={{ color: 'var(--nb-black)' }}>Laptop Compute Engine:</strong>
-                  <div style={{ fontSize: '12px', color: 'var(--nb-text-muted)', marginTop: '2px' }}>
-                    Headless local Ollama LLM + python-pptx generation over high-speed local Wi-Fi.
-                  </div>
+                <Laptop size={17} color="var(--bento-primary-dark)" />
+              </div>
+              <div>
+                <strong style={{ color: 'var(--bento-primary-deep)', fontSize: '13px' }}>Laptop Compute Engine:</strong>
+                <div style={{ fontSize: '11.5px', color: 'var(--bento-primary-muted)', marginTop: '2px', lineHeight: 1.4 }}>
+                  Headless local Ollama LLM + python-pptx generation with lid closed over local Wi-Fi.
                 </div>
               </div>
             </div>

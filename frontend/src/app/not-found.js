@@ -9,35 +9,34 @@ export default function NotFound() {
       minHeight: '60vh',
       textAlign: 'center'
     }}>
-      <div className="card" style={{ maxWidth: '440px', padding: '36px 24px' }}>
+      <div className="bento-card" style={{ maxWidth: '440px', padding: '36px 28px', alignItems: 'center' }}>
         <div style={{
-          width: '56px',
-          height: '56px',
+          width: '52px',
+          height: '52px',
           borderRadius: '50%',
-          background: 'var(--nb-yellow)',
-          border: '2px solid var(--nb-black)',
-          boxShadow: '2px 2px 0px var(--nb-black)',
-          display: 'inline-flex',
+          background: 'var(--bento-primary-subtle)',
+          border: '1px solid rgba(73, 80, 87, 0.15)',
+          display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           marginBottom: '16px'
         }}>
-          <AlertTriangle size={28} color="var(--nb-black)" />
+          <AlertTriangle size={24} color="var(--bento-primary-dark)" />
         </div>
 
-        <h2 style={{ fontSize: '24px', fontWeight: '900', color: 'var(--nb-black)' }}>
+        <h2 style={{ fontSize: '22px', fontWeight: '800', color: 'var(--bento-primary-deep)', letterSpacing: '-0.4px' }}>
           404 - Page Not Found
         </h2>
-        <p style={{ fontSize: '14px', color: 'var(--nb-text-muted)', marginTop: '8px', fontWeight: '600' }}>
-          The deliverable or page you are looking for does not exist or has moved.
+        <p style={{ fontSize: '13.5px', color: 'var(--bento-primary-muted)', marginTop: '6px', fontWeight: '500' }}>
+          The deliverable or section you are looking for does not exist or has moved.
         </p>
 
         <Link
           href="/"
-          className="btn btn-primary"
+          className="btn btn-primary btn-pill"
           style={{ marginTop: '20px', width: '100%', gap: '8px' }}
         >
-          <ArrowLeft size={16} />
+          <ArrowLeft size={15} />
           <span>Return to Dashboard</span>
         </Link>
       </div>

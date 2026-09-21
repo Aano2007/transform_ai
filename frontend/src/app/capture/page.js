@@ -3,14 +3,13 @@ import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import {
   Mic, Camera, Keyboard, Sparkles, ArrowLeft, Loader2, Trash2,
-  Sliders, ShieldAlert, Cpu, Check
+  Sliders, ShieldAlert, Cpu, Check, Activity
 } from 'lucide-react';
 import Link from 'next/link';
 import VoiceRecorder from '../../components/VoiceRecorder';
 import OCRScanner from '../../components/OCRScanner';
 import FormatSelector from '../../components/FormatSelector';
 import { transformContent } from '../../lib/api';
-import { MagneticDock } from '../../components/ui/magnetic-dock';
 
 function CaptureContent() {
   const router = useRouter();
@@ -30,7 +29,6 @@ function CaptureContent() {
       setInputMode(initialMode);
     }
 
-    // Check pre-filled text from session
     const prefill = sessionStorage.getItem('transformai_prefill_text');
     if (prefill) {
       setRawText(prefill);
@@ -61,10 +59,8 @@ function CaptureContent() {
         audience
       });
 
-      // Cache result for Studio screen and history
       sessionStorage.setItem('transformai_active_result', JSON.stringify(result));
 
-      // Persist to recent history
       try {
         const storedHistory = JSON.parse(localStorage.getItem('transformai_history') || '[]');
         const newHistoryItem = {
@@ -80,7 +76,6 @@ function CaptureContent() {
         );
       } catch (e) {}
 
-      // Navigate to Studio (Screen 3)
       router.push('/studio');
     } catch (err) {
       console.error('Transform error:', err);
@@ -91,87 +86,78 @@ function CaptureContent() {
 
   return (
     <div className="content-wrapper">
-      {/* Top Breadcrumb & Step Tracker */}
+      {/* Top Header & Breadcrumb */}
       <div style={{
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        borderBottom: '2px solid var(--nb-black)',
-        paddingBottom: '10px'
+        padding: '4px 0 12px 0'
       }}>
         <Link
           href="/"
-          className="btn btn-secondary btn-sm"
+          className="btn btn-secondary btn-sm btn-pill"
           style={{ gap: '6px' }}
         >
-          <ArrowLeft size={16} />
-          <span>Back to Home</span>
+          <ArrowLeft size={15} />
+          <span>Overview</span>
         </Link>
 
-        <span style={{
-          fontSize: '12px',
-          fontFamily: 'var(--font-mono)',
-          fontWeight: '800',
-          background: 'var(--nb-yellow)',
-          color: '#ffffff',
-          border: '1.5px solid var(--nb-black)',
-          boxShadow: '1.5px 1.5px 0px var(--nb-black)',
-          padding: '4px 10px',
-          borderRadius: '4px'
-        }}>
-          STEP 1 OF 2 // RAW CAPTURE
-        </span>
+        <div className="bento-tag" style={{ marginBottom: 0 }}>
+          <Activity size={12} />
+          <span>Step 1 of 2 // Raw Capture</span>
+        </div>
       </div>
 
-      {/* 2-Column Responsive Workspace Grid (Laptop: Left/Right, Mobile: Stacked) */}
-      <div className="capture-layout-grid">
-        {/* Left Column: Input Modes & Raw Telemetry Stream */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
-          {/* Input Mode Selector Bar */}
-          <div className="card" style={{ padding: '12px 16px' }}>
+      {/* 2-Column Bento Workspace Grid (Laptop: 7/5 cols, Mobile: Stacked) */}
+      <div className="bento-grid">
+        {/* Left Bento Column: Input Modes & Raw Telemetry Stream (7 cols on laptop) */}
+        <div className="bento-span-7" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          {/* Capture Channel Switcher Card */}
+          <div className="bento-card" style={{ padding: '16px 20px' }}>
             <div style={{
-              fontSize: '11px',
-              fontFamily: 'var(--font-mono)',
-              fontWeight: '800',
-              color: 'var(--nb-black)',
-              textTransform: 'uppercase',
-              marginBottom: '10px',
               display: 'flex',
               alignItems: 'center',
-              justifyContent: 'space-between'
+              justifyContent: 'space-between',
+              marginBottom: '12px'
             }}>
-              <span>1. Choose Capture Channel</span>
-              <span style={{ color: 'var(--nb-text-muted)' }}>Edge WASM / Web Speech</span>
+              <span style={{ fontSize: '13px', fontWeight: '800', color: 'var(--bento-primary-deep)' }}>
+                1. Choose Capture Channel
+              </span>
+              <span style={{ fontSize: '11px', color: 'var(--bento-primary-muted)', fontFamily: 'var(--font-mono)' }}>
+                Edge WASM / Web Speech
+              </span>
             </div>
 
             <div style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(3, 1fr)',
-              gap: '10px'
+              gap: '8px',
+              background: 'var(--bento-primary-subtle)',
+              padding: '4px',
+              borderRadius: 'var(--bento-radius-md)'
             }}>
               <button
                 type="button"
                 onClick={() => setInputMode('voice')}
                 style={{
                   display: 'flex',
-                  flexDirection: 'column',
                   alignItems: 'center',
+                  justifyContent: 'center',
                   gap: '6px',
-                  padding: '12px 8px',
-                  borderRadius: 'var(--radius-sm)',
-                  border: '2px solid var(--nb-black)',
-                  boxShadow: inputMode === 'voice' ? '3px 3px 0px var(--nb-black)' : '1px 1px 0px var(--nb-black)',
-                  background: inputMode === 'voice' ? 'var(--nb-yellow)' : '#fff',
+                  padding: '10px 8px',
+                  borderRadius: 'var(--bento-radius-sm)',
+                  border: 'none',
+                  background: inputMode === 'voice' ? '#ffffff' : 'transparent',
+                  boxShadow: inputMode === 'voice' ? 'var(--bento-shadow-xs)' : 'none',
                   cursor: 'pointer',
-                  fontWeight: '800',
+                  fontWeight: '700',
                   fontSize: '13px',
-                  color: inputMode === 'voice' ? '#ffffff' : 'var(--nb-black)',
-                  transition: 'all 0.1s ease',
-                  transform: inputMode === 'voice' ? 'translate(-1px, -1px)' : 'none'
+                  color: inputMode === 'voice' ? 'var(--bento-primary-deep)' : 'var(--bento-primary-muted)',
+                  transition: 'all 0.15s ease'
                 }}
               >
-                <Mic size={22} />
-                <span>Voice Memo</span>
+                <Mic size={16} />
+                <span>Voice</span>
               </button>
 
               <button
@@ -179,24 +165,23 @@ function CaptureContent() {
                 onClick={() => setInputMode('camera')}
                 style={{
                   display: 'flex',
-                  flexDirection: 'column',
                   alignItems: 'center',
+                  justifyContent: 'center',
                   gap: '6px',
-                  padding: '12px 8px',
-                  borderRadius: 'var(--radius-sm)',
-                  border: '2px solid var(--nb-black)',
-                  boxShadow: inputMode === 'camera' ? '3px 3px 0px var(--nb-black)' : '1px 1px 0px var(--nb-black)',
-                  background: inputMode === 'camera' ? 'var(--nb-yellow)' : '#fff',
+                  padding: '10px 8px',
+                  borderRadius: 'var(--bento-radius-sm)',
+                  border: 'none',
+                  background: inputMode === 'camera' ? '#ffffff' : 'transparent',
+                  boxShadow: inputMode === 'camera' ? 'var(--bento-shadow-xs)' : 'none',
                   cursor: 'pointer',
-                  fontWeight: '800',
+                  fontWeight: '700',
                   fontSize: '13px',
-                  color: inputMode === 'camera' ? '#ffffff' : 'var(--nb-black)',
-                  transition: 'all 0.1s ease',
-                  transform: inputMode === 'camera' ? 'translate(-1px, -1px)' : 'none'
+                  color: inputMode === 'camera' ? 'var(--bento-primary-deep)' : 'var(--bento-primary-muted)',
+                  transition: 'all 0.15s ease'
                 }}
               >
-                <Camera size={22} />
-                <span>Whiteboard OCR</span>
+                <Camera size={16} />
+                <span>OCR</span>
               </button>
 
               <button
@@ -204,29 +189,28 @@ function CaptureContent() {
                 onClick={() => setInputMode('text')}
                 style={{
                   display: 'flex',
-                  flexDirection: 'column',
                   alignItems: 'center',
+                  justifyContent: 'center',
                   gap: '6px',
-                  padding: '12px 8px',
-                  borderRadius: 'var(--radius-sm)',
-                  border: '2px solid var(--nb-black)',
-                  boxShadow: inputMode === 'text' ? '3px 3px 0px var(--nb-black)' : '1px 1px 0px var(--nb-black)',
-                  background: inputMode === 'text' ? 'var(--nb-yellow)' : '#fff',
+                  padding: '10px 8px',
+                  borderRadius: 'var(--bento-radius-sm)',
+                  border: 'none',
+                  background: inputMode === 'text' ? '#ffffff' : 'transparent',
+                  boxShadow: inputMode === 'text' ? 'var(--bento-shadow-xs)' : 'none',
                   cursor: 'pointer',
-                  fontWeight: '800',
+                  fontWeight: '700',
                   fontSize: '13px',
-                  color: inputMode === 'text' ? '#ffffff' : 'var(--nb-black)',
-                  transition: 'all 0.1s ease',
-                  transform: inputMode === 'text' ? 'translate(-1px, -1px)' : 'none'
+                  color: inputMode === 'text' ? 'var(--bento-primary-deep)' : 'var(--bento-primary-muted)',
+                  transition: 'all 0.15s ease'
                 }}
               >
-                <Keyboard size={22} />
-                <span>Type / Paste</span>
+                <Keyboard size={16} />
+                <span>Text</span>
               </button>
             </div>
           </div>
 
-          {/* Active Input Mode Component */}
+          {/* Active Input Channel Component */}
           {inputMode === 'voice' && (
             <VoiceRecorder onTranscriptUpdate={setRawText} currentText={rawText} />
           )}
@@ -235,29 +219,26 @@ function CaptureContent() {
             <OCRScanner onOCRComplete={(txt) => setRawText((prev) => (prev ? prev + '\n\n' + txt : txt))} />
           )}
 
-          {/* Raw Telemetry & Editable Text Area */}
-          <div className="card">
+          {/* Raw Telemetry & Note Area */}
+          <div className="bento-card">
             <div style={{
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              marginBottom: '10px',
-              flexWrap: 'wrap',
-              gap: '8px'
+              marginBottom: '10px'
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span className="card-badge-header" style={{ marginBottom: 0 }}>
-                  Raw Telemetry Stream
+                <span style={{ fontSize: '13px', fontWeight: '800', color: 'var(--bento-primary-deep)' }}>
+                  Live Telemetry Stream
                 </span>
                 <span style={{
                   fontSize: '11px',
                   fontFamily: 'var(--font-mono)',
-                  fontWeight: '800',
-                  color: 'var(--nb-black)',
-                  background: '#fff',
-                  border: '1px solid var(--nb-black)',
-                  padding: '2px 6px',
-                  borderRadius: '4px'
+                  color: 'var(--bento-primary-muted)',
+                  background: 'var(--bento-primary-subtle)',
+                  padding: '2px 8px',
+                  borderRadius: 'var(--bento-radius-full)',
+                  fontWeight: '600'
                 }}>
                   {rawText.length} Chars
                 </span>
@@ -268,18 +249,17 @@ function CaptureContent() {
                   type="button"
                   onClick={() => setRawText('')}
                   style={{
-                    background: '#fee2e2',
-                    border: '1.5px solid var(--nb-black)',
-                    boxShadow: '1px 1px 0px var(--nb-black)',
-                    borderRadius: '4px',
-                    color: '#991b1b',
+                    background: 'var(--bento-accent-coral-bg)',
+                    border: '1px solid rgba(224, 49, 49, 0.2)',
+                    borderRadius: 'var(--bento-radius-full)',
+                    color: 'var(--bento-accent-coral)',
                     fontSize: '11px',
-                    fontWeight: '800',
+                    fontWeight: '700',
                     cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '4px',
-                    padding: '3px 8px'
+                    padding: '3px 9px'
                   }}
                 >
                   <Trash2 size={12} />
@@ -302,27 +282,37 @@ function CaptureContent() {
               style={{
                 width: '100%',
                 display: 'block',
-                background: 'var(--nb-yellow-50)',
-                border: '2px solid var(--nb-black)',
-                borderRadius: '8px',
-                color: 'var(--nb-black)',
-                padding: '14px',
+                background: 'var(--bento-primary-subtle)',
+                border: '1px solid rgba(73, 80, 87, 0.12)',
+                borderRadius: 'var(--bento-radius-md)',
+                color: 'var(--bento-primary-deep)',
+                padding: '14px 16px',
                 fontSize: '14px',
-                fontWeight: '600',
+                fontWeight: '500',
                 fontFamily: 'var(--font-sans)',
                 lineHeight: '1.6',
                 resize: 'vertical',
                 outline: 'none',
-                boxShadow: 'inset 2px 2px 0px rgba(0,0,0,0.05)'
+                transition: 'border-color 0.2s, box-shadow 0.2s'
+              }}
+              onFocus={(e) => {
+                e.target.style.borderColor = 'var(--bento-primary)';
+                e.target.style.boxShadow = 'var(--bento-shadow-focus)';
+                e.target.style.background = '#ffffff';
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = 'rgba(73, 80, 87, 0.12)';
+                e.target.style.boxShadow = 'none';
+                e.target.style.background = 'var(--bento-primary-subtle)';
               }}
             />
           </div>
         </div>
 
-        {/* Right Column: Format Selector & Transform Trigger */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
-          {/* Format Selector Component */}
-          <div className="card">
+        {/* Right Bento Column: Target Format Selectors & CTA (5 cols on laptop) */}
+        <div className="bento-span-5" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          {/* Deliverables Format Selector */}
+          <div className="bento-card">
             <FormatSelector
               selectedFormats={formats}
               onChangeFormats={setFormats}
@@ -336,52 +326,49 @@ function CaptureContent() {
           {/* Error Banner */}
           {errorMsg && (
             <div style={{
-              padding: '12px 14px',
-              borderRadius: 'var(--radius-sm)',
-              background: '#fee2e2',
-              border: '2px solid var(--nb-black)',
-              boxShadow: '3px 3px 0px var(--nb-black)',
-              color: '#991b1b',
+              padding: '12px 16px',
+              borderRadius: 'var(--bento-radius-sm)',
+              background: 'var(--bento-accent-coral-bg)',
+              border: '1px solid rgba(224, 49, 49, 0.2)',
+              color: 'var(--bento-accent-coral)',
               fontSize: '13px',
-              fontWeight: '700',
+              fontWeight: '600',
               display: 'flex',
               alignItems: 'center',
               gap: '8px'
             }}>
-              <ShieldAlert size={18} style={{ flexShrink: 0 }} />
+              <ShieldAlert size={16} style={{ flexShrink: 0 }} />
               <span>{errorMsg}</span>
             </div>
           )}
 
-          {/* Prominent Neobrutalist Transform Trigger Button */}
-          <div style={{ position: 'sticky', bottom: '16px', zIndex: 30 }}>
-            <button
-              type="button"
-              onClick={handleTransform}
-              disabled={isTransforming}
-              className="btn btn-primary"
-              style={{
-                width: '100%',
-                padding: '18px 24px',
-                fontSize: '16px',
-                fontWeight: '900',
-                letterSpacing: '0.5px',
-                boxShadow: '5px 5px 0px var(--nb-black)'
-              }}
-            >
-              {isTransforming ? (
-                <>
-                  <Loader2 size={22} className="animate-spin" />
-                  <span>TRANSFORMING VIA HEADLESS ENGINE...</span>
-                </>
-              ) : (
-                <>
-                  <Sparkles size={22} />
-                  <span>TRANSFORM DELIVERABLES ({formats.length})</span>
-                </>
-              )}
-            </button>
-          </div>
+          {/* Bento Transform Trigger Button */}
+          <button
+            type="button"
+            onClick={handleTransform}
+            disabled={isTransforming}
+            className="btn btn-primary"
+            style={{
+              width: '100%',
+              padding: '18px 24px',
+              fontSize: '15px',
+              fontWeight: '800',
+              borderRadius: 'var(--bento-radius-md)',
+              boxShadow: '0 8px 25px rgba(73, 80, 87, 0.28)'
+            }}
+          >
+            {isTransforming ? (
+              <>
+                <Loader2 size={20} className="animate-spin" />
+                <span>TRANSFORMING VIA HEADLESS ENGINE...</span>
+              </>
+            ) : (
+              <>
+                <Sparkles size={20} />
+                <span>TRANSFORM DELIVERABLES ({formats.length})</span>
+              </>
+            )}
+          </button>
         </div>
       </div>
     </div>
@@ -392,7 +379,7 @@ export default function CaptureScreen() {
   return (
     <Suspense fallback={
       <div className="content-wrapper" style={{ justifyContent: 'center', alignItems: 'center', minHeight: '50vh' }}>
-        <Loader2 size={36} className="animate-spin" color="var(--nb-black)" />
+        <Loader2 size={32} className="animate-spin" color="var(--bento-primary)" />
       </div>
     }>
       <CaptureContent />

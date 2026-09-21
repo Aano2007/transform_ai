@@ -29,48 +29,52 @@ export default function OfficeKitBridge() {
 
   return (
     <div style={{
-      background: 'var(--nb-yellow-100)',
-      borderBottom: '2px solid var(--nb-black)',
+      background: 'rgba(255, 255, 255, 0.75)',
+      backdropFilter: 'blur(10px)',
+      WebkitBackdropFilter: 'blur(10px)',
+      border: 'var(--bento-border)',
+      borderRadius: 'var(--bento-radius-md)',
       padding: '8px 18px',
+      margin: '0 4px 16px 4px',
       fontSize: '11px',
       fontFamily: 'var(--font-mono)',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
-      color: 'var(--nb-black)',
-      fontWeight: '700'
+      color: 'var(--bento-primary-dark)',
+      fontWeight: '600',
+      boxShadow: 'var(--bento-shadow-xs)'
     }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
         <span style={{
           display: 'inline-flex',
           alignItems: 'center',
           gap: '6px',
-          background: health?.status === 'online' ? 'var(--nb-yellow)' : '#fecaca',
-          color: health?.status === 'online' ? '#ffffff' : 'var(--nb-black)',
-          border: '1.5px solid var(--nb-black)',
-          boxShadow: '1.5px 1.5px 0px var(--nb-black)',
-          borderRadius: '4px',
-          padding: '2px 8px',
+          background: health?.status === 'online' ? 'var(--bento-accent-green-bg)' : 'var(--bento-accent-coral-bg)',
+          color: health?.status === 'online' ? 'var(--bento-accent-green)' : 'var(--bento-accent-coral)',
+          border: '1px solid rgba(47, 158, 68, 0.2)',
+          borderRadius: 'var(--bento-radius-full)',
+          padding: '2px 9px',
           fontSize: '11px',
-          fontWeight: '800'
+          fontWeight: '700'
         }}>
           <span className="pulse-dot" style={{
-            background: health?.status === 'online' ? 'var(--nb-green)' : '#ef4444'
+            background: health?.status === 'online' ? 'var(--bento-accent-green)' : 'var(--bento-accent-coral)'
           }} />
           {health?.status === 'online' ? 'iQOO LINK ONLINE' : 'CONNECTING EDGE...'}
         </span>
-        <span style={{ color: 'var(--nb-black)', opacity: 0.3 }}>|</span>
+
+        <span style={{ color: 'var(--bento-primary-surface)' }}>•</span>
+
         <span style={{
           display: 'flex',
           alignItems: 'center',
           gap: '4px',
-          background: '#fff',
-          border: '1px solid var(--nb-black)',
-          padding: '2px 6px',
-          borderRadius: '4px'
+          color: 'var(--bento-primary-muted)',
+          fontWeight: '600'
         }}>
-          <Wifi size={12} color="var(--nb-black)" />
-          {ping}ms Wi-Fi
+          <Wifi size={12} />
+          <span>{ping}ms Local Wi-Fi</span>
         </span>
       </div>
 
@@ -79,15 +83,15 @@ export default function OfficeKitBridge() {
           display: 'flex',
           alignItems: 'center',
           gap: '4px',
-          background: 'var(--nb-yellow)',
-          border: '1px solid var(--nb-black)',
-          padding: '2px 7px',
-          borderRadius: '4px',
-          color: '#ffffff',
+          background: 'var(--bento-primary-subtle)',
+          padding: '3px 8px',
+          borderRadius: 'var(--bento-radius-full)',
+          color: 'var(--bento-primary-dark)',
           fontSize: '10px',
-          fontWeight: '800'
+          fontWeight: '700',
+          border: '1px solid rgba(73, 80, 87, 0.1)'
         }}>
-          <Laptop size={12} />
+          <Laptop size={11} />
           HEADLESS ENGINE
         </span>
 
@@ -95,19 +99,19 @@ export default function OfficeKitBridge() {
           onClick={() => setIsMirroring(!isMirroring)}
           title="Toggle Screen Mirroring for Pitch"
           style={{
-            background: isMirroring ? 'var(--nb-black)' : '#fff',
-            color: isMirroring ? '#ffffff' : 'var(--nb-black)',
-            border: '1.5px solid var(--nb-black)',
-            boxShadow: '1.5px 1.5px 0px var(--nb-black)',
-            borderRadius: '4px',
-            padding: '2px 8px',
+            background: isMirroring ? 'var(--bento-primary-deep)' : '#ffffff',
+            color: isMirroring ? '#ffffff' : 'var(--bento-primary-dark)',
+            border: 'var(--bento-border)',
+            borderRadius: 'var(--bento-radius-full)',
+            padding: '3px 9px',
             fontSize: '10px',
-            fontWeight: '800',
+            fontWeight: '700',
             display: 'flex',
             alignItems: 'center',
             gap: '4px',
             cursor: 'pointer',
-            transition: 'all 0.1s ease'
+            transition: 'all 0.15s ease',
+            boxShadow: 'var(--bento-shadow-xs)'
           }}
         >
           <Cast size={11} />

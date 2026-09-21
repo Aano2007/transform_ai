@@ -71,34 +71,31 @@ export default function SlideDetailScreen() {
   ];
 
   return (
-    <div className="content-wrapper" style={{ paddingBottom: '100px' }}>
-      {/* Top Bar Navigation */}
+    <div className="content-wrapper" style={{ paddingBottom: '90px' }}>
+      {/* Top Header & Breadcrumb */}
       <div style={{
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        borderBottom: '2px solid var(--nb-black)',
-        paddingBottom: '12px'
+        padding: '4px 0 12px 0'
       }}>
         <Link
           href="/studio"
-          className="btn btn-secondary btn-sm"
+          className="btn btn-secondary btn-sm btn-pill"
           style={{ gap: '6px' }}
         >
-          <ArrowLeft size={16} />
-          <span>Back to Deliverables</span>
+          <ArrowLeft size={15} />
+          <span>Deliverables</span>
         </Link>
 
         <span style={{
           fontSize: '11px',
           fontFamily: 'var(--font-mono)',
-          fontWeight: '900',
-          background: 'var(--nb-yellow)',
-          color: '#ffffff',
-          border: '1.5px solid var(--nb-black)',
-          boxShadow: '1.5px 1.5px 0px var(--nb-black)',
+          fontWeight: '700',
+          background: 'var(--bento-primary-subtle)',
+          color: 'var(--bento-primary)',
           padding: '3px 10px',
-          borderRadius: '4px'
+          borderRadius: 'var(--bento-radius-full)'
         }}>
           SCREEN 4 // SLIDE PRESENTER STAGE
         </span>
@@ -110,29 +107,28 @@ export default function SlideDetailScreen() {
         justifyContent: 'space-between',
         flexWrap: 'wrap',
         gap: '12px',
-        padding: '6px 0'
+        padding: '4px 0'
       }}>
         <div>
-          <h2 style={{ fontSize: 'clamp(20px, 3vw, 26px)', fontWeight: '900', color: 'var(--nb-black)' }}>
-            Executive Presentation Deck
+          <h2 style={{ fontSize: 'clamp(20px, 2.6vw, 24px)', fontWeight: '900', color: 'var(--bento-primary-deep)', letterSpacing: '-0.5px' }}>
+            Executive Slide Deck
           </h2>
-          <p style={{ fontSize: '13px', color: 'var(--nb-text-muted)', fontWeight: '600' }}>
-            16:9 Widescreen Presentation Canvas with Speaker Teleprompter
+          <p style={{ fontSize: '13px', color: 'var(--bento-primary-muted)', fontWeight: '500' }}>
+            16:9 Presentation Decks with Speaker Notes
           </p>
         </div>
 
         <span style={{
           padding: '4px 10px',
-          background: 'var(--nb-yellow)',
-          border: '2px solid var(--nb-black)',
-          boxShadow: '2px 2px 0px var(--nb-black)',
-          borderRadius: '4px',
-          fontSize: '12px',
-          color: '#ffffff',
-          fontWeight: '900',
+          background: 'var(--bento-primary-subtle)',
+          border: 'var(--bento-border)',
+          borderRadius: 'var(--bento-radius-full)',
+          fontSize: '11px',
+          color: 'var(--bento-primary-dark)',
+          fontWeight: '700',
           fontFamily: 'var(--font-mono)'
         }}>
-          {slides.length} SLIDES LOADED
+          {slides.length} SLIDES
         </span>
       </div>
 
@@ -144,23 +140,23 @@ export default function SlideDetailScreen() {
         onSlideUpdated={handleSlideUpdated}
       />
 
-      {/* Office Kit Pitch Pro-Tip Box */}
-      <div className="card card-yellow">
+      {/* Office Kit Strategy Note Bento Card */}
+      <div className="bento-card" style={{ background: 'linear-gradient(135deg, #ffffff 0%, var(--bento-canvas) 100%)', padding: '18px 20px' }}>
         <div style={{
-          color: 'var(--nb-black)',
-          fontWeight: '900',
+          color: 'var(--bento-primary)',
+          fontWeight: '800',
           fontFamily: 'var(--font-mono)',
           fontSize: '12px',
-          marginBottom: '6px',
+          marginBottom: '4px',
           display: 'flex',
           alignItems: 'center',
           gap: '6px'
         }}>
-          <Laptop size={16} />
+          <Laptop size={15} />
           <span>iQOO OFFICE KIT STRATEGY NOTE:</span>
         </div>
-        <div style={{ fontSize: '13px', color: 'var(--nb-black)', fontWeight: '600', lineHeight: 1.5 }}>
-          During your presentation, download the <strong>.PPTX</strong> deck and drag it across devices in seconds using iQOO Office Kit multi-screen collaboration.
+        <div style={{ fontSize: '13px', color: 'var(--bento-primary-muted)', lineHeight: 1.5, fontWeight: '500' }}>
+          During the hackathon pitch, tap <strong>"Deck (.pptx)"</strong> to download on phone, then drag directly to your laptop display via iQOO Office Kit multi-screen collaboration.
         </div>
       </div>
 

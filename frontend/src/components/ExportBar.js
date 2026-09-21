@@ -44,97 +44,92 @@ export default function ExportBar({
     <>
       <div style={{
         position: 'fixed',
-        bottom: 0,
-        left: 0,
-        right: 0,
-        background: '#ffffff',
-        borderTop: '2.5px solid var(--nb-black)',
-        padding: '12px 20px',
+        bottom: '16px',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        width: 'calc(100% - 32px)',
+        maxWidth: '1000px',
+        background: 'rgba(255, 255, 255, 0.92)',
+        backdropFilter: 'blur(16px)',
+        WebkitBackdropFilter: 'blur(16px)',
+        border: 'var(--bento-border)',
+        borderRadius: 'var(--bento-radius-lg)',
+        padding: '10px 18px',
         display: 'flex',
         gap: '10px',
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'space-between',
         zIndex: 40,
-        boxShadow: '0 -4px 12px rgba(0, 0, 0, 0.08)'
+        boxShadow: 'var(--bento-shadow-lg)'
       }}>
-        <div style={{
-          width: '100%',
-          maxWidth: '1240px',
-          display: 'flex',
-          gap: '10px',
-          alignItems: 'center'
-        }}>
-          <button
-            type="button"
-            onClick={handleCopy}
-            className={`btn ${copied ? 'btn-secondary' : 'btn-primary'} btn-sm`}
-            style={{
-              flex: 1,
-              background: copied ? 'var(--nb-yellow-100)' : undefined,
-              borderColor: 'var(--nb-black)',
-              fontWeight: '800'
-            }}
+        <button
+          type="button"
+          onClick={handleCopy}
+          className={`btn ${copied ? 'btn-secondary' : 'btn-primary'} btn-sm btn-pill`}
+          style={{
+            flex: 1,
+            fontWeight: '700'
+          }}
+        >
+          {copied ? <Check size={15} /> : <Copy size={15} />}
+          <span>{copied ? 'Copied & Synced to Clipboard!' : 'Copy Formatted Content'}</span>
+        </button>
+
+        {pptxUrl && (
+          <a
+            href={pptxUrl}
+            download="TransformAI_Presentation.pptx"
+            className="btn btn-secondary btn-sm btn-pill"
+            style={{ textDecoration: 'none', fontWeight: '700' }}
           >
-            {copied ? <Check size={16} /> : <Copy size={16} />}
-            <span>{copied ? 'Copied & Synced to Clipboard!' : 'Copy Formatted Text'}</span>
-          </button>
+            <Download size={14} />
+            <span>.PPTX</span>
+          </a>
+        )}
 
-          {pptxUrl && (
-            <a
-              href={pptxUrl}
-              download="TransformAI_Presentation.pptx"
-              className="btn btn-secondary btn-sm"
-              style={{ textDecoration: 'none', fontWeight: '800' }}
-            >
-              <Download size={15} />
-              <span>.PPTX Deck</span>
-            </a>
-          )}
-
-          {docxUrl && (
-            <a
-              href={docxUrl}
-              download="TransformAI_Brief.docx"
-              className="btn btn-secondary btn-sm"
-              style={{ textDecoration: 'none', fontWeight: '800' }}
-            >
-              <FileDown size={15} />
-              <span>.DOCX Brief</span>
-            </a>
-          )}
-
-          <button
-            type="button"
-            onClick={handleShare}
-            className="btn btn-secondary btn-sm"
-            style={{ padding: '8px 14px' }}
-            title="Share Deliverable"
+        {docxUrl && (
+          <a
+            href={docxUrl}
+            download="TransformAI_Brief.docx"
+            className="btn btn-secondary btn-sm btn-pill"
+            style={{ textDecoration: 'none', fontWeight: '700' }}
           >
-            <Share2 size={16} />
-          </button>
-        </div>
+            <FileDown size={14} />
+            <span>.DOCX</span>
+          </a>
+        )}
+
+        <button
+          type="button"
+          onClick={handleShare}
+          className="btn btn-secondary btn-sm btn-pill"
+          style={{ padding: '8px 12px' }}
+          title="Share Deliverable"
+        >
+          <Share2 size={15} />
+        </button>
       </div>
 
       {/* iQOO Office Kit Cross-Device Shared Clipboard Toast */}
       {showOfficeKitToast && (
         <div className="officekit-toast">
           <div style={{
-            width: '36px',
-            height: '36px',
-            borderRadius: '6px',
-            background: 'var(--nb-black)',
+            width: '34px',
+            height: '34px',
+            borderRadius: '10px',
+            background: 'var(--bento-primary)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            color: 'var(--nb-yellow)'
+            color: '#ffffff'
           }}>
-            <Laptop size={20} />
+            <Laptop size={18} />
           </div>
           <div>
-            <div style={{ fontSize: '14px', fontWeight: '900', color: 'var(--nb-black)' }}>
+            <div style={{ fontSize: '13.5px', fontWeight: '800', color: '#ffffff' }}>
               iQOO Office Kit Synced!
             </div>
-            <div style={{ fontSize: '11px', color: 'var(--nb-black)', opacity: 0.85, fontWeight: '700', fontFamily: 'var(--font-mono)' }}>
+            <div style={{ fontSize: '11px', color: '#ced4da', fontWeight: '500', fontFamily: 'var(--font-mono)' }}>
               Clipboard auto-broadcasted to Laptop via Local Wi-Fi
             </div>
           </div>

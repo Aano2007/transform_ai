@@ -97,17 +97,17 @@ export default function VoiceRecorder({ onTranscriptUpdate, currentText = '' }) 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
       <div style={{
-        background: active ? 'var(--nb-yellow-100)' : 'var(--nb-yellow-50)',
-        border: '2.5px solid var(--nb-black)',
-        borderRadius: 'var(--radius-md)',
-        boxShadow: active ? '4px 4px 0px var(--nb-black)' : '2px 2px 0px var(--nb-black)',
-        padding: '24px 20px',
+        background: active ? 'rgba(73, 80, 87, 0.04)' : '#ffffff',
+        border: active ? '1.5px solid var(--bento-primary)' : 'var(--bento-border)',
+        borderRadius: 'var(--bento-radius-md)',
+        boxShadow: active ? '0 8px 25px rgba(73, 80, 87, 0.12)' : 'var(--bento-shadow-sm)',
+        padding: '26px 20px',
         textAlign: 'center',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         gap: '14px',
-        transition: 'all 0.15s ease'
+        transition: 'all 0.2s ease'
       }}>
         {active ? (
           <div className="audio-waves">
@@ -122,27 +122,27 @@ export default function VoiceRecorder({ onTranscriptUpdate, currentText = '' }) 
           </div>
         ) : (
           <div style={{
-            width: '60px',
-            height: '60px',
+            width: '56px',
+            height: '56px',
             borderRadius: '50%',
-            background: 'var(--nb-yellow)',
-            border: '2px solid var(--nb-black)',
-            boxShadow: '2px 2px 0px var(--nb-black)',
+            background: 'var(--bento-primary-subtle)',
+            border: '1px solid rgba(73, 80, 87, 0.15)',
+            boxShadow: '0 4px 14px rgba(0, 0, 0, 0.05)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            color: 'var(--nb-black)'
+            color: 'var(--bento-primary-dark)'
           }}>
-            <Mic size={28} />
+            <Mic size={26} />
           </div>
         )}
 
         <div>
-          <h4 style={{ fontSize: '16px', fontWeight: '900', color: 'var(--nb-black)' }}>
+          <h4 style={{ fontSize: '15px', fontWeight: '800', color: 'var(--bento-primary-deep)' }}>
             {active ? 'Listening (Web Speech API Edge)...' : 'Tap to Record Voice Memo'}
           </h4>
-          <p style={{ fontSize: '13px', color: 'var(--nb-text-muted)', marginTop: '4px', fontWeight: '600' }}>
-            100% on-device speech-to-text. Zero audio sent to cloud.
+          <p style={{ fontSize: '12px', color: 'var(--bento-primary-muted)', marginTop: '3px', fontWeight: '500' }}>
+            100% on-device speech-to-text. Zero audio leaves your phone.
           </p>
         </div>
 
@@ -150,9 +150,14 @@ export default function VoiceRecorder({ onTranscriptUpdate, currentText = '' }) 
           <button
             type="button"
             onClick={toggleRecording}
-            className={`btn ${active ? 'btn-dark' : 'btn-primary'} btn-sm`}
+            className={`btn ${active ? 'btn-secondary' : 'btn-primary'} btn-sm btn-pill`}
+            style={{
+              background: active ? '#ffffff' : undefined,
+              color: active ? '#e03131' : undefined,
+              borderColor: active ? 'rgba(224, 49, 49, 0.3)' : undefined
+            }}
           >
-            {active ? <MicOff size={16} /> : <Mic size={16} />}
+            {active ? <MicOff size={15} /> : <Mic size={15} />}
             <span>{active ? 'Stop Recording' : 'Start Microphone'}</span>
           </button>
 
@@ -160,10 +165,10 @@ export default function VoiceRecorder({ onTranscriptUpdate, currentText = '' }) 
             <button
               type="button"
               onClick={simulateVoiceStream}
-              className="btn btn-secondary btn-sm"
+              className="btn btn-secondary btn-sm btn-pill"
               title="Simulate realistic voice input stream"
             >
-              <Sparkles size={14} color="var(--nb-black)" />
+              <Sparkles size={14} color="var(--bento-primary)" />
               <span>Simulate Voice</span>
             </button>
           )}
@@ -173,12 +178,12 @@ export default function VoiceRecorder({ onTranscriptUpdate, currentText = '' }) 
           <div style={{
             fontSize: '12px',
             fontStyle: 'italic',
-            color: 'var(--nb-black)',
-            background: '#fff',
-            border: '1.5px solid var(--nb-black)',
-            padding: '4px 10px',
-            borderRadius: '4px',
-            marginTop: '4px'
+            color: 'var(--bento-primary)',
+            background: 'var(--bento-primary-subtle)',
+            border: '1px solid rgba(73, 80, 87, 0.12)',
+            padding: '6px 12px',
+            borderRadius: 'var(--bento-radius-full)',
+            marginTop: '2px'
           }}>
             "{interimText}"
           </div>

@@ -31,7 +31,6 @@ export default function StudioScreen() {
         }
       } catch (e) {}
     } else {
-      // Fallback demo data if visited directly
       const defaultData = {
         ico: {
           event_title: "iQOO Product Strategy & Edge Compute",
@@ -175,7 +174,7 @@ Built for speed. Powered by iQOO edge compute.
   if (!data) {
     return (
       <div className="content-wrapper" style={{ justifyContent: 'center', alignItems: 'center', minHeight: '50vh' }}>
-        <Sparkles size={36} className="animate-spin" color="var(--nb-black)" />
+        <Sparkles size={32} className="animate-spin" color="var(--bento-primary)" />
       </div>
     );
   }
@@ -258,47 +257,42 @@ Built for speed. Powered by iQOO edge compute.
   };
 
   return (
-    <div className="content-wrapper" style={{ paddingBottom: '100px' }}>
-      {/* Top Bar Navigation */}
+    <div className="content-wrapper" style={{ paddingBottom: '90px' }}>
+      {/* Top Header & Breadcrumb */}
       <div style={{
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        borderBottom: '2px solid var(--nb-black)',
-        paddingBottom: '12px'
+        padding: '4px 0 12px 0'
       }}>
         <Link
           href="/capture"
-          className="btn btn-secondary btn-sm"
+          className="btn btn-secondary btn-sm btn-pill"
           style={{ gap: '6px' }}
         >
-          <ArrowLeft size={16} />
+          <ArrowLeft size={15} />
           <span>Capture Workspace</span>
         </Link>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <span style={{
-            fontSize: '11px',
-            fontFamily: 'var(--font-mono)',
-            fontWeight: '800',
-            background: 'var(--nb-green)',
-            color: 'var(--nb-black)',
-            border: '1.5px solid var(--nb-black)',
-            boxShadow: '1.5px 1.5px 0px var(--nb-black)',
-            padding: '3px 8px',
-            borderRadius: '4px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '5px'
-          }}>
-            <ShieldCheck size={14} />
-            ICO GROUND TRUTH VERIFIED
-          </span>
+        <div style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: '6px',
+          background: 'var(--bento-accent-green-bg)',
+          color: 'var(--bento-accent-green)',
+          border: '1px solid rgba(47, 158, 68, 0.2)',
+          borderRadius: 'var(--bento-radius-full)',
+          padding: '3px 10px',
+          fontSize: '11px',
+          fontWeight: '700'
+        }}>
+          <ShieldCheck size={13} />
+          <span>ICO Ground Truth Verified</span>
         </div>
       </div>
 
-      {/* Deliverable Meta Banner */}
-      <div className="card card-hero">
+      {/* Deliverable Meta Bento Banner */}
+      <div className="bento-card bento-hero">
         <div style={{
           display: 'flex',
           alignItems: 'center',
@@ -306,49 +300,47 @@ Built for speed. Powered by iQOO edge compute.
           flexWrap: 'wrap',
           gap: '8px'
         }}>
-          <div className="card-badge-header">
-            DELIVERABLE SESSION // {ico?.timestamp || 'RECENT'}
+          <div className="bento-tag">
+            <span>SESSION // {ico?.timestamp || 'RECENT'}</span>
           </div>
           <span style={{
             fontSize: '11px',
             fontFamily: 'var(--font-mono)',
-            fontWeight: '800',
-            color: 'var(--nb-black)',
-            background: '#fff',
-            border: '1px solid var(--nb-black)',
-            padding: '2px 8px',
-            borderRadius: '4px'
+            color: 'var(--bento-primary-muted)',
+            background: 'var(--bento-primary-subtle)',
+            padding: '3px 8px',
+            borderRadius: 'var(--bento-radius-full)',
+            fontWeight: '600'
           }}>
             📍 {ico?.location || 'iQOO Edge Node'}
           </span>
         </div>
 
         <h2 style={{
-          fontSize: 'clamp(20px, 3vw, 26px)',
+          fontSize: 'clamp(20px, 2.6vw, 26px)',
           fontWeight: '900',
-          color: 'var(--nb-black)',
-          marginTop: '6px'
+          color: 'var(--bento-primary-deep)',
+          letterSpacing: '-0.5px'
         }}>
           {ico?.event_title || 'TransformAI Deliverable'}
         </h2>
-        <p style={{ fontSize: '14px', color: 'var(--nb-text-muted)', marginTop: '4px', fontWeight: '600' }}>
+        <p style={{ fontSize: '13.5px', color: 'var(--bento-primary-muted)', marginTop: '4px', fontWeight: '500' }}>
           {ico?.primary_objective}
         </p>
 
         {/* Entities & Metrics Row */}
         {ico?.entities?.metrics?.length > 0 && (
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '12px' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '14px' }}>
             {ico.entities.metrics.map((m, i) => (
               <span key={i} style={{
                 fontSize: '11px',
                 fontFamily: 'var(--font-mono)',
-                fontWeight: '800',
-                background: 'var(--nb-yellow)',
-                border: '1.5px solid var(--nb-black)',
-                boxShadow: '1.5px 1.5px 0px var(--nb-black)',
-                color: '#ffffff',
-                padding: '3px 8px',
-                borderRadius: '4px'
+                fontWeight: '700',
+                background: 'var(--bento-primary-subtle)',
+                border: '1px solid rgba(73, 80, 87, 0.12)',
+                color: 'var(--bento-primary-dark)',
+                padding: '2px 8px',
+                borderRadius: 'var(--bento-radius-full)'
               }}>
                 ⚡ {m}
               </span>
@@ -357,7 +349,7 @@ Built for speed. Powered by iQOO edge compute.
         )}
       </div>
 
-      {/* Tabs Navigation (Exec Summary, Presentation, LinkedIn, Twitter, ICO Raw) */}
+      {/* Segmented Pill Tabs Navigation */}
       <div className="tabs-container">
         {outputs.executive_summary && (
           <button
@@ -413,25 +405,24 @@ Built for speed. Powered by iQOO edge compute.
         </button>
       </div>
 
-      {/* Tab Content Display */}
+      {/* Tab Content Display inside Bento Card */}
       {activeTab === 'executive_summary' && (
-        <div className="card prose">
+        <div className="bento-card prose">
           <div style={{
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            marginBottom: '14px',
-            borderBottom: '2px solid var(--nb-black)',
-            paddingBottom: '8px'
+            marginBottom: '16px',
+            borderBottom: '1px solid rgba(73, 80, 87, 0.1)',
+            paddingBottom: '10px'
           }}>
-            <span style={{ fontSize: '12px', fontWeight: '900', color: 'var(--nb-black)', fontFamily: 'var(--font-mono)' }}>
+            <span style={{ fontSize: '12px', fontWeight: '800', color: 'var(--bento-primary)', fontFamily: 'var(--font-mono)' }}>
               FORMAT: EXECUTIVE BRIEFING (.DOCX / MARKDOWN)
             </span>
             <button
               onClick={handleRegenerateCurrentFormat}
               disabled={isRegenerating}
-              className="btn btn-secondary btn-sm"
-              style={{ padding: '4px 10px' }}
+              className="btn btn-secondary btn-sm btn-pill"
             >
               <RefreshCw size={12} className={isRegenerating ? 'animate-spin' : ''} />
               <span>Regenerate</span>
@@ -444,23 +435,22 @@ Built for speed. Powered by iQOO edge compute.
       )}
 
       {activeTab === 'presentation' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
           <div style={{
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            borderBottom: '2px solid var(--nb-black)',
-            paddingBottom: '8px'
+            padding: '2px 0'
           }}>
-            <span style={{ fontSize: '12px', fontWeight: '900', color: 'var(--nb-black)', fontFamily: 'var(--font-mono)' }}>
+            <span style={{ fontSize: '12px', fontWeight: '800', color: 'var(--bento-primary)', fontFamily: 'var(--font-mono)' }}>
               FORMAT: 16:9 WIDESCREEN PRESENTATION DECK (.PPTX)
             </span>
             <Link
               href="/slides"
-              className="btn btn-primary btn-sm"
+              className="btn btn-primary btn-sm btn-pill"
               style={{ gap: '6px' }}
             >
-              <MonitorPlay size={14} />
+              <MonitorPlay size={13} />
               <span>Full Stage Presenter</span>
             </Link>
           </div>
@@ -475,23 +465,22 @@ Built for speed. Powered by iQOO edge compute.
       )}
 
       {activeTab === 'linkedin' && (
-        <div className="card">
+        <div className="bento-card">
           <div style={{
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
             marginBottom: '14px',
-            borderBottom: '2px solid var(--nb-black)',
-            paddingBottom: '8px'
+            borderBottom: '1px solid rgba(73, 80, 87, 0.1)',
+            paddingBottom: '10px'
           }}>
-            <span style={{ fontSize: '12px', fontWeight: '900', color: 'var(--nb-black)', fontFamily: 'var(--font-mono)' }}>
+            <span style={{ fontSize: '12px', fontWeight: '800', color: '#0a66c2', fontFamily: 'var(--font-mono)' }}>
               FORMAT: LINKEDIN LEADERSHIP POST
             </span>
             <button
               onClick={handleRegenerateCurrentFormat}
               disabled={isRegenerating}
-              className="btn btn-secondary btn-sm"
-              style={{ padding: '4px 10px' }}
+              className="btn btn-secondary btn-sm btn-pill"
             >
               <RefreshCw size={12} className={isRegenerating ? 'animate-spin' : ''} />
               <span>Regenerate</span>
@@ -501,12 +490,11 @@ Built for speed. Powered by iQOO edge compute.
             whiteSpace: 'pre-line',
             fontSize: '14px',
             lineHeight: '1.7',
-            color: 'var(--nb-black)',
-            background: 'var(--nb-yellow-50)',
-            padding: '18px',
-            borderRadius: 'var(--radius-sm)',
-            border: '2px solid var(--nb-black)',
-            boxShadow: '2px 2px 0px var(--nb-black)'
+            color: 'var(--bento-primary-deep)',
+            background: 'var(--bento-primary-subtle)',
+            padding: '18px 20px',
+            borderRadius: 'var(--bento-radius-md)',
+            border: 'var(--bento-border)'
           }}>
             {renderTextWithCitations(outputs.linkedin)}
           </div>
@@ -514,22 +502,20 @@ Built for speed. Powered by iQOO edge compute.
       )}
 
       {activeTab === 'twitter' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           <div style={{
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            borderBottom: '2px solid var(--nb-black)',
-            paddingBottom: '8px'
+            padding: '2px 0'
           }}>
-            <span style={{ fontSize: '12px', fontWeight: '900', color: 'var(--nb-black)', fontFamily: 'var(--font-mono)' }}>
+            <span style={{ fontSize: '12px', fontWeight: '800', color: '#1d9bf0', fontFamily: 'var(--font-mono)' }}>
               FORMAT: TWITTER / X THREAD (&lt;280 CHARACTERS EACH)
             </span>
             <button
               onClick={handleRegenerateCurrentFormat}
               disabled={isRegenerating}
-              className="btn btn-secondary btn-sm"
-              style={{ padding: '4px 10px' }}
+              className="btn btn-secondary btn-sm btn-pill"
             >
               <RefreshCw size={12} className={isRegenerating ? 'animate-spin' : ''} />
               <span>Regenerate</span>
@@ -540,35 +526,33 @@ Built for speed. Powered by iQOO edge compute.
             const trimmed = tweet.trim();
             if (!trimmed) return null;
             return (
-              <div key={i} className="card" style={{ padding: '16px' }}>
+              <div key={i} className="bento-card" style={{ padding: '16px 20px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
                   <span style={{
                     fontSize: '11px',
                     fontFamily: 'var(--font-mono)',
-                    fontWeight: '900',
-                    background: 'var(--nb-yellow)',
-                    color: '#ffffff',
-                    border: '1.5px solid var(--nb-black)',
-                    boxShadow: '1.5px 1.5px 0px var(--nb-black)',
+                    fontWeight: '800',
+                    background: 'var(--bento-primary-subtle)',
+                    color: 'var(--bento-primary)',
                     padding: '2px 8px',
-                    borderRadius: '4px'
+                    borderRadius: 'var(--bento-radius-full)',
+                    border: '1px solid rgba(73, 80, 87, 0.12)'
                   }}>
                     TWEET {i + 1}
                   </span>
                   <span style={{
                     fontSize: '11px',
                     fontFamily: 'var(--font-mono)',
-                    fontWeight: '800',
-                    color: trimmed.length <= 280 ? '#15803d' : '#b91c1c',
-                    background: trimmed.length <= 280 ? '#dcfce7' : '#fee2e2',
-                    border: '1px solid var(--nb-black)',
-                    padding: '2px 6px',
-                    borderRadius: '4px'
+                    fontWeight: '700',
+                    color: trimmed.length <= 280 ? 'var(--bento-accent-green)' : 'var(--bento-accent-coral)',
+                    background: trimmed.length <= 280 ? 'var(--bento-accent-green-bg)' : 'var(--bento-accent-coral-bg)',
+                    padding: '2px 8px',
+                    borderRadius: 'var(--bento-radius-full)'
                   }}>
                     {trimmed.length} / 280 chars
                   </span>
                 </div>
-                <div style={{ whiteSpace: 'pre-line', fontSize: '14px', lineHeight: 1.6, color: 'var(--nb-black)' }}>
+                <div style={{ whiteSpace: 'pre-line', fontSize: '14px', lineHeight: 1.65, color: 'var(--bento-primary-deep)' }}>
                   {renderTextWithCitations(trimmed)}
                 </div>
               </div>
@@ -578,42 +562,42 @@ Built for speed. Powered by iQOO edge compute.
       )}
 
       {activeTab === 'ico_data' && (
-        <div className="card">
+        <div className="bento-card">
           <div style={{
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
             marginBottom: '12px',
-            borderBottom: '2px solid var(--nb-black)',
+            borderBottom: '1px solid rgba(73, 80, 87, 0.1)',
             paddingBottom: '8px'
           }}>
-            <span style={{ fontSize: '12px', fontWeight: '900', color: 'var(--nb-black)', fontFamily: 'var(--font-mono)' }}>
+            <span style={{ fontSize: '12px', fontWeight: '800', color: 'var(--bento-primary)', fontFamily: 'var(--font-mono)' }}>
               IMMUTABLE INTENT CONTEXT OBJECT (ICO JSON)
             </span>
             <span style={{
               fontSize: '11px',
               fontFamily: 'var(--font-mono)',
-              background: 'var(--nb-yellow)',
-              color: '#ffffff',
-              border: '1px solid var(--nb-black)',
-              padding: '2px 6px',
-              borderRadius: '4px',
-              fontWeight: '800'
+              background: 'var(--bento-primary-subtle)',
+              color: 'var(--bento-primary)',
+              padding: '2px 8px',
+              borderRadius: 'var(--bento-radius-full)',
+              fontWeight: '700'
             }}>
               Single Truth Model
             </span>
           </div>
           <pre style={{
-            background: 'var(--nb-black)',
-            color: 'var(--nb-yellow)',
-            padding: '16px',
-            borderRadius: 'var(--radius-sm)',
+            background: 'var(--bento-primary-deep)',
+            color: '#f8f9fa',
+            padding: '18px',
+            borderRadius: 'var(--bento-radius-md)',
             fontSize: '12px',
             fontFamily: 'var(--font-mono)',
-            border: '2.5px solid var(--nb-black)',
-            boxShadow: '3px 3px 0px var(--nb-black)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            boxShadow: 'var(--bento-shadow-sm)',
             overflowX: 'auto',
-            maxHeight: '450px'
+            maxHeight: '440px',
+            lineHeight: 1.5
           }}>
             {JSON.stringify(ico, null, 2)}
           </pre>

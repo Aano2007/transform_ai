@@ -77,10 +77,10 @@ Topic: Enterprise Pilot Rollout
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
       <div style={{
-        background: 'var(--nb-yellow-50)',
-        border: '2.5px solid var(--nb-black)',
-        borderRadius: 'var(--radius-md)',
-        boxShadow: '2px 2px 0px var(--nb-black)',
+        background: '#ffffff',
+        border: 'var(--bento-border)',
+        borderRadius: 'var(--bento-radius-md)',
+        boxShadow: 'var(--bento-shadow-sm)',
         padding: '24px 18px',
         textAlign: 'center',
         display: 'flex',
@@ -89,52 +89,51 @@ Topic: Enterprise Pilot Rollout
         gap: '14px'
       }}>
         <div style={{
-          width: '60px',
-          height: '60px',
+          width: '56px',
+          height: '56px',
           borderRadius: '50%',
-          background: 'var(--nb-yellow)',
-          border: '2px solid var(--nb-black)',
-          boxShadow: '2px 2px 0px var(--nb-black)',
+          background: 'var(--bento-primary-subtle)',
+          border: '1px solid rgba(73, 80, 87, 0.15)',
+          boxShadow: '0 4px 14px rgba(0, 0, 0, 0.05)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          color: 'var(--nb-black)'
+          color: 'var(--bento-primary-dark)'
         }}>
-          {loading ? <Loader2 size={28} className="animate-spin" /> : <Camera size={28} />}
+          {loading ? <Loader2 size={26} className="animate-spin" /> : <Camera size={26} />}
         </div>
 
         <div>
-          <h4 style={{ fontSize: '16px', fontWeight: '900', color: 'var(--nb-black)' }}>
+          <h4 style={{ fontSize: '15px', fontWeight: '800', color: 'var(--bento-primary-deep)' }}>
             {loading ? 'Processing via WASM OCR...' : 'Snap Whiteboard or Upload Document'}
           </h4>
-          <p style={{ fontSize: '13px', color: 'var(--nb-text-muted)', marginTop: '4px', fontWeight: '600' }}>
+          <p style={{ fontSize: '12px', color: 'var(--bento-primary-muted)', marginTop: '3px', fontWeight: '500' }}>
             Tesseract.js WASM runs 100% in-browser on the iQOO client.
           </p>
         </div>
 
         {loading && (
-          <div style={{ width: '100%', maxWidth: '300px', margin: '4px 0' }}>
+          <div style={{ width: '100%', maxWidth: '280px', margin: '4px 0' }}>
             <div style={{
-              height: '10px',
-              background: '#fff',
-              border: '1.5px solid var(--nb-black)',
-              borderRadius: '5px',
+              height: '8px',
+              background: 'var(--bento-primary-subtle)',
+              borderRadius: '4px',
               overflow: 'hidden'
             }}>
               <div style={{
                 width: `${progress}%`,
                 height: '100%',
-                background: 'var(--nb-yellow)',
-                borderRight: '1.5px solid var(--nb-black)',
+                background: 'linear-gradient(90deg, var(--bento-primary), var(--bento-primary-dark))',
+                borderRadius: '4px',
                 transition: 'width 0.2s ease'
               }} />
             </div>
             <div style={{
               fontSize: '11px',
               fontFamily: 'var(--font-mono)',
-              fontWeight: '800',
-              color: 'var(--nb-black)',
-              marginTop: '6px'
+              color: 'var(--bento-primary-muted)',
+              marginTop: '6px',
+              fontWeight: '600'
             }}>
               {statusMsg}
             </div>
@@ -150,11 +149,11 @@ Topic: Enterprise Pilot Rollout
           style={{ display: 'none' }}
         />
 
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', justifyContent: 'center' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', justifyContent: 'center' }}>
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
-            className="btn btn-primary btn-sm"
+            className="btn btn-primary btn-sm btn-pill"
             disabled={loading}
           >
             <Upload size={14} />
@@ -164,10 +163,10 @@ Topic: Enterprise Pilot Rollout
           <button
             type="button"
             onClick={() => loadSample(0)}
-            className="btn btn-secondary btn-sm"
+            className="btn btn-secondary btn-sm btn-pill"
             disabled={loading}
           >
-            <Sparkles size={14} color="var(--nb-black)" />
+            <Sparkles size={14} color="var(--bento-primary)" />
             <span>Sample Whiteboard</span>
           </button>
         </div>
