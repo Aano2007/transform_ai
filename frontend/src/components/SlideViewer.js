@@ -11,11 +11,14 @@ export default function SlideViewer({ slides = [], ico = null, pptxUrl = null, o
   if (!slides || slides.length === 0) {
     return (
       <div style={{
-        padding: '30px',
+        padding: '36px',
         textAlign: 'center',
-        color: 'var(--text-muted)',
-        background: 'rgba(255, 255, 255, 0.02)',
-        borderRadius: 'var(--radius-md)'
+        color: 'var(--nb-black)',
+        background: 'var(--nb-yellow-50)',
+        border: '2px solid var(--nb-black)',
+        borderRadius: 'var(--radius-md)',
+        boxShadow: '3px 3px 0px var(--nb-black)',
+        fontWeight: '700'
       }}>
         No slide data available.
       </div>
@@ -52,102 +55,115 @@ export default function SlideViewer({ slides = [], ico = null, pptxUrl = null, o
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
       {/* Slide Navigation Header */}
       <div style={{
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        background: 'rgba(15, 23, 42, 0.7)',
-        padding: '10px 14px',
+        background: 'var(--nb-yellow-50)',
+        padding: '12px 16px',
         borderRadius: 'var(--radius-md)',
-        border: '1px solid var(--border-subtle)'
+        border: '2px solid var(--nb-black)',
+        boxShadow: '2px 2px 0px var(--nb-black)'
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <MonitorPlay size={16} color="var(--iqoo-orange)" />
-          <span style={{ fontSize: '13px', fontWeight: '800', fontFamily: 'var(--font-mono)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <MonitorPlay size={18} color="var(--nb-black)" />
+          <span style={{
+            fontSize: '13px',
+            fontWeight: '900',
+            fontFamily: 'var(--font-mono)',
+            background: 'var(--nb-yellow)',
+            border: '1.5px solid var(--nb-black)',
+            padding: '2px 8px',
+            borderRadius: '4px'
+          }}>
             SLIDE {currentIdx + 1} OF {slides.length}
           </span>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <button
             type="button"
             onClick={handlePrev}
-            style={{
-              background: 'rgba(255, 255, 255, 0.05)',
-              border: '1px solid var(--border-subtle)',
-              color: '#fff',
-              borderRadius: '6px',
-              padding: '6px 8px',
-              cursor: 'pointer'
-            }}
+            className="btn btn-secondary btn-sm"
+            style={{ padding: '6px 10px' }}
+            title="Previous Slide"
           >
             <ChevronLeft size={16} />
           </button>
           <button
             type="button"
             onClick={handleNext}
-            style={{
-              background: 'rgba(255, 255, 255, 0.05)',
-              border: '1px solid var(--border-subtle)',
-              color: '#fff',
-              borderRadius: '6px',
-              padding: '6px 8px',
-              cursor: 'pointer'
-            }}
+            className="btn btn-secondary btn-sm"
+            style={{ padding: '6px 10px' }}
+            title="Next Slide"
           >
             <ChevronRight size={16} />
           </button>
         </div>
       </div>
 
-      {/* Slide Card Preview (16:9 Aspect Ratio) */}
+      {/* Slide Card Preview (16:9 Aspect Ratio Canvas) */}
       <div style={{
         position: 'relative',
         width: '100%',
         aspectRatio: '16/9',
-        background: 'radial-gradient(circle at 10% 10%, #1e293b 0%, #0f172a 100%)',
-        border: '1px solid rgba(255, 107, 0, 0.4)',
-        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.6), 0 0 20px rgba(255, 107, 0, 0.1)',
+        background: '#ffffff',
+        border: '3px solid var(--nb-black)',
+        boxShadow: '6px 6px 0px var(--nb-black)',
         borderRadius: 'var(--radius-md)',
-        padding: '18px 20px',
+        padding: '24px 28px',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
         overflow: 'hidden'
       }}>
-        {/* Top Accent Bar */}
+        {/* Top Neobrutalist Accent Strip */}
         <div style={{
           position: 'absolute',
           top: 0,
           left: 0,
           right: 0,
-          height: '4px',
-          background: 'linear-gradient(90deg, var(--iqoo-orange), var(--iqoo-cyan))'
+          height: '8px',
+          background: 'var(--nb-yellow)',
+          borderBottom: '2px solid var(--nb-black)'
         }} />
 
-        <div>
+        <div style={{ marginTop: '6px' }}>
           <div style={{
-            fontSize: '9px',
+            fontSize: '11px',
             fontFamily: 'var(--font-mono)',
-            color: 'var(--iqoo-cyan)',
-            fontWeight: '700',
+            color: 'var(--nb-black)',
+            fontWeight: '900',
             letterSpacing: '0.8px',
-            marginBottom: '4px'
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '6px',
+            background: 'var(--nb-yellow-100)',
+            border: '1.5px solid var(--nb-black)',
+            padding: '2px 8px',
+            borderRadius: '4px',
+            marginBottom: '8px'
           }}>
             TRANSFORMAI // SLIDE {String(currentIdx + 1).padStart(2, '0')} // iQOO EDGE
           </div>
           <h3 style={{
-            fontSize: '17px',
-            fontWeight: '800',
-            color: '#fff',
+            fontSize: 'clamp(18px, 2.5vw, 24px)',
+            fontWeight: '900',
+            color: 'var(--nb-black)',
             lineHeight: 1.2
           }}>
             {slide.title}
           </h3>
           {slide.subtitle && (
-            <div style={{ fontSize: '11px', color: 'var(--iqoo-orange)', marginTop: '2px', fontWeight: '600' }}>
+            <div style={{
+              fontSize: '13px',
+              color: 'var(--nb-black)',
+              marginTop: '4px',
+              fontWeight: '700',
+              opacity: 0.8
+            }}>
               {slide.subtitle}
             </div>
           )}
@@ -156,21 +172,39 @@ export default function SlideViewer({ slides = [], ico = null, pptxUrl = null, o
         {/* Bullets */}
         <div style={{
           flex: 1,
-          marginTop: '12px',
+          marginTop: '16px',
           display: 'flex',
           flexDirection: 'column',
-          gap: '6px',
+          gap: '10px',
           overflowY: 'auto'
         }}>
           {(slide.bullets || []).map((b, i) => (
             <div key={i} style={{
               display: 'flex',
-              gap: '8px',
-              fontSize: '11px',
-              color: 'var(--text-main)',
-              lineHeight: 1.3
+              alignItems: 'flex-start',
+              gap: '10px',
+              fontSize: '14px',
+              fontWeight: '700',
+              color: 'var(--nb-black)',
+              lineHeight: 1.4
             }}>
-              <span style={{ color: 'var(--iqoo-orange)', fontWeight: 'bold' }}>▸</span>
+              <span style={{
+                background: 'var(--nb-yellow)',
+                border: '1.5px solid var(--nb-black)',
+                color: 'var(--nb-black)',
+                fontWeight: '900',
+                width: '18px',
+                height: '18px',
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderRadius: '3px',
+                fontSize: '10px',
+                flexShrink: 0,
+                marginTop: '1px'
+              }}>
+                ▸
+              </span>
               <span>{b}</span>
             </div>
           ))}
@@ -181,21 +215,30 @@ export default function SlideViewer({ slides = [], ico = null, pptxUrl = null, o
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          borderTop: '1px solid rgba(255, 255, 255, 0.08)',
-          paddingTop: '6px',
-          marginTop: '6px'
+          borderTop: '2px solid var(--nb-black)',
+          paddingTop: '8px',
+          marginTop: '8px'
         }}>
-          <span style={{ fontSize: '9px', color: 'var(--text-dim)' }}>
+          <span style={{ fontSize: '11px', color: 'var(--nb-text-muted)', fontWeight: '700' }}>
             Factual Grounding • Single ICO Model
           </span>
-          <span style={{ fontSize: '9px', color: 'var(--text-dim)', fontFamily: 'var(--font-mono)' }}>
+          <span style={{
+            fontSize: '11px',
+            color: 'var(--nb-black)',
+            fontFamily: 'var(--font-mono)',
+            fontWeight: '800',
+            background: 'var(--nb-yellow)',
+            border: '1px solid var(--nb-black)',
+            padding: '1px 6px',
+            borderRadius: '3px'
+          }}>
             16:9 Widescreen (.PPTX)
           </span>
         </div>
       </div>
 
       {/* Slide Actions Bar */}
-      <div style={{ display: 'flex', gap: '8px' }}>
+      <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
         <button
           type="button"
           onClick={handleRegenerateCurrentSlide}
@@ -204,7 +247,7 @@ export default function SlideViewer({ slides = [], ico = null, pptxUrl = null, o
           style={{ flex: 1 }}
         >
           <RefreshCw size={14} className={isRegenerating ? 'animate-spin' : ''} />
-          <span>{isRegenerating ? 'Refining...' : 'Refine Slide'}</span>
+          <span>{isRegenerating ? 'Refining...' : 'Refine Slide Content'}</span>
         </button>
 
         <button
@@ -212,8 +255,8 @@ export default function SlideViewer({ slides = [], ico = null, pptxUrl = null, o
           onClick={() => setShowNotes(!showNotes)}
           className="btn btn-secondary btn-sm"
         >
-          <MessageSquare size={14} color="var(--iqoo-cyan)" />
-          <span>{showNotes ? 'Hide Notes' : 'Speaker Notes'}</span>
+          <MessageSquare size={14} />
+          <span>{showNotes ? 'Hide Speaker Notes' : 'Show Speaker Notes'}</span>
         </button>
 
         {pptxUrl && (
@@ -224,7 +267,7 @@ export default function SlideViewer({ slides = [], ico = null, pptxUrl = null, o
             style={{ textDecoration: 'none' }}
           >
             <Download size={14} />
-            <span>Deck (.pptx)</span>
+            <span>Download Deck (.pptx)</span>
           </a>
         )}
       </div>
@@ -232,27 +275,28 @@ export default function SlideViewer({ slides = [], ico = null, pptxUrl = null, o
       {/* Speaker Notes Box */}
       {showNotes && (
         <div style={{
-          background: 'rgba(15, 23, 42, 0.7)',
-          border: '1px solid var(--border-subtle)',
+          background: 'var(--nb-yellow-50)',
+          border: '2px solid var(--nb-black)',
           borderRadius: 'var(--radius-md)',
-          padding: '14px',
-          borderLeft: '3px solid var(--iqoo-cyan)'
+          padding: '16px',
+          borderLeft: '6px solid var(--nb-yellow)',
+          boxShadow: '2px 2px 0px var(--nb-black)'
         }}>
           <div style={{
             fontSize: '11px',
             fontFamily: 'var(--font-mono)',
-            fontWeight: '700',
-            color: 'var(--iqoo-cyan)',
+            fontWeight: '900',
+            color: 'var(--nb-black)',
             display: 'flex',
             alignItems: 'center',
             gap: '6px',
             marginBottom: '6px'
           }}>
-            <MessageSquare size={12} />
-            SPEAKER SCRIPT / SCRIPT NOTES:
+            <MessageSquare size={13} />
+            <span>SPEAKER SCRIPT / PRESENTER NOTES:</span>
           </div>
-          <p style={{ fontSize: '13px', color: 'var(--text-main)', fontStyle: 'italic', lineHeight: 1.5 }}>
-            "{slide.speaker_notes || 'Deliver the core slide takeaways with conviction.'}"
+          <p style={{ fontSize: '14px', color: 'var(--nb-black)', fontStyle: 'italic', lineHeight: 1.6, fontWeight: '600' }}>
+            "{slide.speaker_notes || 'Deliver the core slide takeaways with confidence and conviction.'}"
           </p>
         </div>
       )}

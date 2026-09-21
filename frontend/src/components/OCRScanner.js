@@ -77,54 +77,65 @@ Topic: Enterprise Pilot Rollout
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
       <div style={{
-        background: 'rgba(15, 23, 42, 0.5)',
-        border: '1px dashed var(--border-subtle)',
+        background: 'var(--nb-yellow-50)',
+        border: '2.5px solid var(--nb-black)',
         borderRadius: 'var(--radius-md)',
-        padding: '24px 16px',
+        boxShadow: '2px 2px 0px var(--nb-black)',
+        padding: '24px 18px',
         textAlign: 'center',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        gap: '12px'
+        gap: '14px'
       }}>
         <div style={{
-          width: '56px',
-          height: '56px',
+          width: '60px',
+          height: '60px',
           borderRadius: '50%',
-          background: 'rgba(0, 240, 255, 0.1)',
+          background: 'var(--nb-yellow)',
+          border: '2px solid var(--nb-black)',
+          boxShadow: '2px 2px 0px var(--nb-black)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          color: 'var(--iqoo-cyan)'
+          color: 'var(--nb-black)'
         }}>
           {loading ? <Loader2 size={28} className="animate-spin" /> : <Camera size={28} />}
         </div>
 
         <div>
-          <h4 style={{ fontSize: '15px', fontWeight: '700', color: '#fff' }}>
+          <h4 style={{ fontSize: '16px', fontWeight: '900', color: 'var(--nb-black)' }}>
             {loading ? 'Processing via WASM OCR...' : 'Snap Whiteboard or Upload Document'}
           </h4>
-          <p style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '4px' }}>
+          <p style={{ fontSize: '13px', color: 'var(--nb-text-muted)', marginTop: '4px', fontWeight: '600' }}>
             Tesseract.js WASM runs 100% in-browser on the iQOO client.
           </p>
         </div>
 
         {loading && (
-          <div style={{ width: '100%', maxWidth: '280px', margin: '4px 0' }}>
+          <div style={{ width: '100%', maxWidth: '300px', margin: '4px 0' }}>
             <div style={{
-              height: '6px',
-              background: 'rgba(255, 255, 255, 0.1)',
-              borderRadius: '3px',
+              height: '10px',
+              background: '#fff',
+              border: '1.5px solid var(--nb-black)',
+              borderRadius: '5px',
               overflow: 'hidden'
             }}>
               <div style={{
                 width: `${progress}%`,
                 height: '100%',
-                background: 'linear-gradient(90deg, var(--iqoo-cyan), var(--iqoo-orange))',
+                background: 'var(--nb-yellow)',
+                borderRight: '1.5px solid var(--nb-black)',
                 transition: 'width 0.2s ease'
               }} />
             </div>
-            <div style={{ fontSize: '11px', color: 'var(--iqoo-cyan)', marginTop: '6px' }}>
+            <div style={{
+              fontSize: '11px',
+              fontFamily: 'var(--font-mono)',
+              fontWeight: '800',
+              color: 'var(--nb-black)',
+              marginTop: '6px'
+            }}>
               {statusMsg}
             </div>
           </div>
@@ -139,11 +150,11 @@ Topic: Enterprise Pilot Rollout
           style={{ display: 'none' }}
         />
 
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', justifyContent: 'center' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', justifyContent: 'center' }}>
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
-            className="btn btn-cyan btn-sm"
+            className="btn btn-primary btn-sm"
             disabled={loading}
           >
             <Upload size={14} />
@@ -156,7 +167,7 @@ Topic: Enterprise Pilot Rollout
             className="btn btn-secondary btn-sm"
             disabled={loading}
           >
-            <Sparkles size={14} color="var(--iqoo-orange)" />
+            <Sparkles size={14} color="var(--nb-black)" />
             <span>Sample Whiteboard</span>
           </button>
         </div>

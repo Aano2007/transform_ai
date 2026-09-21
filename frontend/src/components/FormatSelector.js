@@ -7,28 +7,28 @@ export const FORMAT_DEFINITIONS = [
     label: 'Executive Summary',
     description: 'Briefing, source citations [1], and action matrix table',
     icon: FileText,
-    color: '#00f0ff'
+    badge: 'DOCX / MD'
   },
   {
     id: 'presentation',
     label: 'Presentation Slides',
     description: '4-6 slide 16:9 deck with speaker notes (.pptx)',
     icon: Presentation,
-    color: '#ff6b00'
+    badge: '16:9 PPTX'
   },
   {
     id: 'linkedin',
     label: 'LinkedIn Post',
     description: 'High engagement format with hook, emojis & hashtags',
     icon: Linkedin,
-    color: '#0a66c2'
+    badge: 'SOCIAL'
   },
   {
     id: 'twitter',
     label: 'Twitter / X Thread',
     description: '3-5 numbered tweets strictly capped under 280 chars',
     icon: Twitter,
-    color: '#38bdf8'
+    badge: 'THREAD'
   }
 ];
 
@@ -50,21 +50,31 @@ export default function FormatSelector({
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <label style={{ fontSize: '13px', fontWeight: '700', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-          Select Deliverables ({selectedFormats.length}/4)
+        <label style={{
+          fontSize: '12px',
+          fontWeight: '900',
+          color: 'var(--nb-black)',
+          textTransform: 'uppercase',
+          fontFamily: 'var(--font-mono)',
+          letterSpacing: '0.5px'
+        }}>
+          2. Target Deliverables ({selectedFormats.length}/4)
         </label>
         <button
           type="button"
           onClick={() => onChangeFormats(FORMAT_DEFINITIONS.map(f => f.id))}
           style={{
-            background: 'none',
-            border: 'none',
-            color: 'var(--iqoo-cyan)',
+            background: 'var(--nb-yellow-100)',
+            border: '1.5px solid var(--nb-black)',
+            boxShadow: '1.5px 1.5px 0px var(--nb-black)',
+            color: 'var(--nb-black)',
             fontSize: '11px',
             cursor: 'pointer',
-            fontWeight: '600'
+            fontWeight: '800',
+            padding: '3px 8px',
+            borderRadius: '4px'
           }}
         >
           Select All
@@ -84,15 +94,17 @@ export default function FormatSelector({
                 alignItems: 'center',
                 gap: '12px',
                 padding: '12px 14px',
-                borderRadius: 'var(--radius-md)',
-                background: isSelected ? 'rgba(255, 107, 0, 0.08)' : 'rgba(255, 255, 255, 0.03)',
-                border: `1px solid ${isSelected ? 'var(--iqoo-orange)' : 'var(--border-subtle)'}`,
+                borderRadius: 'var(--radius-sm)',
+                background: isSelected ? 'var(--nb-yellow)' : '#fff',
+                border: '2px solid var(--nb-black)',
+                boxShadow: isSelected ? '3px 3px 0px var(--nb-black)' : '1.5px 1.5px 0px var(--nb-black)',
                 cursor: 'pointer',
-                transition: 'all 0.15s ease'
+                transition: 'all 0.1s ease',
+                transform: isSelected ? 'translate(-1px, -1px)' : 'none'
               }}
             >
               <div style={{
-                color: isSelected ? 'var(--iqoo-orange)' : 'var(--text-dim)',
+                color: 'var(--nb-black)',
                 display: 'flex',
                 alignItems: 'center'
               }}>
@@ -100,23 +112,44 @@ export default function FormatSelector({
               </div>
 
               <div style={{
-                width: '32px',
-                height: '32px',
-                borderRadius: '8px',
-                background: `${item.color}15`,
+                width: '36px',
+                height: '36px',
+                borderRadius: '6px',
+                background: isSelected ? '#fff' : 'var(--nb-yellow-100)',
+                border: '1.5px solid var(--nb-black)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                color: item.color
+                color: 'var(--nb-black)',
+                flexShrink: 0
               }}>
                 <Icon size={18} />
               </div>
 
               <div style={{ flex: 1 }}>
-                <div style={{ fontSize: '14px', fontWeight: '700', color: isSelected ? '#fff' : 'var(--text-muted)' }}>
-                  {item.label}
+                <div style={{
+                  fontSize: '14px',
+                  fontWeight: '800',
+                  color: 'var(--nb-black)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px'
+                }}>
+                  <span>{item.label}</span>
+                  <span style={{
+                    fontSize: '10px',
+                    fontFamily: 'var(--font-mono)',
+                    background: isSelected ? 'var(--nb-black)' : 'var(--nb-yellow)',
+                    color: isSelected ? 'var(--nb-yellow)' : 'var(--nb-black)',
+                    padding: '1px 5px',
+                    borderRadius: '3px',
+                    border: '1px solid var(--nb-black)',
+                    fontWeight: '800'
+                  }}>
+                    {item.badge}
+                  </span>
                 </div>
-                <div style={{ fontSize: '11px', color: 'var(--text-dim)', marginTop: '2px' }}>
+                <div style={{ fontSize: '11px', color: 'var(--nb-text-muted)', marginTop: '2px', fontWeight: '600' }}>
                   {item.description}
                 </div>
               </div>
@@ -125,33 +158,43 @@ export default function FormatSelector({
         })}
       </div>
 
-      {/* Tone & Audience Selectors */}
+      {/* Tone & Audience Customization */}
       <div style={{
         display: 'grid',
         gridTemplateColumns: '1fr 1fr',
-        gap: '10px',
-        marginTop: '6px',
-        padding: '12px',
-        borderRadius: 'var(--radius-md)',
-        background: 'rgba(15, 23, 42, 0.5)',
-        border: '1px solid var(--border-subtle)'
+        gap: '12px',
+        padding: '14px',
+        borderRadius: 'var(--radius-sm)',
+        background: 'var(--nb-yellow-50)',
+        border: '2px solid var(--nb-black)',
+        boxShadow: '2px 2px 0px var(--nb-black)'
       }}>
         <div>
-          <label style={{ fontSize: '11px', color: 'var(--text-dim)', display: 'block', marginBottom: '6px', textTransform: 'uppercase' }}>
-            Tone
+          <label style={{
+            fontSize: '11px',
+            fontWeight: '800',
+            color: 'var(--nb-black)',
+            display: 'block',
+            marginBottom: '6px',
+            textTransform: 'uppercase',
+            fontFamily: 'var(--font-mono)'
+          }}>
+            Tone Profile
           </label>
           <select
             value={tone}
             onChange={(e) => onChangeTone(e.target.value)}
             style={{
               width: '100%',
-              background: '#0a0f1d',
-              border: '1px solid var(--border-subtle)',
-              color: '#fff',
+              background: '#fff',
+              border: '2px solid var(--nb-black)',
+              color: 'var(--nb-black)',
               padding: '8px 10px',
-              borderRadius: 'var(--radius-sm)',
+              borderRadius: '6px',
               fontSize: '12px',
-              outline: 'none'
+              fontWeight: '700',
+              outline: 'none',
+              cursor: 'pointer'
             }}
           >
             <option value="professional">Professional</option>
@@ -162,21 +205,31 @@ export default function FormatSelector({
         </div>
 
         <div>
-          <label style={{ fontSize: '11px', color: 'var(--text-dim)', display: 'block', marginBottom: '6px', textTransform: 'uppercase' }}>
-            Audience
+          <label style={{
+            fontSize: '11px',
+            fontWeight: '800',
+            color: 'var(--nb-black)',
+            display: 'block',
+            marginBottom: '6px',
+            textTransform: 'uppercase',
+            fontFamily: 'var(--font-mono)'
+          }}>
+            Target Audience
           </label>
           <select
             value={audience}
             onChange={(e) => onChangeAudience(e.target.value)}
             style={{
               width: '100%',
-              background: '#0a0f1d',
-              border: '1px solid var(--border-subtle)',
-              color: '#fff',
+              background: '#fff',
+              border: '2px solid var(--nb-black)',
+              color: 'var(--nb-black)',
               padding: '8px 10px',
-              borderRadius: 'var(--radius-sm)',
+              borderRadius: '6px',
               fontSize: '12px',
-              outline: 'none'
+              fontWeight: '700',
+              outline: 'none',
+              cursor: 'pointer'
             }}
           >
             <option value="executive">C-Suite / Leadership</option>

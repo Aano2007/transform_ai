@@ -1,7 +1,7 @@
 import './globals.css';
 import OfficeKitBridge from '../components/OfficeKitBridge';
 import Link from 'next/link';
-import { Zap, Sparkles } from 'lucide-react';
+import { Zap, Sparkles, Home, Camera, FileText, Presentation } from 'lucide-react';
 
 export const metadata = {
   title: 'TransformAI | iQOO Productivity Track',
@@ -14,7 +14,7 @@ export const viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-  themeColor: '#ff6b00',
+  themeColor: '#ffdb59',
 };
 
 export default function RootLayout({ children }) {
@@ -23,30 +23,55 @@ export default function RootLayout({ children }) {
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap"
+          rel="stylesheet"
+        />
       </head>
       <body>
         <div className="app-shell">
           <header className="app-header">
             <Link href="/" className="brand-badge">
               <div className="brand-logo">
-                <Zap size={20} fill="#fff" />
+                <Zap size={22} fill="var(--nb-yellow)" color="var(--nb-yellow)" />
               </div>
               <div>
                 <div className="brand-title">
                   <span>TransformAI</span>
                   <span className="tag">iQOO</span>
                 </div>
-                <div style={{ fontSize: '10px', color: 'var(--text-dim)', marginTop: '-2px' }}>
+                <div style={{ fontSize: '11px', color: 'var(--nb-black)', opacity: 0.8, fontWeight: 700, marginTop: '-2px' }}>
                   Edge Capture • Headless AI
                 </div>
               </div>
             </Link>
 
-            <Link href="/capture" className="btn btn-primary btn-sm" style={{ gap: '4px' }}>
-              <Sparkles size={14} />
-              <span>New</span>
-            </Link>
+            {/* Laptop / Desktop Navigation Links */}
+            <nav className="desktop-nav-links">
+              <Link href="/" className="nav-link">
+                Home
+              </Link>
+              <Link href="/capture" className="nav-link">
+                Capture
+              </Link>
+              <Link href="/studio" className="nav-link">
+                Deliverables
+              </Link>
+              <Link href="/slides" className="nav-link">
+                Slide Deck
+              </Link>
+            </nav>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Link
+                href="/capture"
+                className="btn btn-dark btn-sm"
+                style={{ gap: '6px', fontWeight: 800 }}
+              >
+                <Sparkles size={14} color="var(--nb-yellow)" />
+                <span>+ NEW</span>
+              </Link>
+            </div>
           </header>
 
           <OfficeKitBridge />

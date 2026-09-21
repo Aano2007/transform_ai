@@ -5,7 +5,7 @@ import Link from 'next/link';
 import {
   FileText, Presentation, Linkedin, Twitter, Code2, ArrowLeft,
   Download, Copy, Share2, Sparkles, RefreshCw, Layers, ExternalLink,
-  ShieldCheck, Eye, MonitorPlay
+  ShieldCheck, Eye, MonitorPlay, Zap
 } from 'lucide-react';
 import ExportBar from '../../components/ExportBar';
 import CitationModal from '../../components/CitationModal';
@@ -25,14 +25,13 @@ export default function StudioScreen() {
       try {
         const parsed = JSON.parse(stored);
         setData(parsed);
-        // Set first available tab
         const available = Object.keys(parsed.outputs || {});
         if (available.length > 0 && !available.includes(activeTab)) {
           setActiveTab(available[0] === 'slides_data' ? 'presentation' : available[0]);
         }
       } catch (e) {}
     } else {
-      // If accessed directly without transformation, create default demo data
+      // Fallback demo data if visited directly
       const defaultData = {
         ico: {
           event_title: "iQOO Product Strategy & Edge Compute",
@@ -175,8 +174,8 @@ Built for speed. Powered by iQOO edge compute.
 
   if (!data) {
     return (
-      <div className="content-wrapper" style={{ justifyContent: 'center', alignItems: 'center' }}>
-        <Sparkles size={32} className="animate-spin" color="var(--iqoo-orange)" />
+      <div className="content-wrapper" style={{ justifyContent: 'center', alignItems: 'center', minHeight: '50vh' }}>
+        <Sparkles size={36} className="animate-spin" color="var(--nb-black)" />
       </div>
     );
   }
@@ -221,7 +220,6 @@ Built for speed. Powered by iQOO edge compute.
     }));
   };
 
-  // Render text with interactive citation pills [1], [2]
   const renderTextWithCitations = (text) => {
     if (!text) return null;
     const parts = text.split(/(\[\d+\])/g);
@@ -239,7 +237,7 @@ Built for speed. Powered by iQOO edge compute.
             key={index}
             className="citation-pill"
             onClick={() => setActiveCitation(citObj)}
-            title="Click to view exact source citation in input notes"
+            title="Click to inspect exact source citation"
           >
             [{citId}]
           </span>
@@ -260,63 +258,96 @@ Built for speed. Powered by iQOO edge compute.
   };
 
   return (
-    <div className="content-wrapper" style={{ paddingBottom: '90px' }}>
+    <div className="content-wrapper" style={{ paddingBottom: '100px' }}>
       {/* Top Bar Navigation */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <Link href="/capture" style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '4px',
-          color: 'var(--text-muted)',
-          textDecoration: 'none',
-          fontSize: '13px',
-          fontWeight: '600'
-        }}>
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        borderBottom: '2px solid var(--nb-black)',
+        paddingBottom: '12px'
+      }}>
+        <Link
+          href="/capture"
+          className="btn btn-secondary btn-sm"
+          style={{ gap: '6px' }}
+        >
           <ArrowLeft size={16} />
-          <span>Capture</span>
+          <span>Capture Workspace</span>
         </Link>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <span style={{
             fontSize: '11px',
             fontFamily: 'var(--font-mono)',
-            color: 'var(--iqoo-green)',
+            fontWeight: '800',
+            background: 'var(--nb-green)',
+            color: 'var(--nb-black)',
+            border: '1.5px solid var(--nb-black)',
+            boxShadow: '1.5px 1.5px 0px var(--nb-black)',
+            padding: '3px 8px',
+            borderRadius: '4px',
             display: 'flex',
             alignItems: 'center',
-            gap: '4px'
+            gap: '5px'
           }}>
-            <ShieldCheck size={13} />
-            ICO VERIFIED
+            <ShieldCheck size={14} />
+            ICO GROUND TRUTH VERIFIED
           </span>
         </div>
       </div>
 
-      {/* Title & Overview Banner */}
-      <div className="card" style={{
-        background: 'linear-gradient(135deg, rgba(255, 107, 0, 0.08) 0%, rgba(15, 23, 42, 0.8) 100%)',
-        borderColor: 'rgba(255, 107, 0, 0.3)'
-      }}>
-        <div style={{ fontSize: '11px', fontFamily: 'var(--font-mono)', color: 'var(--iqoo-orange)', fontWeight: '700' }}>
-          DELIVERABLE SESSION // {ico?.timestamp || 'RECENT'}
+      {/* Deliverable Meta Banner */}
+      <div className="card card-hero">
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          gap: '8px'
+        }}>
+          <div className="card-badge-header">
+            DELIVERABLE SESSION // {ico?.timestamp || 'RECENT'}
+          </div>
+          <span style={{
+            fontSize: '11px',
+            fontFamily: 'var(--font-mono)',
+            fontWeight: '800',
+            color: 'var(--nb-black)',
+            background: '#fff',
+            border: '1px solid var(--nb-black)',
+            padding: '2px 8px',
+            borderRadius: '4px'
+          }}>
+            📍 {ico?.location || 'iQOO Edge Node'}
+          </span>
         </div>
-        <h2 style={{ fontSize: '18px', fontWeight: '800', color: '#fff', marginTop: '4px' }}>
+
+        <h2 style={{
+          fontSize: 'clamp(20px, 3vw, 26px)',
+          fontWeight: '900',
+          color: 'var(--nb-black)',
+          marginTop: '6px'
+        }}>
           {ico?.event_title || 'TransformAI Deliverable'}
         </h2>
-        <p style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '4px', lineHeight: 1.4 }}>
+        <p style={{ fontSize: '14px', color: 'var(--nb-text-muted)', marginTop: '4px', fontWeight: '600' }}>
           {ico?.primary_objective}
         </p>
 
-        {/* Entities / Metrics Row */}
+        {/* Entities & Metrics Row */}
         {ico?.entities?.metrics?.length > 0 && (
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '10px' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '12px' }}>
             {ico.entities.metrics.map((m, i) => (
               <span key={i} style={{
-                fontSize: '10px',
+                fontSize: '11px',
                 fontFamily: 'var(--font-mono)',
-                background: 'rgba(0, 240, 255, 0.1)',
-                border: '1px solid rgba(0, 240, 255, 0.3)',
-                color: 'var(--iqoo-cyan)',
-                padding: '2px 6px',
+                fontWeight: '800',
+                background: 'var(--nb-yellow)',
+                border: '1.5px solid var(--nb-black)',
+                boxShadow: '1.5px 1.5px 0px var(--nb-black)',
+                color: 'var(--nb-black)',
+                padding: '3px 8px',
                 borderRadius: '4px'
               }}>
                 ⚡ {m}
@@ -334,8 +365,8 @@ Built for speed. Powered by iQOO edge compute.
             onClick={() => setActiveTab('executive_summary')}
             className={`tab-btn ${activeTab === 'executive_summary' ? 'active' : ''}`}
           >
-            <FileText size={14} />
-            <span>Summary</span>
+            <FileText size={15} />
+            <span>Executive Briefing</span>
           </button>
         )}
 
@@ -345,8 +376,8 @@ Built for speed. Powered by iQOO edge compute.
             onClick={() => setActiveTab('presentation')}
             className={`tab-btn ${activeTab === 'presentation' ? 'active' : ''}`}
           >
-            <Presentation size={14} />
-            <span>Slides ({slides.length})</span>
+            <Presentation size={15} />
+            <span>Slide Deck ({slides.length})</span>
           </button>
         )}
 
@@ -356,8 +387,8 @@ Built for speed. Powered by iQOO edge compute.
             onClick={() => setActiveTab('linkedin')}
             className={`tab-btn ${activeTab === 'linkedin' ? 'active' : ''}`}
           >
-            <Linkedin size={14} />
-            <span>LinkedIn</span>
+            <Linkedin size={15} />
+            <span>LinkedIn Post</span>
           </button>
         )}
 
@@ -367,8 +398,8 @@ Built for speed. Powered by iQOO edge compute.
             onClick={() => setActiveTab('twitter')}
             className={`tab-btn ${activeTab === 'twitter' ? 'active' : ''}`}
           >
-            <Twitter size={14} />
-            <span>Twitter / X</span>
+            <Twitter size={15} />
+            <span>Twitter / X Thread</span>
           </button>
         )}
 
@@ -377,31 +408,30 @@ Built for speed. Powered by iQOO edge compute.
           onClick={() => setActiveTab('ico_data')}
           className={`tab-btn ${activeTab === 'ico_data' ? 'active' : ''}`}
         >
-          <Code2 size={14} />
-          <span>ICO Model</span>
+          <Code2 size={15} />
+          <span>ICO Model (JSON)</span>
         </button>
       </div>
 
       {/* Tab Content Display */}
       {activeTab === 'executive_summary' && (
         <div className="card prose">
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-            <span style={{ fontSize: '11px', color: 'var(--iqoo-cyan)', fontFamily: 'var(--font-mono)' }}>
-              FORMAT: EXECUTIVE BRIEFING
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: '14px',
+            borderBottom: '2px solid var(--nb-black)',
+            paddingBottom: '8px'
+          }}>
+            <span style={{ fontSize: '12px', fontWeight: '900', color: 'var(--nb-black)', fontFamily: 'var(--font-mono)' }}>
+              FORMAT: EXECUTIVE BRIEFING (.DOCX / MARKDOWN)
             </span>
             <button
               onClick={handleRegenerateCurrentFormat}
               disabled={isRegenerating}
-              style={{
-                background: 'none',
-                border: 'none',
-                color: 'var(--text-muted)',
-                fontSize: '11px',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '4px'
-              }}
+              className="btn btn-secondary btn-sm"
+              style={{ padding: '4px 10px' }}
             >
               <RefreshCw size={12} className={isRegenerating ? 'animate-spin' : ''} />
               <span>Regenerate</span>
@@ -414,18 +444,24 @@ Built for speed. Powered by iQOO edge compute.
       )}
 
       {activeTab === 'presentation' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontSize: '11px', color: 'var(--iqoo-orange)', fontFamily: 'var(--font-mono)' }}>
-              16:9 WIDESCREEN SLIDE DECK
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            borderBottom: '2px solid var(--nb-black)',
+            paddingBottom: '8px'
+          }}>
+            <span style={{ fontSize: '12px', fontWeight: '900', color: 'var(--nb-black)', fontFamily: 'var(--font-mono)' }}>
+              FORMAT: 16:9 WIDESCREEN PRESENTATION DECK (.PPTX)
             </span>
             <Link
               href="/slides"
-              className="btn btn-secondary btn-sm"
-              style={{ padding: '4px 8px', fontSize: '11px', gap: '4px' }}
+              className="btn btn-primary btn-sm"
+              style={{ gap: '6px' }}
             >
-              <MonitorPlay size={12} color="var(--iqoo-orange)" />
-              <span>Full Presenter</span>
+              <MonitorPlay size={14} />
+              <span>Full Stage Presenter</span>
             </Link>
           </div>
 
@@ -440,23 +476,22 @@ Built for speed. Powered by iQOO edge compute.
 
       {activeTab === 'linkedin' && (
         <div className="card">
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-            <span style={{ fontSize: '11px', color: '#0a66c2', fontFamily: 'var(--font-mono)', fontWeight: '700' }}>
-              LINKEDIN EXECUTIVE POST
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: '14px',
+            borderBottom: '2px solid var(--nb-black)',
+            paddingBottom: '8px'
+          }}>
+            <span style={{ fontSize: '12px', fontWeight: '900', color: 'var(--nb-black)', fontFamily: 'var(--font-mono)' }}>
+              FORMAT: LINKEDIN LEADERSHIP POST
             </span>
             <button
               onClick={handleRegenerateCurrentFormat}
               disabled={isRegenerating}
-              style={{
-                background: 'none',
-                border: 'none',
-                color: 'var(--text-muted)',
-                fontSize: '11px',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '4px'
-              }}
+              className="btn btn-secondary btn-sm"
+              style={{ padding: '4px 10px' }}
             >
               <RefreshCw size={12} className={isRegenerating ? 'animate-spin' : ''} />
               <span>Regenerate</span>
@@ -465,12 +500,13 @@ Built for speed. Powered by iQOO edge compute.
           <div style={{
             whiteSpace: 'pre-line',
             fontSize: '14px',
-            lineHeight: '1.6',
-            color: 'var(--text-main)',
-            background: 'rgba(5, 8, 16, 0.4)',
-            padding: '14px',
+            lineHeight: '1.7',
+            color: 'var(--nb-black)',
+            background: 'var(--nb-yellow-50)',
+            padding: '18px',
             borderRadius: 'var(--radius-sm)',
-            border: '1px solid var(--border-subtle)'
+            border: '2px solid var(--nb-black)',
+            boxShadow: '2px 2px 0px var(--nb-black)'
           }}>
             {renderTextWithCitations(outputs.linkedin)}
           </div>
@@ -478,24 +514,22 @@ Built for speed. Powered by iQOO edge compute.
       )}
 
       {activeTab === 'twitter' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontSize: '11px', color: 'var(--iqoo-cyan)', fontFamily: 'var(--font-mono)' }}>
-              TWITTER / X THREAD (&lt;280 CHARACTERS EACH)
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            borderBottom: '2px solid var(--nb-black)',
+            paddingBottom: '8px'
+          }}>
+            <span style={{ fontSize: '12px', fontWeight: '900', color: 'var(--nb-black)', fontFamily: 'var(--font-mono)' }}>
+              FORMAT: TWITTER / X THREAD (&lt;280 CHARACTERS EACH)
             </span>
             <button
               onClick={handleRegenerateCurrentFormat}
               disabled={isRegenerating}
-              style={{
-                background: 'none',
-                border: 'none',
-                color: 'var(--text-muted)',
-                fontSize: '11px',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '4px'
-              }}
+              className="btn btn-secondary btn-sm"
+              style={{ padding: '4px 10px' }}
             >
               <RefreshCw size={12} className={isRegenerating ? 'animate-spin' : ''} />
               <span>Regenerate</span>
@@ -506,20 +540,34 @@ Built for speed. Powered by iQOO edge compute.
             const trimmed = tweet.trim();
             if (!trimmed) return null;
             return (
-              <div key={i} className="card" style={{ padding: '14px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
-                  <span style={{ fontSize: '11px', color: 'var(--iqoo-cyan)', fontFamily: 'var(--font-mono)', fontWeight: '700' }}>
+              <div key={i} className="card" style={{ padding: '16px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                  <span style={{
+                    fontSize: '11px',
+                    fontFamily: 'var(--font-mono)',
+                    fontWeight: '900',
+                    background: 'var(--nb-yellow)',
+                    border: '1.5px solid var(--nb-black)',
+                    boxShadow: '1.5px 1.5px 0px var(--nb-black)',
+                    padding: '2px 8px',
+                    borderRadius: '4px'
+                  }}>
                     TWEET {i + 1}
                   </span>
                   <span style={{
-                    fontSize: '10px',
+                    fontSize: '11px',
                     fontFamily: 'var(--font-mono)',
-                    color: trimmed.length <= 280 ? 'var(--iqoo-green)' : '#ef4444'
+                    fontWeight: '800',
+                    color: trimmed.length <= 280 ? '#15803d' : '#b91c1c',
+                    background: trimmed.length <= 280 ? '#dcfce7' : '#fee2e2',
+                    border: '1px solid var(--nb-black)',
+                    padding: '2px 6px',
+                    borderRadius: '4px'
                   }}>
                     {trimmed.length} / 280 chars
                   </span>
                 </div>
-                <div style={{ whiteSpace: 'pre-line', fontSize: '13px', lineHeight: 1.5 }}>
+                <div style={{ whiteSpace: 'pre-line', fontSize: '14px', lineHeight: 1.6, color: 'var(--nb-black)' }}>
                   {renderTextWithCitations(trimmed)}
                 </div>
               </div>
@@ -530,23 +578,40 @@ Built for speed. Powered by iQOO edge compute.
 
       {activeTab === 'ico_data' && (
         <div className="card">
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-            <span style={{ fontSize: '11px', color: 'var(--iqoo-orange)', fontFamily: 'var(--font-mono)', fontWeight: '700' }}>
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: '12px',
+            borderBottom: '2px solid var(--nb-black)',
+            paddingBottom: '8px'
+          }}>
+            <span style={{ fontSize: '12px', fontWeight: '900', color: 'var(--nb-black)', fontFamily: 'var(--font-mono)' }}>
               IMMUTABLE INTENT CONTEXT OBJECT (ICO JSON)
             </span>
-            <span style={{ fontSize: '10px', color: 'var(--text-dim)' }}>
+            <span style={{
+              fontSize: '11px',
+              fontFamily: 'var(--font-mono)',
+              background: 'var(--nb-yellow)',
+              border: '1px solid var(--nb-black)',
+              padding: '2px 6px',
+              borderRadius: '4px',
+              fontWeight: '800'
+            }}>
               Single Truth Model
             </span>
           </div>
           <pre style={{
-            background: 'rgba(5, 8, 16, 0.8)',
-            padding: '12px',
+            background: 'var(--nb-black)',
+            color: 'var(--nb-yellow)',
+            padding: '16px',
             borderRadius: 'var(--radius-sm)',
-            fontSize: '11px',
+            fontSize: '12px',
             fontFamily: 'var(--font-mono)',
-            color: 'var(--iqoo-cyan)',
+            border: '2.5px solid var(--nb-black)',
+            boxShadow: '3px 3px 0px var(--nb-black)',
             overflowX: 'auto',
-            maxHeight: '380px'
+            maxHeight: '450px'
           }}>
             {JSON.stringify(ico, null, 2)}
           </pre>

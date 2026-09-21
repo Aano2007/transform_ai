@@ -3,7 +3,7 @@ import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import {
   Mic, Camera, Keyboard, Sparkles, ArrowLeft, Loader2, Trash2,
-  Sliders, ShieldAlert, Cpu
+  Sliders, ShieldAlert, Cpu, Check
 } from 'lucide-react';
 import Link from 'next/link';
 import VoiceRecorder from '../../components/VoiceRecorder';
@@ -11,7 +11,6 @@ import OCRScanner from '../../components/OCRScanner';
 import FormatSelector from '../../components/FormatSelector';
 import { transformContent } from '../../lib/api';
 import { MagneticDock } from '../../components/ui/magnetic-dock';
-import { BorderBeam } from 'border-beam';
 
 function CaptureContent() {
   const router = useRouter();
@@ -24,10 +23,6 @@ function CaptureContent() {
   const [audience, setAudience] = useState('executive');
   const [isTransforming, setIsTransforming] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
-  const [beamVariant, setBeamVariant] = useState('colorful');
-  const [beamSize, setBeamSize] = useState('md');
-  const [beamStrength, setBeamStrength] = useState(0.7);
-  const [beamActive, setBeamActive] = useState(true);
 
   useEffect(() => {
     const initialMode = searchParams.get('mode');
@@ -96,271 +91,298 @@ function CaptureContent() {
 
   return (
     <div className="content-wrapper">
-      {/* Top Breadcrumb */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <Link href="/" style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '4px',
-          color: 'var(--text-muted)',
-          textDecoration: 'none',
-          fontSize: '13px',
-          fontWeight: '600'
-        }}>
+      {/* Top Breadcrumb & Step Tracker */}
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        borderBottom: '2px solid var(--nb-black)',
+        paddingBottom: '10px'
+      }}>
+        <Link
+          href="/"
+          className="btn btn-secondary btn-sm"
+          style={{ gap: '6px' }}
+        >
           <ArrowLeft size={16} />
-          <span>Home</span>
+          <span>Back to Home</span>
         </Link>
 
-        <span style={{ fontSize: '11px', fontFamily: 'var(--font-mono)', color: 'var(--iqoo-cyan)' }}>
-          STEP 1 OF 2 // CAPTURE
+        <span style={{
+          fontSize: '12px',
+          fontFamily: 'var(--font-mono)',
+          fontWeight: '800',
+          background: 'var(--nb-yellow)',
+          color: 'var(--nb-black)',
+          border: '1.5px solid var(--nb-black)',
+          boxShadow: '1.5px 1.5px 0px var(--nb-black)',
+          padding: '4px 10px',
+          borderRadius: '4px'
+        }}>
+          STEP 1 OF 2 // RAW CAPTURE
         </span>
       </div>
 
-      {/* Magnetic Dock Input Mode Switcher */}
-      <div style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        gap: '6px',
-        margin: '2px 0 6px 0'
-      }}>
-        <MagneticDock
-          items={[
-            {
-              id: 'voice',
-              label: 'Voice Memo',
-              icon: <Mic size={24} color={inputMode === 'voice' ? 'var(--iqoo-orange)' : 'var(--text-muted)'} />,
-              isActive: inputMode === 'voice',
-              onClick: () => setInputMode('voice')
-            },
-            {
-              id: 'camera',
-              label: 'Scan OCR',
-              icon: <Camera size={24} color={inputMode === 'camera' ? 'var(--iqoo-cyan)' : 'var(--text-muted)'} />,
-              isActive: inputMode === 'camera',
-              onClick: () => setInputMode('camera')
-            },
-            {
-              id: 'text',
-              label: 'Type / Paste',
-              icon: <Keyboard size={24} color={inputMode === 'text' ? 'var(--iqoo-purple)' : 'var(--text-muted)'} />,
-              isActive: inputMode === 'text',
-              onClick: () => setInputMode('text')
-            }
-          ]}
-          iconSize={50}
-          maxScale={1.4}
-          magneticDistance={140}
-          variant="glass"
-        />
-      </div>
-
-      {/* Input Mode Component Area */}
-      {inputMode === 'voice' && (
-        <VoiceRecorder onTranscriptUpdate={setRawText} currentText={rawText} />
-      )}
-
-      {inputMode === 'camera' && (
-        <OCRScanner onOCRComplete={(txt) => setRawText((prev) => (prev ? prev + '\n\n' + txt : txt))} />
-      )}
-
-      {/* Live Input & Transcript Preview Box with Libraries.dev BorderBeam */}
-      <div className="card">
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          marginBottom: '10px',
-          flexWrap: 'wrap',
-          gap: '8px'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <label style={{
-              fontSize: '12px',
-              fontWeight: '700',
-              color: 'var(--text-muted)',
-              textTransform: 'uppercase',
-              letterSpacing: '0.5px'
-            }}>
-              Raw Input Telemetry ({rawText.length} chars)
-            </label>
-
-            {/* Beam effect indicator pill */}
-            <span style={{
-              fontSize: '10px',
+      {/* 2-Column Responsive Workspace Grid (Laptop: Left/Right, Mobile: Stacked) */}
+      <div className="capture-layout-grid">
+        {/* Left Column: Input Modes & Raw Telemetry Stream */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+          {/* Input Mode Selector Bar */}
+          <div className="card" style={{ padding: '12px 16px' }}>
+            <div style={{
+              fontSize: '11px',
               fontFamily: 'var(--font-mono)',
-              fontWeight: '700',
-              padding: '2px 6px',
-              borderRadius: 'var(--radius-full)',
-              background: beamActive ? 'rgba(0, 240, 255, 0.12)' : 'rgba(255, 255, 255, 0.05)',
-              border: beamActive ? '1px solid rgba(0, 240, 255, 0.3)' : '1px solid var(--border-subtle)',
-              color: beamActive ? 'var(--iqoo-cyan)' : 'var(--text-dim)',
-              display: 'inline-flex',
+              fontWeight: '800',
+              color: 'var(--nb-black)',
+              textTransform: 'uppercase',
+              marginBottom: '10px',
+              display: 'flex',
               alignItems: 'center',
-              gap: '4px'
+              justifyContent: 'space-between'
             }}>
-              <span style={{
-                width: '5px',
-                height: '5px',
-                borderRadius: '50%',
-                background: beamActive ? 'var(--iqoo-cyan)' : 'var(--text-dim)',
-                boxShadow: beamActive ? '0 0 6px var(--iqoo-cyan)' : 'none'
-              }} />
-              BEAM: {beamVariant.toUpperCase()} ({beamSize})
-            </span>
+              <span>1. Choose Capture Channel</span>
+              <span style={{ color: 'var(--nb-text-muted)' }}>Edge WASM / Web Speech</span>
+            </div>
+
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(3, 1fr)',
+              gap: '10px'
+            }}>
+              <button
+                type="button"
+                onClick={() => setInputMode('voice')}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: '6px',
+                  padding: '12px 8px',
+                  borderRadius: 'var(--radius-sm)',
+                  border: '2px solid var(--nb-black)',
+                  boxShadow: inputMode === 'voice' ? '3px 3px 0px var(--nb-black)' : '1px 1px 0px var(--nb-black)',
+                  background: inputMode === 'voice' ? 'var(--nb-yellow)' : '#fff',
+                  cursor: 'pointer',
+                  fontWeight: '800',
+                  fontSize: '13px',
+                  color: 'var(--nb-black)',
+                  transition: 'all 0.1s ease',
+                  transform: inputMode === 'voice' ? 'translate(-1px, -1px)' : 'none'
+                }}
+              >
+                <Mic size={22} />
+                <span>Voice Memo</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setInputMode('camera')}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: '6px',
+                  padding: '12px 8px',
+                  borderRadius: 'var(--radius-sm)',
+                  border: '2px solid var(--nb-black)',
+                  boxShadow: inputMode === 'camera' ? '3px 3px 0px var(--nb-black)' : '1px 1px 0px var(--nb-black)',
+                  background: inputMode === 'camera' ? 'var(--nb-yellow)' : '#fff',
+                  cursor: 'pointer',
+                  fontWeight: '800',
+                  fontSize: '13px',
+                  color: 'var(--nb-black)',
+                  transition: 'all 0.1s ease',
+                  transform: inputMode === 'camera' ? 'translate(-1px, -1px)' : 'none'
+                }}
+              >
+                <Camera size={22} />
+                <span>Whiteboard OCR</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setInputMode('text')}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: '6px',
+                  padding: '12px 8px',
+                  borderRadius: 'var(--radius-sm)',
+                  border: '2px solid var(--nb-black)',
+                  boxShadow: inputMode === 'text' ? '3px 3px 0px var(--nb-black)' : '1px 1px 0px var(--nb-black)',
+                  background: inputMode === 'text' ? 'var(--nb-yellow)' : '#fff',
+                  cursor: 'pointer',
+                  fontWeight: '800',
+                  fontSize: '13px',
+                  color: 'var(--nb-black)',
+                  transition: 'all 0.1s ease',
+                  transform: inputMode === 'text' ? 'translate(-1px, -1px)' : 'none'
+                }}
+              >
+                <Keyboard size={22} />
+                <span>Type / Paste</span>
+              </button>
+            </div>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            {/* Color Variant switcher */}
+          {/* Active Input Mode Component */}
+          {inputMode === 'voice' && (
+            <VoiceRecorder onTranscriptUpdate={setRawText} currentText={rawText} />
+          )}
+
+          {inputMode === 'camera' && (
+            <OCRScanner onOCRComplete={(txt) => setRawText((prev) => (prev ? prev + '\n\n' + txt : txt))} />
+          )}
+
+          {/* Raw Telemetry & Editable Text Area */}
+          <div className="card">
             <div style={{
               display: 'flex',
               alignItems: 'center',
-              background: 'rgba(5, 8, 16, 0.7)',
-              borderRadius: '6px',
-              border: '1px solid var(--border-subtle)',
-              padding: '2px'
+              justifyContent: 'space-between',
+              marginBottom: '10px',
+              flexWrap: 'wrap',
+              gap: '8px'
             }}>
-              {['colorful', 'ocean', 'sunset', 'mono'].map((variant) => (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span className="card-badge-header" style={{ marginBottom: 0 }}>
+                  Raw Telemetry Stream
+                </span>
+                <span style={{
+                  fontSize: '11px',
+                  fontFamily: 'var(--font-mono)',
+                  fontWeight: '800',
+                  color: 'var(--nb-black)',
+                  background: '#fff',
+                  border: '1px solid var(--nb-black)',
+                  padding: '2px 6px',
+                  borderRadius: '4px'
+                }}>
+                  {rawText.length} Chars
+                </span>
+              </div>
+
+              {rawText && (
                 <button
-                  key={variant}
                   type="button"
-                  onClick={() => setBeamVariant(variant)}
-                  title={`Beam color: ${variant}`}
+                  onClick={() => setRawText('')}
                   style={{
-                    background: beamVariant === variant ? 'rgba(255, 255, 255, 0.15)' : 'transparent',
-                    border: 'none',
+                    background: '#fee2e2',
+                    border: '1.5px solid var(--nb-black)',
+                    boxShadow: '1px 1px 0px var(--nb-black)',
                     borderRadius: '4px',
-                    color: beamVariant === variant ? '#fff' : 'var(--text-dim)',
-                    fontSize: '10px',
-                    fontWeight: '700',
-                    padding: '2px 5px',
+                    color: '#991b1b',
+                    fontSize: '11px',
+                    fontWeight: '800',
                     cursor: 'pointer',
-                    textTransform: 'capitalize'
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '4px',
+                    padding: '3px 8px'
                   }}
                 >
-                  {variant}
+                  <Trash2 size={12} />
+                  <span>Clear</span>
                 </button>
-              ))}
+              )}
             </div>
 
-            {/* Clear Button */}
-            {rawText && (
-              <button
-                type="button"
-                onClick={() => setRawText('')}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  color: '#ef4444',
-                  fontSize: '11px',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '4px',
-                  padding: '2px 6px'
-                }}
-              >
-                <Trash2 size={12} />
-                <span>Clear</span>
-              </button>
-            )}
+            <textarea
+              rows={8}
+              value={rawText}
+              onChange={(e) => setRawText(e.target.value)}
+              placeholder={
+                inputMode === 'voice'
+                  ? 'Voice transcript will stream here in real-time. Speak into microphone or tap Simulate...'
+                  : inputMode === 'camera'
+                  ? 'OCR transcribed text from whiteboard will appear here...'
+                  : 'Type or paste rough meeting notes, voice transcripts, or raw bullet points here...'
+              }
+              style={{
+                width: '100%',
+                display: 'block',
+                background: 'var(--nb-yellow-50)',
+                border: '2px solid var(--nb-black)',
+                borderRadius: '8px',
+                color: 'var(--nb-black)',
+                padding: '14px',
+                fontSize: '14px',
+                fontWeight: '600',
+                fontFamily: 'var(--font-sans)',
+                lineHeight: '1.6',
+                resize: 'vertical',
+                outline: 'none',
+                boxShadow: 'inset 2px 2px 0px rgba(0,0,0,0.05)'
+              }}
+            />
           </div>
         </div>
 
-        {/* Libraries.dev BorderBeam wrapping textarea */}
-        <BorderBeam
-          size={beamSize}
-          colorVariant={beamVariant}
-          strength={beamStrength}
-          active={beamActive}
-          theme="dark"
-          borderRadius={10}
-          style={{ width: '100%' }}
-        >
-          <textarea
-            rows={5}
-            value={rawText}
-            onChange={(e) => setRawText(e.target.value)}
-            placeholder={
-              inputMode === 'voice'
-                ? 'Voice transcript will stream here live...'
-                : inputMode === 'camera'
-                ? 'OCR scanned text from whiteboard will appear here...'
-                : 'Paste rough notes, meeting takeaways, or quick thoughts here...'
-            }
-            style={{
-              width: '100%',
-              display: 'block',
-              background: 'rgba(5, 8, 16, 0.75)',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
-              borderRadius: '10px',
-              color: '#fff',
-              padding: '12px',
+        {/* Right Column: Format Selector & Transform Trigger */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+          {/* Format Selector Component */}
+          <div className="card">
+            <FormatSelector
+              selectedFormats={formats}
+              onChangeFormats={setFormats}
+              tone={tone}
+              onChangeTone={setTone}
+              audience={audience}
+              onChangeAudience={setAudience}
+            />
+          </div>
+
+          {/* Error Banner */}
+          {errorMsg && (
+            <div style={{
+              padding: '12px 14px',
+              borderRadius: 'var(--radius-sm)',
+              background: '#fee2e2',
+              border: '2px solid var(--nb-black)',
+              boxShadow: '3px 3px 0px var(--nb-black)',
+              color: '#991b1b',
               fontSize: '13px',
-              fontFamily: 'var(--font-sans)',
-              lineHeight: '1.5',
-              resize: 'vertical',
-              outline: 'none',
-              transition: 'border-color 0.2s'
-            }}
-          />
-        </BorderBeam>
-      </div>
-
-      {/* Format Selector Component */}
-      <FormatSelector
-        selectedFormats={formats}
-        onChangeFormats={setFormats}
-        tone={tone}
-        onChangeTone={setTone}
-        audience={audience}
-        onChangeAudience={setAudience}
-      />
-
-      {errorMsg && (
-        <div style={{
-          padding: '12px',
-          borderRadius: 'var(--radius-sm)',
-          background: 'rgba(239, 68, 68, 0.15)',
-          border: '1px solid #ef4444',
-          color: '#fca5a5',
-          fontSize: '12px',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '8px'
-        }}>
-          <ShieldAlert size={16} style={{ flexShrink: 0 }} />
-          <span>{errorMsg}</span>
-        </div>
-      )}
-
-      {/* Prominent TRANSFORM Trigger Button */}
-      <div style={{ position: 'sticky', bottom: '16px', zIndex: 30 }}>
-        <button
-          type="button"
-          onClick={handleTransform}
-          disabled={isTransforming}
-          className="btn btn-primary"
-          style={{
-            width: '100%',
-            padding: '18px',
-            fontSize: '16px',
-            fontWeight: '900',
-            letterSpacing: '0.5px'
-          }}
-        >
-          {isTransforming ? (
-            <>
-              <Loader2 size={20} className="animate-spin" />
-              <span>TRANSFORMING VIA HEADLESS COMPUTE...</span>
-            </>
-          ) : (
-            <>
-              <Sparkles size={20} />
-              <span>TRANSFORM DELIVERABLES ({formats.length})</span>
-            </>
+              fontWeight: '700',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px'
+            }}>
+              <ShieldAlert size={18} style={{ flexShrink: 0 }} />
+              <span>{errorMsg}</span>
+            </div>
           )}
-        </button>
+
+          {/* Prominent Neobrutalist Transform Trigger Button */}
+          <div style={{ position: 'sticky', bottom: '16px', zIndex: 30 }}>
+            <button
+              type="button"
+              onClick={handleTransform}
+              disabled={isTransforming}
+              className="btn btn-primary"
+              style={{
+                width: '100%',
+                padding: '18px 24px',
+                fontSize: '16px',
+                fontWeight: '900',
+                letterSpacing: '0.5px',
+                boxShadow: '5px 5px 0px var(--nb-black)'
+              }}
+            >
+              {isTransforming ? (
+                <>
+                  <Loader2 size={22} className="animate-spin" />
+                  <span>TRANSFORMING VIA HEADLESS ENGINE...</span>
+                </>
+              ) : (
+                <>
+                  <Sparkles size={22} />
+                  <span>TRANSFORM DELIVERABLES ({formats.length})</span>
+                </>
+              )}
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -369,8 +391,8 @@ function CaptureContent() {
 export default function CaptureScreen() {
   return (
     <Suspense fallback={
-      <div className="content-wrapper" style={{ justifyContent: 'center', alignItems: 'center' }}>
-        <Loader2 size={32} className="animate-spin" color="var(--iqoo-orange)" />
+      <div className="content-wrapper" style={{ justifyContent: 'center', alignItems: 'center', minHeight: '50vh' }}>
+        <Loader2 size={36} className="animate-spin" color="var(--nb-black)" />
       </div>
     }>
       <CaptureContent />

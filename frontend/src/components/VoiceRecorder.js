@@ -48,7 +48,6 @@ export default function VoiceRecorder({ onTranscriptUpdate, currentText = '' }) 
 
   const toggleRecording = () => {
     if (!recognition) {
-      // If Web Speech API not permitted or supported, simulate live voice transcription
       simulateVoiceStream();
       return;
     }
@@ -98,16 +97,17 @@ export default function VoiceRecorder({ onTranscriptUpdate, currentText = '' }) 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
       <div style={{
-        background: active ? 'rgba(255, 107, 0, 0.08)' : 'rgba(15, 23, 42, 0.5)',
-        border: `1px solid ${active ? 'var(--iqoo-orange)' : 'var(--border-subtle)'}`,
+        background: active ? 'var(--nb-yellow-100)' : 'var(--nb-yellow-50)',
+        border: '2.5px solid var(--nb-black)',
         borderRadius: 'var(--radius-md)',
-        padding: '20px',
+        boxShadow: active ? '4px 4px 0px var(--nb-black)' : '2px 2px 0px var(--nb-black)',
+        padding: '24px 20px',
         textAlign: 'center',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        gap: '12px',
-        transition: 'all 0.3s ease'
+        gap: '14px',
+        transition: 'all 0.15s ease'
       }}>
         {active ? (
           <div className="audio-waves">
@@ -122,37 +122,35 @@ export default function VoiceRecorder({ onTranscriptUpdate, currentText = '' }) 
           </div>
         ) : (
           <div style={{
-            width: '56px',
-            height: '56px',
+            width: '60px',
+            height: '60px',
             borderRadius: '50%',
-            background: 'rgba(255, 107, 0, 0.12)',
+            background: 'var(--nb-yellow)',
+            border: '2px solid var(--nb-black)',
+            boxShadow: '2px 2px 0px var(--nb-black)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            color: 'var(--iqoo-orange)'
+            color: 'var(--nb-black)'
           }}>
             <Mic size={28} />
           </div>
         )}
 
         <div>
-          <h4 style={{ fontSize: '15px', fontWeight: '700', color: '#fff' }}>
+          <h4 style={{ fontSize: '16px', fontWeight: '900', color: 'var(--nb-black)' }}>
             {active ? 'Listening (Web Speech API Edge)...' : 'Tap to Record Voice Memo'}
           </h4>
-          <p style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '4px' }}>
+          <p style={{ fontSize: '13px', color: 'var(--nb-text-muted)', marginTop: '4px', fontWeight: '600' }}>
             100% on-device speech-to-text. Zero audio sent to cloud.
           </p>
         </div>
 
-        <div style={{ display: 'flex', gap: '10px' }}>
+        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center' }}>
           <button
             type="button"
             onClick={toggleRecording}
-            className={`btn ${active ? 'btn-secondary' : 'btn-primary'} btn-sm`}
-            style={{
-              background: active ? '#dc2626' : undefined,
-              borderColor: active ? '#ef4444' : undefined
-            }}
+            className={`btn ${active ? 'btn-dark' : 'btn-primary'} btn-sm`}
           >
             {active ? <MicOff size={16} /> : <Mic size={16} />}
             <span>{active ? 'Stop Recording' : 'Start Microphone'}</span>
@@ -165,7 +163,7 @@ export default function VoiceRecorder({ onTranscriptUpdate, currentText = '' }) 
               className="btn btn-secondary btn-sm"
               title="Simulate realistic voice input stream"
             >
-              <Sparkles size={14} color="var(--iqoo-cyan)" />
+              <Sparkles size={14} color="var(--nb-black)" />
               <span>Simulate Voice</span>
             </button>
           )}
@@ -175,8 +173,12 @@ export default function VoiceRecorder({ onTranscriptUpdate, currentText = '' }) 
           <div style={{
             fontSize: '12px',
             fontStyle: 'italic',
-            color: 'var(--iqoo-cyan)',
-            marginTop: '6px'
+            color: 'var(--nb-black)',
+            background: '#fff',
+            border: '1.5px solid var(--nb-black)',
+            padding: '4px 10px',
+            borderRadius: '4px',
+            marginTop: '4px'
           }}>
             "{interimText}"
           </div>

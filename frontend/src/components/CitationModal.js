@@ -11,104 +11,140 @@ export default function CitationModal({ citation, rawText, onClose }) {
       left: 0,
       right: 0,
       bottom: 0,
-      background: 'rgba(0, 0, 0, 0.75)',
-      backdropFilter: 'blur(8px)',
+      background: 'rgba(0, 0, 0, 0.65)',
+      backdropFilter: 'blur(4px)',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
       padding: '20px',
       zIndex: 1000,
-      animation: 'fadeIn 0.2s ease'
+      animation: 'fadeIn 0.15s ease'
     }}>
       <div style={{
-        background: '#0d1322',
-        border: '1px solid var(--iqoo-cyan)',
-        boxShadow: '0 0 35px rgba(0, 240, 255, 0.25)',
-        borderRadius: 'var(--radius-lg)',
+        background: '#ffffff',
+        border: '3px solid var(--nb-black)',
+        boxShadow: '8px 8px 0px var(--nb-black)',
+        borderRadius: 'var(--radius-md)',
         width: '100%',
-        maxWidth: '440px',
-        padding: '20px',
+        maxWidth: '480px',
+        padding: '24px',
         display: 'flex',
         flexDirection: 'column',
-        gap: '16px'
+        gap: '18px'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <span style={{
-              background: 'rgba(0, 240, 255, 0.15)',
-              color: 'var(--iqoo-cyan)',
-              border: '1px solid rgba(0, 240, 255, 0.4)',
-              borderRadius: '6px',
-              padding: '2px 8px',
+              background: 'var(--nb-yellow)',
+              color: 'var(--nb-black)',
+              border: '2px solid var(--nb-black)',
+              boxShadow: '2px 2px 0px var(--nb-black)',
+              borderRadius: '4px',
+              padding: '3px 10px',
               fontFamily: 'var(--font-mono)',
-              fontWeight: '700',
+              fontWeight: '900',
               fontSize: '12px'
             }}>
               CITATION [{citation.id}]
             </span>
-            <span style={{ fontSize: '12px', color: 'var(--iqoo-green)', display: 'flex', alignItems: 'center', gap: '4px' }}>
-              <ShieldCheck size={14} />
-              Ground Truth Verified
+            <span style={{
+              fontSize: '11px',
+              color: 'var(--nb-black)',
+              background: '#dcfce7',
+              border: '1.5px solid var(--nb-black)',
+              padding: '2px 8px',
+              borderRadius: '4px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px',
+              fontWeight: '800'
+            }}>
+              <ShieldCheck size={14} color="#15803d" />
+              Ground Truth Grounded
             </span>
           </div>
 
           <button
             onClick={onClose}
             style={{
-              background: 'transparent',
-              border: 'none',
-              color: 'var(--text-muted)',
-              cursor: 'pointer'
+              background: 'var(--nb-yellow-100)',
+              border: '1.5px solid var(--nb-black)',
+              borderRadius: '4px',
+              padding: '4px',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
             }}
           >
-            <X size={20} />
+            <X size={18} />
           </button>
         </div>
 
         <div>
-          <label style={{ fontSize: '11px', color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+          <label style={{
+            fontSize: '11px',
+            color: 'var(--nb-black)',
+            textTransform: 'uppercase',
+            letterSpacing: '0.5px',
+            fontWeight: '900',
+            fontFamily: 'var(--font-mono)'
+          }}>
             Synthesized Deliverable Claim:
           </label>
           <div style={{
-            marginTop: '4px',
-            padding: '10px 12px',
-            background: 'rgba(255, 255, 255, 0.04)',
-            borderRadius: 'var(--radius-sm)',
-            fontSize: '13px',
-            color: '#fff',
-            borderLeft: '3px solid var(--iqoo-orange)'
+            marginTop: '6px',
+            padding: '12px 14px',
+            background: 'var(--nb-yellow-50)',
+            borderRadius: '6px',
+            fontSize: '14px',
+            fontWeight: '700',
+            color: 'var(--nb-black)',
+            border: '2px solid var(--nb-black)',
+            boxShadow: '2px 2px 0px var(--nb-black)',
+            borderLeft: '5px solid var(--nb-yellow)'
           }}>
             {citation.claim}
           </div>
         </div>
 
         <div>
-          <label style={{ fontSize: '11px', color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-            Exact Source Quote (Raw Voice/OCR Telemetry):
+          <label style={{
+            fontSize: '11px',
+            color: 'var(--nb-black)',
+            textTransform: 'uppercase',
+            letterSpacing: '0.5px',
+            fontWeight: '900',
+            fontFamily: 'var(--font-mono)'
+          }}>
+            Exact Source Quote (Raw Voice / OCR Telemetry):
           </label>
           <div style={{
-            marginTop: '4px',
-            padding: '12px',
-            background: 'rgba(0, 240, 255, 0.06)',
-            borderRadius: 'var(--radius-sm)',
+            marginTop: '6px',
+            padding: '14px',
+            background: '#ffffff',
+            borderRadius: '6px',
             fontSize: '13px',
-            color: 'var(--iqoo-cyan)',
+            fontWeight: '600',
+            color: 'var(--nb-black)',
             fontStyle: 'italic',
-            borderLeft: '3px solid var(--iqoo-cyan)',
+            border: '2px solid var(--nb-black)',
+            boxShadow: '2px 2px 0px var(--nb-black)',
+            borderLeft: '5px solid var(--nb-black)',
             display: 'flex',
             gap: '8px'
           }}>
-            <Quote size={16} style={{ flexShrink: 0, marginTop: '2px' }} />
+            <Quote size={18} style={{ flexShrink: 0, marginTop: '2px' }} />
             <span>"{citation.source_quote}"</span>
           </div>
         </div>
 
         <button
           onClick={onClose}
-          className="btn btn-secondary btn-sm"
-          style={{ width: '100%', marginTop: '4px' }}
+          className="btn btn-primary"
+          style={{ width: '100%', marginTop: '6px' }}
         >
-          Close Citation
+          Dismiss Inspector
         </button>
       </div>
     </div>

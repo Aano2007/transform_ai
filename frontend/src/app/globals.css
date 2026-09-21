@@ -1,36 +1,66 @@
 :root {
-  --bg-deep: #06090f;
-  --bg-primary: #0a0f1d;
-  --bg-card: rgba(16, 24, 40, 0.75);
-  --bg-card-hover: rgba(24, 36, 60, 0.85);
-  --bg-card-active: rgba(30, 48, 80, 0.9);
-  --border-subtle: rgba(255, 255, 255, 0.08);
-  --border-glow: rgba(255, 107, 0, 0.35);
-  --border-cyan: rgba(0, 240, 255, 0.3);
+  /* Core Neobrutalism Color Palette (#ffdb59 and its shades) */
+  --nb-yellow-50: #fffdf2;
+  --nb-yellow-100: #fff9d6;
+  --nb-yellow-200: #ffef9e;
+  --nb-yellow-300: #ffe570;
+  --nb-yellow: #ffdb59;
+  --nb-yellow-500: #f2c730;
+  --nb-yellow-600: #d4a613;
+  --nb-yellow-700: #a37c05;
+  --nb-yellow-800: #574102;
+  --nb-yellow-900: #2b2001;
 
-  --iqoo-orange: #ff6b00;
-  --iqoo-orange-light: #ff8533;
-  --iqoo-orange-glow: rgba(255, 107, 0, 0.25);
-  --iqoo-cyan: #00f0ff;
-  --iqoo-cyan-glow: rgba(0, 240, 255, 0.2);
-  --iqoo-green: #10b981;
-  --iqoo-purple: #8b5cf6;
+  /* Neobrutalism Neutrals & Canvas */
+  --nb-bg: #fcf9ee;
+  --nb-surface: #ffffff;
+  --nb-surface-card: #ffffff;
+  --nb-surface-alt: #fff9d6;
+  --nb-black: #121212;
+  --nb-text: #121212;
+  --nb-text-muted: #4a4a4a;
+  --nb-text-dim: #717171;
 
-  --text-main: #f8fafc;
-  --text-muted: #94a3b8;
-  --text-dim: #64748b;
+  /* Neobrutalism Borders & Hard Drop Shadows */
+  --nb-border: 2.5px solid var(--nb-black);
+  --nb-border-sm: 1.5px solid var(--nb-black);
+  --nb-border-thick: 3px solid var(--nb-black);
+  --nb-shadow: 4px 4px 0px var(--nb-black);
+  --nb-shadow-lg: 6px 6px 0px var(--nb-black);
+  --nb-shadow-sm: 2px 2px 0px var(--nb-black);
+  --nb-shadow-xl: 8px 8px 0px var(--nb-black);
 
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "JetBrains Mono", monospace;
-  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, Helvetica, Arial, sans-serif;
+  /* Neobrutalism Supporting Accents */
+  --nb-coral: #ff6584;
+  --nb-cyan: #38bdf8;
+  --nb-green: #22c55e;
+  --nb-purple: #c084fc;
+  --nb-blue: #3b82f6;
 
-  --radius-sm: 8px;
-  --radius-md: 14px;
-  --radius-lg: 20px;
+  /* Backward Compatibility Mappings for Existing Components */
+  --bg-deep: var(--nb-bg);
+  --bg-primary: var(--nb-surface);
+  --bg-card: var(--nb-surface);
+  --bg-card-hover: var(--nb-yellow-100);
+  --border-subtle: rgba(18, 18, 18, 0.2);
+  --border-glow: var(--nb-black);
+  --iqoo-orange: var(--nb-yellow-500);
+  --iqoo-orange-light: var(--nb-yellow);
+  --iqoo-cyan: #0284c7;
+  --iqoo-green: var(--nb-green);
+  --text-main: var(--nb-text);
+  --text-muted: var(--nb-text-muted);
+  --text-dim: var(--nb-text-dim);
+
+  /* Typography */
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --font-sans: "Plus Jakarta Sans", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+  /* Radii */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
   --radius-full: 9999px;
-
-  --shadow-glow: 0 0 25px rgba(255, 107, 0, 0.2);
-  --shadow-cyan: 0 0 25px rgba(0, 240, 255, 0.15);
-  --shadow-card: 0 10px 30px -10px rgba(0, 0, 0, 0.6);
 }
 
 * {
@@ -41,15 +71,15 @@
 }
 
 html, body {
-  background-color: var(--bg-deep);
-  color: var(--text-main);
+  background-color: var(--nb-bg);
+  color: var(--nb-text);
   font-family: var(--font-sans);
   min-height: 100vh;
   overflow-x: hidden;
   line-height: 1.5;
 }
 
-/* Background Cyber Grid */
+/* Neobrutalism Retro Dot Pattern Background */
 body::before {
   content: "";
   position: fixed;
@@ -58,176 +88,411 @@ body::before {
   right: 0;
   bottom: 0;
   background-image: 
-    radial-gradient(circle at 15% 15%, rgba(255, 107, 0, 0.08) 0%, transparent 40%),
-    radial-gradient(circle at 85% 85%, rgba(0, 240, 255, 0.06) 0%, transparent 40%),
-    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-  background-size: 100% 100%, 100% 100%, 32px 32px, 32px 32px;
+    radial-gradient(var(--nb-black) 1px, transparent 1px);
+  background-size: 24px 24px;
+  opacity: 0.08;
   pointer-events: none;
   z-index: 0;
 }
 
-/* Mobile App Shell Container */
+/* =========================================================
+   RESPONSIVE APP SHELL (Laptop/Desktop Widescreen + Mobile)
+   ========================================================= */
 .app-shell {
   position: relative;
   z-index: 1;
-  max-width: 480px;
+  width: 100%;
+  max-width: 100%;
   min-height: 100vh;
   margin: 0 auto;
-  background-color: var(--bg-primary);
-  border-left: 1px solid var(--border-subtle);
-  border-right: 1px solid var(--border-subtle);
+  background-color: var(--nb-surface);
   display: flex;
   flex-direction: column;
-  box-shadow: 0 0 50px rgba(0, 0, 0, 0.8);
 }
 
+/* Tablet & Laptop / Desktop Displays */
 @media (min-width: 768px) {
   .app-shell {
-    margin: 20px auto;
-    min-height: calc(100vh - 40px);
+    max-width: 1240px;
+    margin: 24px auto;
+    min-height: calc(100vh - 48px);
+    border: var(--nb-border-thick);
     border-radius: var(--radius-lg);
-    border: 1px solid var(--border-subtle);
+    box-shadow: var(--nb-shadow-lg);
+    overflow: hidden;
   }
 }
 
-/* Header & Navigation */
+@media (min-width: 1400px) {
+  .app-shell {
+    max-width: 1320px;
+    margin: 32px auto;
+  }
+}
+
+/* =========================================================
+   HEADER & NAVIGATION
+   ========================================================= */
 .app-header {
   position: sticky;
   top: 0;
   z-index: 50;
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  background: rgba(10, 15, 29, 0.85);
-  border-bottom: 1px solid var(--border-subtle);
+  background: var(--nb-yellow);
+  border-bottom: var(--nb-border-thick);
   padding: 14px 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 16px;
+}
+
+@media (min-width: 768px) {
+  .app-header {
+    padding: 16px 28px;
+  }
 }
 
 .brand-badge {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   text-decoration: none;
-  color: var(--text-main);
+  color: var(--nb-black);
 }
 
 .brand-logo {
-  width: 34px;
-  height: 34px;
-  border-radius: 10px;
-  background: linear-gradient(135deg, var(--iqoo-orange), #e11d48);
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  background: var(--nb-black);
+  border: 2px solid var(--nb-black);
+  box-shadow: 2px 2px 0px var(--nb-black);
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 900;
-  font-size: 16px;
-  color: #fff;
-  box-shadow: 0 0 12px var(--iqoo-orange-glow);
+  font-size: 18px;
+  color: var(--nb-yellow);
+  transition: transform 0.15s ease;
+}
+
+.brand-badge:hover .brand-logo {
+  transform: rotate(-4deg) scale(1.05);
 }
 
 .brand-title {
-  font-size: 17px;
-  font-weight: 800;
+  font-size: 18px;
+  font-weight: 900;
   letter-spacing: -0.5px;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
 }
 
 .brand-title .tag {
   font-size: 10px;
-  font-weight: 700;
-  color: var(--iqoo-orange);
-  background: rgba(255, 107, 0, 0.12);
-  border: 1px solid rgba(255, 107, 0, 0.3);
+  font-weight: 800;
+  color: var(--nb-black);
+  background: var(--nb-surface);
+  border: 1.5px solid var(--nb-black);
+  box-shadow: 1.5px 1.5px 0px var(--nb-black);
   padding: 2px 6px;
   border-radius: 4px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
-/* Main Content Wrapper */
+/* Nav Links for Laptop Displays */
+.desktop-nav-links {
+  display: none;
+  align-items: center;
+  gap: 8px;
+}
+
+@media (min-width: 768px) {
+  .desktop-nav-links {
+    display: flex;
+  }
+}
+
+.nav-link {
+  font-size: 13px;
+  font-weight: 800;
+  text-decoration: none;
+  color: var(--nb-black);
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid transparent;
+  transition: all 0.15s ease;
+}
+
+.nav-link:hover {
+  background: var(--nb-surface);
+  border-color: var(--nb-black);
+  box-shadow: var(--nb-shadow-sm);
+  transform: translate(-1px, -1px);
+}
+
+.nav-link.active {
+  background: var(--nb-surface);
+  border-color: var(--nb-black);
+  box-shadow: var(--nb-shadow-sm);
+}
+
+/* =========================================================
+   LAYOUT UTILITIES & RESPONSIVE GRIDS
+   ========================================================= */
 .content-wrapper {
   flex: 1;
-  padding: 20px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 20px;
+  background: var(--nb-surface);
 }
 
-/* Card Surface */
+@media (min-width: 768px) {
+  .content-wrapper {
+    padding: 28px 32px;
+    gap: 24px;
+  }
+}
+
+/* 2-Column Responsive Desktop Grid */
+.desktop-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+
+@media (min-width: 900px) {
+  .desktop-grid-2 {
+    grid-template-columns: 1.15fr 0.85fr;
+    align-items: start;
+    gap: 28px;
+  }
+}
+
+/* Capture Page Specific Grid */
+.capture-layout-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+
+@media (min-width: 900px) {
+  .capture-layout-grid {
+    grid-template-columns: 1.2fr 0.8fr;
+    align-items: start;
+    gap: 28px;
+  }
+}
+
+/* =========================================================
+   NEOBRUTALISM CARDS & CONTAINERS
+   ========================================================= */
 .card {
-  background: var(--bg-card);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--border-subtle);
+  background: var(--nb-surface);
+  border: var(--nb-border);
   border-radius: var(--radius-md);
+  box-shadow: var(--nb-shadow);
   padding: 18px;
-  transition: all 0.2s ease;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  position: relative;
 }
 
-.card-glow {
-  border-color: var(--border-glow);
-  box-shadow: var(--shadow-glow);
+.card:hover {
+  box-shadow: var(--nb-shadow-lg);
+  transform: translate(-2px, -2px);
 }
 
-/* Buttons */
+.card-yellow {
+  background: var(--nb-yellow-100);
+}
+
+.card-hero {
+  background: var(--nb-yellow-50);
+  border: var(--nb-border-thick);
+  box-shadow: var(--nb-shadow-lg);
+}
+
+.card-badge-header {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+  background: var(--nb-yellow);
+  border: 1.5px solid var(--nb-black);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--nb-black);
+  box-shadow: var(--nb-shadow-sm);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+/* =========================================================
+   NEOBRUTALISM BUTTONS
+   ========================================================= */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  font-size: 15px;
-  font-weight: 700;
-  border-radius: var(--radius-md);
-  padding: 14px 22px;
+  font-size: 14px;
+  font-weight: 800;
+  border-radius: var(--radius-sm);
+  padding: 12px 20px;
   cursor: pointer;
-  transition: all 0.2s ease;
-  border: none;
+  transition: all 0.12s cubic-bezier(0.16, 1, 0.3, 1);
+  border: var(--nb-border);
+  box-shadow: var(--nb-shadow);
   text-decoration: none;
   user-select: none;
+  font-family: var(--font-sans);
+  color: var(--nb-black);
+  background: var(--nb-surface);
 }
 
+.btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: var(--nb-shadow-lg);
+}
+
+.btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0px var(--nb-black);
+}
+
+/* Primary Button: Solid #ffdb59 Yellow with Black Border */
 .btn-primary {
-  background: linear-gradient(135deg, var(--iqoo-orange), #ff4500);
-  color: #fff;
-  box-shadow: 0 4px 18px rgba(255, 107, 0, 0.4);
+  background: var(--nb-yellow);
+  color: var(--nb-black);
 }
 
 .btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 24px rgba(255, 107, 0, 0.6);
+  background: var(--nb-yellow-300);
 }
 
-.btn-primary:active {
-  transform: translateY(0);
-}
-
+/* Secondary Button: Crisp White with Black Border */
 .btn-secondary {
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--text-main);
-  border: 1px solid var(--border-subtle);
+  background: var(--nb-surface);
+  color: var(--nb-black);
 }
 
 .btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.2);
+  background: var(--nb-yellow-50);
 }
 
+/* Dark Button: Ink Black with Yellow Accents */
+.btn-dark {
+  background: var(--nb-black);
+  color: var(--nb-yellow);
+  border-color: var(--nb-black);
+}
+
+.btn-dark:hover {
+  background: #262626;
+  color: var(--nb-yellow);
+}
+
+/* Cyan Action Button */
 .btn-cyan {
-  background: linear-gradient(135deg, var(--iqoo-cyan), #0284c7);
-  color: #050a14;
-  font-weight: 800;
-  box-shadow: 0 4px 18px var(--iqoo-cyan-glow);
+  background: var(--nb-cyan);
+  color: var(--nb-black);
+}
+
+.btn-cyan:hover {
+  background: #7dd3fc;
 }
 
 .btn-sm {
+  padding: 7px 12px;
+  font-size: 12px;
+  box-shadow: var(--nb-shadow-sm);
+}
+
+.btn-sm:hover {
+  box-shadow: var(--nb-shadow);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: var(--nb-shadow-sm) !important;
+}
+
+/* =========================================================
+   NEOBRUTALISM TABS
+   ========================================================= */
+.tabs-container {
+  display: flex;
+  overflow-x: auto;
+  gap: 8px;
+  padding: 4px 2px 8px 2px;
+  scrollbar-width: none;
+}
+.tabs-container::-webkit-scrollbar { display: none; }
+
+.tab-btn {
+  white-space: nowrap;
   padding: 8px 14px;
   font-size: 13px;
+  font-weight: 800;
   border-radius: var(--radius-sm);
+  background: var(--nb-surface);
+  color: var(--nb-black);
+  border: var(--nb-border-sm);
+  box-shadow: var(--nb-shadow-sm);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+
+.tab-btn:hover {
+  background: var(--nb-yellow-100);
+  transform: translate(-1px, -1px);
+  box-shadow: var(--nb-shadow);
+}
+
+.tab-btn.active {
+  background: var(--nb-yellow);
+  border: var(--nb-border);
+  box-shadow: var(--nb-shadow);
+  transform: translate(-1px, -1px);
+}
+
+/* =========================================================
+   NEOBRUTALISM CITATIONS & PILLS
+   ========================================================= */
+.citation-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--nb-yellow);
+  color: var(--nb-black);
+  border: 1.5px solid var(--nb-black);
+  box-shadow: 1.5px 1.5px 0px var(--nb-black);
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 800;
+  font-family: var(--font-mono);
+  padding: 1px 6px;
+  margin: 0 4px;
+  cursor: pointer;
+  transition: all 0.12s ease;
+  vertical-align: middle;
+}
+
+.citation-pill:hover {
+  background: var(--nb-black);
+  color: var(--nb-yellow);
+  transform: scale(1.1) rotate(-2deg);
 }
 
 /* Audio Visualizer Pulse */
@@ -235,16 +500,21 @@ body::before {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: 5px;
   height: 48px;
   padding: 8px 0;
 }
 
 .audio-bar {
-  width: 4px;
-  background: var(--iqoo-orange);
-  border-radius: 4px;
+  width: 6px;
+  background: var(--nb-black);
+  border-radius: 2px;
   animation: soundPulse 1.2s ease-in-out infinite alternate;
+}
+
+.audio-bar:nth-child(even) {
+  background: var(--nb-yellow);
+  border: 1px solid var(--nb-black);
 }
 
 .audio-bar:nth-child(2) { animation-delay: 0.15s; }
@@ -256,67 +526,8 @@ body::before {
 .audio-bar:nth-child(8) { animation-delay: 0.1s; }
 
 @keyframes soundPulse {
-  0% { height: 8px; opacity: 0.4; }
-  100% { height: 42px; opacity: 1; filter: drop-shadow(0 0 6px var(--iqoo-orange)); }
-}
-
-/* Citation Pill */
-.citation-pill {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(0, 240, 255, 0.15);
-  color: var(--iqoo-cyan);
-  border: 1px solid rgba(0, 240, 255, 0.4);
-  border-radius: 4px;
-  font-size: 11px;
-  font-weight: 700;
-  font-family: var(--font-mono);
-  padding: 1px 5px;
-  margin: 0 3px;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  vertical-align: middle;
-}
-
-.citation-pill:hover {
-  background: var(--iqoo-cyan);
-  color: #000;
-  box-shadow: 0 0 8px var(--iqoo-cyan);
-  transform: scale(1.08);
-}
-
-/* Tab Navigation */
-.tabs-container {
-  display: flex;
-  overflow-x: auto;
-  gap: 8px;
-  padding-bottom: 4px;
-  scrollbar-width: none;
-}
-.tabs-container::-webkit-scrollbar { display: none; }
-
-.tab-btn {
-  white-space: nowrap;
-  padding: 8px 14px;
-  font-size: 13px;
-  font-weight: 600;
-  border-radius: var(--radius-sm);
-  background: rgba(255, 255, 255, 0.04);
-  color: var(--text-muted);
-  border: 1px solid var(--border-subtle);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  transition: all 0.2s;
-}
-
-.tab-btn.active {
-  background: rgba(255, 107, 0, 0.15);
-  color: #fff;
-  border-color: var(--iqoo-orange);
-  box-shadow: 0 0 12px var(--iqoo-orange-glow);
+  0% { height: 8px; }
+  100% { height: 42px; }
 }
 
 /* Office Kit Toast */
@@ -325,16 +536,17 @@ body::before {
   bottom: 24px;
   left: 50%;
   transform: translateX(-50%);
-  background: #0f172a;
-  border: 1px solid var(--iqoo-cyan);
-  box-shadow: 0 8px 32px rgba(0, 240, 255, 0.35);
+  background: var(--nb-yellow);
+  border: var(--nb-border-thick);
+  box-shadow: var(--nb-shadow-lg);
   border-radius: var(--radius-md);
-  padding: 12px 18px;
+  padding: 14px 22px;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
   z-index: 999;
   animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  color: var(--nb-black);
 }
 
 @keyframes slideUp {
@@ -344,104 +556,120 @@ body::before {
 
 /* Pulse indicator */
 .pulse-dot {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
-  background: var(--iqoo-green);
-  box-shadow: 0 0 8px var(--iqoo-green);
+  background: var(--nb-green);
+  border: 1.5px solid var(--nb-black);
+  box-shadow: 1px 1px 0px var(--nb-black);
   animation: blink 1.5s infinite alternate;
 }
 
 @keyframes blink {
-  0% { opacity: 0.4; }
+  0% { opacity: 0.5; }
   100% { opacity: 1; }
 }
 
-/* Markdown prose */
+/* =========================================================
+   MARKDOWN PROSE (Neobrutalist Tables & Hierarchy)
+   ========================================================= */
 .prose {
-  color: var(--text-main);
+  color: var(--nb-black);
   font-size: 14px;
-  line-height: 1.65;
+  line-height: 1.7;
 }
 
 .prose h1, .prose h2, .prose h3 {
-  color: #fff;
-  margin-top: 14px;
-  margin-bottom: 8px;
-  font-weight: 700;
+  color: var(--nb-black);
+  margin-top: 18px;
+  margin-bottom: 10px;
+  font-weight: 900;
+  letter-spacing: -0.5px;
 }
 
-.prose h1 { font-size: 18px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px; }
-.prose h2 { font-size: 15px; color: var(--iqoo-orange); }
-.prose h3 { font-size: 14px; color: var(--iqoo-cyan); }
+.prose h1 { 
+  font-size: 20px; 
+  border-bottom: 2.5px solid var(--nb-black); 
+  padding-bottom: 8px; 
+}
+.prose h2 { 
+  font-size: 16px; 
+  background: var(--nb-yellow-100);
+  border-left: 4px solid var(--nb-black);
+  padding: 4px 10px;
+  display: inline-block;
+}
+.prose h3 { 
+  font-size: 14px; 
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+}
 
-.prose p { margin-bottom: 10px; }
-.prose ul, .prose ol { margin-left: 20px; margin-bottom: 12px; }
+.prose p { margin-bottom: 12px; }
+.prose ul, .prose ol { margin-left: 22px; margin-bottom: 14px; }
 .prose li { margin-bottom: 6px; }
 
 .prose table {
   width: 100%;
-  border-collapse: collapse;
-  margin: 12px 0;
-  font-size: 12px;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 16px 0;
+  font-size: 13px;
+  border: var(--nb-border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  box-shadow: var(--nb-shadow-sm);
 }
 
 .prose th, .prose td {
-  border: 1px solid var(--border-subtle);
-  padding: 8px 10px;
+  border-bottom: 1.5px solid var(--nb-black);
+  border-right: 1.5px solid var(--nb-black);
+  padding: 10px 12px;
   text-align: left;
 }
 
+.prose tr:last-child td {
+  border-bottom: none;
+}
+
+.prose th:last-child, .prose td:last-child {
+  border-right: none;
+}
+
 .prose th {
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--iqoo-cyan);
+  background: var(--nb-yellow);
+  color: var(--nb-black);
   font-family: var(--font-mono);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .prose td {
-  background: rgba(10, 15, 29, 0.4);
+  background: var(--nb-surface);
 }
 
 /* =========================================================
-   MAGNETIC DOCK STYLES (macOS Spring Physics & Glassmorphism)
+   MAGNETIC DOCK (Neobrutalist Styling)
    ========================================================= */
 .magnetic-dock-container {
   display: inline-flex;
   align-items: flex-end;
-  gap: 12px;
-  padding: 10px 14px;
-  border-radius: 26px;
+  gap: 14px;
+  padding: 12px 18px;
+  border-radius: var(--radius-lg);
   user-select: none;
   touch-action: manipulation;
+  background: var(--nb-surface);
+  border: var(--nb-border-thick);
+  box-shadow: var(--nb-shadow);
 }
 
-.magnetic-dock-container.flex-row {
-  flex-direction: row;
-}
-
-.magnetic-dock-container.flex-col {
-  flex-direction: column;
-  align-items: center;
-}
-
-.magnetic-dock-glass {
-  background: rgba(15, 23, 42, 0.75);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.15);
-}
-
+.magnetic-dock-glass,
 .magnetic-dock-solid {
-  background: #0f172a;
-  border: 1px solid var(--border-subtle);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-}
-
-.magnetic-dock-transparent {
-  background: transparent;
-  border: 0;
-  box-shadow: none;
+  background: var(--nb-surface) !important;
+  border: var(--nb-border) !important;
+  box-shadow: var(--nb-shadow) !important;
 }
 
 .magnetic-dock-item {
@@ -454,104 +682,71 @@ body::before {
   cursor: pointer;
   padding: 0;
   outline: none;
-  border-radius: 20px;
   transform-origin: bottom center;
-}
-
-.magnetic-dock-item:focus-visible {
-  outline: 2px solid var(--iqoo-orange);
-  outline-offset: 3px;
 }
 
 .magnetic-dock-icon-box {
   position: relative;
   width: 100%;
   height: 100%;
-  border-radius: 18px;
+  border-radius: var(--radius-md) !important;
   overflow: hidden;
-  background: linear-gradient(180deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: var(--nb-yellow-50) !important;
+  border: var(--nb-border) !important;
+  box-shadow: var(--nb-shadow-sm) !important;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: border-color 0.2s ease, transform 0.15s ease;
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.magnetic-dock-item:hover .magnetic-dock-icon-box {
+  background: var(--nb-yellow-200) !important;
 }
 
 .magnetic-dock-item-active .magnetic-dock-icon-box,
 .magnetic-dock-icon-box.active {
-  border-color: rgba(255, 107, 0, 0.5);
-  background: linear-gradient(180deg, rgba(255, 107, 0, 0.15) 0%, rgba(15, 23, 42, 0.95) 100%);
-  box-shadow: 0 0 20px rgba(255, 107, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
-}
-
-.magnetic-dock-icon {
-  width: 60%;
-  height: 60%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #f8fafc;
-}
-
-.magnetic-dock-item-active .magnetic-dock-icon {
-  color: #ffffff;
-}
-
-.magnetic-dock-shine {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  border-radius: inherit;
+  background: var(--nb-yellow) !important;
+  box-shadow: var(--nb-shadow) !important;
+  transform: translate(-1px, -1px);
 }
 
 .magnetic-dock-badge {
   position: absolute;
-  top: -3px;
-  right: -3px;
-  min-width: 19px;
-  height: 19px;
+  top: -4px;
+  right: -4px;
+  min-width: 20px;
+  height: 20px;
   padding: 0 5px;
   border-radius: 9999px;
-  background: #ef4444;
-  color: #ffffff;
-  font-size: 10px;
-  font-weight: 800;
+  background: var(--nb-coral);
+  color: var(--nb-black);
+  font-size: 11px;
+  font-weight: 900;
   font-family: var(--font-mono);
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 2px solid #06090f;
-  box-shadow: 0 2px 10px rgba(239, 68, 68, 0.6);
+  border: 1.5px solid var(--nb-black);
+  box-shadow: 1.5px 1.5px 0px var(--nb-black);
   z-index: 10;
-}
-
-.magnetic-dock-active-dot {
-  position: absolute;
-  bottom: -6px;
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: var(--iqoo-orange);
-  box-shadow: 0 0 8px var(--iqoo-orange);
 }
 
 .magnetic-dock-tooltip {
   position: absolute;
-  top: -40px;
+  top: -42px;
   left: 50%;
   transform: translateX(-50%);
-  padding: 5px 11px;
-  border-radius: 8px;
-  background: rgba(15, 23, 42, 0.95);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  color: #ffffff;
+  padding: 5px 12px;
+  border-radius: 6px;
+  background: var(--nb-black);
+  color: var(--nb-yellow);
   font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.2px;
+  font-weight: 800;
+  font-family: var(--font-mono);
   white-space: nowrap;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  border: 1.5px solid var(--nb-black);
+  box-shadow: var(--nb-shadow-sm);
   pointer-events: none;
   z-index: 50;
 }
@@ -563,8 +758,19 @@ body::before {
   bottom: -4px;
   width: 8px;
   height: 8px;
-  background: rgba(15, 23, 42, 0.95);
-  border-right: 1px solid rgba(255, 255, 255, 0.16);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+  background: var(--nb-black);
 }
 
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
