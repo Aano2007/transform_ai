@@ -11,7 +11,7 @@ RULES & STRUCTURE:
 4. Strategic Metrics: Emphasize real figures or velocity gains.
 5. Action Items / Future Vision: What teams are executing next.
 6. Call To Action (CTA): Provocative question to spark discussion in comments.
-7. Hashtags: 4-6 relevant industry hashtags (#Productivity #Leadership #TechInnovation #iQOO).
+7. Hashtags: 4-6 relevant industry hashtags (#Productivity #Leadership #TechInnovation #Innovation).
 
 Formatting: Use double line breaks between short punchy paragraphs for maximum mobile scannability. Output only the post text.
 """

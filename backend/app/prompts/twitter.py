@@ -10,7 +10,7 @@ STRICT CONSTRAINTS:
 3. EVERY SINGLE TWEET MUST BE STRICTLY UNDER 280 CHARACTERS. No exceptions.
 4. Tweet 1: Powerful hook highlighting the core transformation or breakthrough + (🧵👇).
 5. Middle Tweets: Bullet points of findings, metrics, and actionable owners.
-6. Final Tweet: Punchy summary takeaway + Call to Action + 2-3 hashtags (#Productivity #AI #iQOO).
+6. Final Tweet: Punchy summary takeaway + Call to Action + 2-3 hashtags (#Productivity #AI #Tech).
 
 Output only the formatted thread with "---" separators.
 """

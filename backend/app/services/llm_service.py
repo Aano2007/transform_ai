@@ -122,69 +122,74 @@ async def generate_llm_response(prompt: str, system_prompt: str = "") -> str:
     return generate_heuristic_output(prompt, system_prompt)
 
 def generate_heuristic_ico(raw_text: str) -> Dict[str, Any]:
-    """Generates a structured Intent Context Object from raw text when LLMs are offline."""
-    lines = [line.strip() for line in raw_text.splitlines() if line.strip()]
-    first_line = lines[0] if lines else "Transformation Session"
-    if len(first_line) > 50:
-        first_line = first_line[:47] + "..."
-        
-    title = first_line.replace("#", "").strip()
-    
-    # Extract potential metrics
-    metrics = re.findall(r'(\$?\d+(?:\.\d+)?%?|\b\d+\s*(?:users|days|hours|weeks|x|fps|ms|growth|pts|MRR|ARR)\b)', raw_text, re.IGNORECASE)
+    """Generates a structured Intent Context Object dynamically from the user's raw text."""
+    clean_text = raw_text.strip()
+    lines = [line.strip() for line in clean_text.splitlines() if line.strip()]
+
+    first_line = lines[0] if lines else "Transformation Deliverable"
+    first_line = re.sub(r'^[#*_\-\s]+', '', first_line).strip()
+    title = (first_line[:57] + "...") if len(first_line) > 60 else first_line
+
+    raw_sentences = [s.strip() for s in re.split(r'(?<=[.!?])\s+|\n+', clean_text) if len(s.strip()) > 10]
+    if not raw_sentences:
+        raw_sentences = [clean_text] if clean_text else ["Topic review and strategic alignment."]
+
+    objective = ""
+    for s in raw_sentences:
+        lower = s.lower()
+        if any(keyword in lower for keyword in ["objective", "goal", "target", "aim", "purpose", "plan to", "need to", "focus on"]):
+            objective = s
+            break
+    if not objective:
+        objective = f"Analyze and execute deliverables for {title.lower()}." if len(raw_sentences) > 1 else f"Comprehensive review and action plan for {title}."
+
+    metrics = re.findall(r'(\$?\b\d+(?:\.\d+)?%?|\b\d+\s*(?:users|clients|seats|days|weeks|months|hours|deals|units|pts|revenue|mrr|arr|cr|k|m|b)\b)', clean_text, re.IGNORECASE)
     metrics = list(dict.fromkeys(metrics))[:6]
     if not metrics:
-        metrics = ["100% on-device capture", "<60s latency", "4 target deliverables", "0% hallucination drift"]
+        # Synthesize qualitative focus indicators directly from the topic
+        metrics = [f"Complete alignment on {title[:30]}", "Verified source context", "Clear stakeholder accountability"]
 
-    # Extract dates/timelines
-    dates = re.findall(r'\b(?:Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday|Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec|Q[1-4]|tomorrow|next week|EOQ|EOD|end of week|\d{1,2}/\d{1,2}/\d{2,4})\b', raw_text, re.IGNORECASE)
+    # Extract dates/timelines from text
+    dates = re.findall(r'\b(?:Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday|Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec|Q[1-4]|tomorrow|next week|end of week|EOD|EOQ|\d{1,2}/\d{1,2}/\d{2,4})\b', clean_text, re.IGNORECASE)
     dates = list(dict.fromkeys(dates))[:4]
-    if not dates:
-        dates = ["Immediate Next Step", "End of Sprint", "Q3 Milestone"]
 
-    # Extract potential teams/people
-    names = re.findall(r'\b(?:Sarah|Alex|David|John|Priya|Michael|Elena|Lead|Team|AI Squad|Engineering|Design|Core Engine)\b', raw_text)
-    teams = list(dict.fromkeys(names))[:4]
-    if not teams:
-        teams = ["Cross-Functional Lead", "Engineering Squad", "Executive Sponsor"]
+    potential_entities = re.findall(r'\b([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)\b', clean_text)
+    exclude_words = {"The", "This", "That", "There", "Here", "What", "When", "Where", "Why", "How", "And", "Or", "For", "With", "From", "In", "On", "At", "By", "To", "Today", "Yesterday", "Tomorrow"}
+    filtered_entities = [e for e in potential_entities if e not in exclude_words and len(e) > 2]
+    teams = list(dict.fromkeys(filtered_entities))[:4] or ["Lead Team", "Core Stakeholders"]
+
+    key_findings = []
+    citations = []
+    for i, s in enumerate(raw_sentences[:5], start=1):
+        clean_s = re.sub(r'^[#*_\-\s]+', '', s).strip()
+        key_findings.append(clean_s)
+        citations.append({"id": i, "claim": clean_s, "source_quote": clean_s[:100] + ("..." if len(clean_s) > 100 else "")})
+
+    action_sentences = [s for s in raw_sentences if any(w in s.lower() for w in ["will", "must", "should", "need", "action", "deadline", "task", "assigned", "schedule", "finalize", "deliver", "review", "audit", "launch"])]
 
     action_items = []
-    for line in lines:
-        if any(marker in line.lower() for marker in ["todo", "action", "task", "deadline", "by friday", "by monday", "due", "to finalize", "to coordinate"]):
-            owner = "Team"
-            for t in teams:
-                if t.lower() in line.lower():
-                    owner = t
-                    break
-            clean_task = line.replace("-", "").replace("*", "").strip()
-            action_items.append({
-                "owner": owner,
-                "task": clean_task,
-                "deadline": dates[0] if dates else "TBD"
-            })
-
-    if not action_items:
+    if action_sentences:
+        for idx, act in enumerate(action_sentences[:4]):
+            clean_act = re.sub(r'^[#*_\-\s]+', '', act).strip()
+            action_items.append({"owner": teams[idx % len(teams)], "task": clean_act, "deadline": dates[idx] if idx < len(dates) else "High Priority"})
+    else:
         action_items = [
-            {"owner": teams[0] if teams else "Alex", "task": f"Finalize execution milestones for {title}", "deadline": dates[0] if dates else "Friday 5 PM"},
-            {"owner": teams[1] if len(teams) > 1 else "Sarah", "task": "Synthesize key metrics into executive roadmap deck", "deadline": dates[1] if len(dates) > 1 else "Monday EOD"},
-            {"owner": "Operations Squad", "task": "Conduct cross-stakeholder alignment review", "deadline": "Next Sprint"}
+            {"owner": teams[0] if teams else "Project Lead", "task": f"Synthesize and validate findings on {title[:40]}", "deadline": dates[0] if dates else "Immediate"},
+            {"owner": teams[1] if len(teams) > 1 else "Executive Team", "task": f"Review strategy and execute next steps for {title[:40]}", "deadline": dates[1] if len(dates) > 1 else "Next Phase"}
         ]
+
+    executive_overview = f"Strategic briefing and structured deliverable synthesis on '{title}'. Objective: {objective}. Key insights, quantitative observations, and execution tasks extracted directly from source context."
 
     return {
         "event_title": title,
-        "timestamp": "Real-time Captured",
-        "location": "Edge Compute",
-        "primary_objective": f"Execute core strategic milestones for {title}.",
-        "executive_overview": f"This briefing anchors key objectives, operational timelines, and deliverable commitments identified during {title}. Key focus is placed on eliminating friction, verifying metrics, and delivering immediate cross-team execution.",
-        "key_findings": [
-            f"High-priority operational trajectory defined for {title}.",
-            f"Identified core deliverable constraints with verified metric targets: {', '.join(metrics[:2])}.",
-            f"Cross-device handoff calibrated for zero hallucination drift."
-        ],
-        "action_items": action_items[:5],
-        "entities": {
+        "timestamp": "Recorded Session",
+        "location": "Live Capture",
+        "primary_objective": objective,
+        "executive_overview": executive_overview,
+        "key_findings": key_findings if key_findings else [f"Comprehensive review of {title}."],
+        "action_items": action_items,
             "teams": teams,
-            "dates": dates,
+            "dates": dates if dates else ["Upcoming Review"],
             "metrics": metrics
         },
         "tone_override": "professional",
@@ -225,14 +230,14 @@ def generate_heuristic_output(prompt: str, system_prompt: str = "") -> str:
                     f"Core goal: {overview[:90]}...",
                     "Anchored to verified Intent Context Object (ICO)"
                 ],
-                "speaker_notes": f"Welcome team. Today we review our execution trajectory for {title}. Notice how each key finding is anchored directly to verified telemetry."
+                "speaker_notes": f"Welcome team. Today we review our execution trajectory for {title}."
             },
             {
                 "slide_number": 2,
                 "title": "Strategic Context & Findings",
                 "subtitle": "Operational Baseline",
                 "bullets": [f.replace("• ", "") for f in findings_bullets.split("\n")[:3]],
-                "speaker_notes": "Here are the primary findings identified in the field memo. Note the clear division of scope and immediate operational relevance."
+                "speaker_notes": "Here are the primary findings identified in the field memo."
             },
             {
                 "slide_number": 3,
@@ -250,7 +255,7 @@ def generate_heuristic_output(prompt: str, system_prompt: str = "") -> str:
                     "Continuous model latency benchmarking under peak edge compute",
                     "Finalize executive review with leadership"
                 ],
-                "speaker_notes": "Thank you. Let's transition directly into execution and unblock our workstreams."
+                "speaker_notes": "Let's transition directly into execution and unblock our workstreams."
             }
         ], indent=2)
 
@@ -273,25 +278,24 @@ Leverage unified Intent Context Object (ICO) synchronization across all target d
 """
 
     elif "LinkedIn" in prompt:
+        metrics_summary = ', '.join(metrics[:3])
         return f"""🚀 Excited to share our latest execution roadmap for {title}!
 
-Here is what happens when you capture chaos on your phone and convert it into executive deliverables in 60 seconds:
-
-📌 The Situation:
+📌 Core Context:
 {overview}
 
-Here are the key takeaways you need to know:
+Key Findings:
 {findings_bullets}
 
-📊 The Hard Numbers:
-{', '.join(metrics[:3])}
+📊 Notable Data Points:
+{metrics_summary}
 
-🚀 What we're doing next:
-Unifying workflow capture on the edge. Everything we execute is grounded in verified context, with zero prompt hallucination.
+Next Steps:
+Aligning with project stakeholders and executing prioritized action items.
 
-What is the biggest bottleneck in your daily meeting-to-deliverable workflow? Drop your perspective below! 👇
+What are your thoughts on this topic? Let's connect in the comments! 👇
 
-#Productivity #Leadership #TechInnovation #iQOO #FutureOfWork #AI"""
+#{title.replace(' ', '')[:20]} #Strategy #Execution #Innovation #Leadership"""
 
     elif "Twitter" in prompt or "thread" in prompt:
         t1 = f"1/4 🧵 1 voice memo → 4 finished deliverables.\n\nNo manual typing. No prompting ChatGPT. No 45-minute formatting grind.\n\nHere is how we transformed {title} into executive execution in <60 seconds: 👇"
@@ -300,7 +304,7 @@ What is the biggest bottleneck in your daily meeting-to-deliverable workflow? Dr
         t4 = f"4/4 🚀 Final Takeaway:\n\nTurn raw capture into polished slides, summaries, and social assets instantly.\n\nBuilt for speed. Powered by iQOO edge compute.\n\n#Productivity #AI #iQOO"
         return f"{t1}\n---\n{t2}\n---\n{t3}\n---\n{t4}"
 
-    return "Deliverable generated successfully via TransformAI Engine."
+    return f"Deliverable generated successfully for {title}."
 
 async def extract_ico_from_text(raw_text: str) -> dict:
     prompt = f"Extract ICO from this raw input text:\n\n{raw_text}"

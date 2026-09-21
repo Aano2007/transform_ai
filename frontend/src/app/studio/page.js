@@ -33,9 +33,9 @@ export default function StudioScreen() {
     } else {
       const defaultData = {
         ico: {
-          event_title: "iQOO Product Strategy & Edge Compute",
+          event_title: "Product Strategy & Edge Compute",
           timestamp: "Present Session",
-          location: "iQOO Mobile Edge Node",
+          location: "Mobile Edge Node",
           primary_objective: "One voice memo to four verified deliverables in <60s.",
           executive_overview: "Synthesized mobile voice transcript into four aligned deliverables. Architecture enforces 'The Honest Split' with on-device speech/OCR client and headless laptop compute engine.",
           key_findings: [
@@ -58,9 +58,9 @@ export default function StudioScreen() {
           ]
         },
         outputs: {
-          executive_summary: `# EXECUTIVE BRIEFING: iQOO Product Strategy & Edge Compute
+          executive_summary: `# EXECUTIVE BRIEFING: Product Strategy & Edge Compute
 
-**Date/Time:** Live Edge Session | **Context:** iQOO Mobile Compute Node | **Primary Goal:** Multi-Format Coherence
+**Date/Time:** Live Edge Session | **Context:** Mobile Compute Node | **Primary Goal:** Multi-Format Coherence
 
 ## 1. Strategic Context & Overview
 Synthesized mobile voice transcript into four aligned deliverables. Architecture enforces 'The Honest Split' with on-device speech/OCR client and headless laptop compute engine. All outputs are anchored to an immutable Intent Context Object (ICO), eliminating manual rewriting and prompt drift.
@@ -96,11 +96,11 @@ Here are the key takeaways you need to know:
 <60s latency | 4 deliverables | 0% hallucination drift
 
 🚀 What we're doing next:
-Unifying workflow capture on the edge via iQOO Office Kit shared clipboard sync.
+Unifying workflow capture on the edge via shared clipboard sync.
 
 What is the biggest bottleneck in your daily meeting-to-deliverable workflow? Drop your perspective below! 👇
 
-#Productivity #Leadership #TechInnovation #iQOO #FutureOfWork #AI`,
+#Productivity #Leadership #TechInnovation #FutureOfWork #AI`,
           twitter: `1/4 🧵 1 voice memo → 4 finished deliverables.
 
 No manual typing. No prompting ChatGPT. No 45-minute formatting grind.
@@ -124,20 +124,20 @@ Clear owners, verified timelines, boardroom-ready.
 
 Turn raw capture into polished slides, summaries, and social assets instantly.
 
-Built for speed. Powered by iQOO edge compute.
+Built for speed. Powered by edge compute.
 
-#Productivity #AI #iQOO`,
+#Productivity #AI`,
           slides_data: [
             {
               slide_number: 1,
-              title: "iQOO Product Strategy & Edge Compute",
+              title: "Product Strategy & Edge Compute",
               subtitle: "TransformAI Executive Synthesis Deck",
               bullets: [
                 "Single input transformed into 4 verified deliverables",
                 "Edge client capture + Local laptop compute engine",
                 "Workflow cycle time reduced from 45 minutes to under 60 seconds"
               ],
-              speaker_notes: "Welcome everyone. Today we are presenting our end-to-end solution for the iQOO Hackathon. We capture chaotic inputs on mobile and process deliverables locally."
+              speaker_notes: "Welcome everyone. Today we are presenting our end-to-end solution. We capture chaotic inputs on mobile and process deliverables locally."
             },
             {
               slide_number: 2,
@@ -315,7 +315,7 @@ Built for speed. Powered by iQOO edge compute.
             borderRadius: 'var(--clay-radius-pill)',
             fontWeight: '700'
           }}>
-            📍 {ico?.location || 'iQOO Edge Node'}
+            📍 {ico?.location || 'Mobile Edge Node'}
           </span>
         </div>
 
