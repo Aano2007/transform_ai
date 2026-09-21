@@ -1,5 +1,4 @@
 import './globals.css';
-import OfficeKitBridge from '../components/OfficeKitBridge';
 import Link from 'next/link';
 import { Zap, Sparkles } from 'lucide-react';
 
@@ -73,8 +72,6 @@ export default function RootLayout({ children }) {
               </Link>
             </div>
           </header>
-
-          <OfficeKitBridge />
 
           <main style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
             {children}
