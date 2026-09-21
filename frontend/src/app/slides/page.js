@@ -77,7 +77,7 @@ export default function SlideDetailScreen() {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        padding: '4px 0 12px 0'
+        padding: '4px 0 16px 0'
       }}>
         <Link
           href="/studio"
@@ -91,11 +91,12 @@ export default function SlideDetailScreen() {
         <span style={{
           fontSize: '11px',
           fontFamily: 'var(--font-mono)',
-          fontWeight: '700',
-          background: 'var(--bento-primary-subtle)',
-          color: 'var(--bento-primary)',
-          padding: '3px 10px',
-          borderRadius: 'var(--bento-radius-full)'
+          fontWeight: '800',
+          background: 'var(--clay-card-inset)',
+          boxShadow: 'var(--clay-shadow-inset)',
+          color: 'var(--clay-primary)',
+          padding: '4px 12px',
+          borderRadius: 'var(--clay-radius-pill)'
         }}>
           SCREEN 4 // SLIDE PRESENTER STAGE
         </span>
@@ -110,22 +111,22 @@ export default function SlideDetailScreen() {
         padding: '4px 0'
       }}>
         <div>
-          <h2 style={{ fontSize: 'clamp(20px, 2.6vw, 24px)', fontWeight: '900', color: 'var(--bento-primary-deep)', letterSpacing: '-0.5px' }}>
+          <h2 style={{ fontSize: 'clamp(20px, 2.6vw, 24px)', fontWeight: '900', color: 'var(--clay-primary-deep)', letterSpacing: '-0.5px' }}>
             Executive Slide Deck
           </h2>
-          <p style={{ fontSize: '13px', color: 'var(--bento-primary-muted)', fontWeight: '500' }}>
+          <p style={{ fontSize: '13px', color: 'var(--clay-primary-muted)', fontWeight: '500' }}>
             16:9 Presentation Decks with Speaker Notes
           </p>
         </div>
 
         <span style={{
-          padding: '4px 10px',
-          background: 'var(--bento-primary-subtle)',
-          border: 'var(--bento-border)',
-          borderRadius: 'var(--bento-radius-full)',
-          fontSize: '11px',
-          color: 'var(--bento-primary-dark)',
-          fontWeight: '700',
+          padding: '4px 12px',
+          background: 'var(--clay-card-inset)',
+          boxShadow: 'var(--clay-shadow-inset)',
+          borderRadius: 'var(--clay-radius-pill)',
+          fontSize: '11.5px',
+          color: 'var(--clay-primary-dark)',
+          fontWeight: '800',
           fontFamily: 'var(--font-mono)'
         }}>
           {slides.length} SLIDES
@@ -140,22 +141,22 @@ export default function SlideDetailScreen() {
         onSlideUpdated={handleSlideUpdated}
       />
 
-      {/* Office Kit Strategy Note Bento Card */}
-      <div className="bento-card" style={{ background: 'linear-gradient(135deg, #ffffff 0%, var(--bento-canvas) 100%)', padding: '18px 20px' }}>
+      {/* Office Kit Strategy Note Clay Card */}
+      <div className="bento-card" style={{ background: 'linear-gradient(135deg, #ffffff 0%, #f6f8fc 100%)', padding: '20px 24px' }}>
         <div style={{
-          color: 'var(--bento-primary)',
+          color: 'var(--clay-primary)',
           fontWeight: '800',
           fontFamily: 'var(--font-mono)',
           fontSize: '12px',
-          marginBottom: '4px',
+          marginBottom: '6px',
           display: 'flex',
           alignItems: 'center',
-          gap: '6px'
+          gap: '8px'
         }}>
-          <Laptop size={15} />
+          <Laptop size={16} />
           <span>iQOO OFFICE KIT STRATEGY NOTE:</span>
         </div>
-        <div style={{ fontSize: '13px', color: 'var(--bento-primary-muted)', lineHeight: 1.5, fontWeight: '500' }}>
+        <div style={{ fontSize: '13px', color: 'var(--clay-primary-muted)', lineHeight: 1.55, fontWeight: '500' }}>
           During the hackathon pitch, tap <strong>"Deck (.pptx)"</strong> to download on phone, then drag directly to your laptop display via iQOO Office Kit multi-screen collaboration.
         </div>
       </div>
@@ -165,6 +166,7 @@ export default function SlideDetailScreen() {
         contentToCopy={slides.map(s => `${s.title}\n${(s.bullets || []).join('\n')}\nNotes: ${s.speaker_notes}`).join('\n\n---\n\n')}
         pptxUrl={data?.pptx_url || '/api/download/pptx'}
         docxUrl={data?.docx_url || '/api/download/docx'}
+        pdfUrl={data?.pdf_url || '/api/download/pdf'}
         title="TransformAI Slides"
       />
     </div>

@@ -1,4 +1,45 @@
-const API_BASE = typeof window !== 'undefined' ? '' : 'http://127.0.0.1:8000';
+const API_BASE = typeof window !== 'undefined' ? `http://${window.location.hostname || 'localhost'}:8000` : 'http://127.0.0.1:8000';
+
+function getAuthHeaders() {
+  const headers = { 'Content-Type': 'application/json' };
+  if (typeof window !== 'undefined') {
+    const token = localStorage.getItem('transformai_token');
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+  }
+  return headers;
+}
+
+export async function registerUser(username, password) {
+  const res = await fetch(`${API_BASE}/auth/register`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username, password })
+  });
+  if (!res.ok) {
+    const errData = await res.json().catch(() => ({ detail: 'Registration error' }));
+    throw new Error(errData.detail || 'Registration failed');
+  }
+  return await res.json();
+}
+
+export async function loginUser(username, password) {
+  const formData = new URLSearchParams();
+  formData.append('username', username);
+  formData.append('password', password);
+
+  const res = await fetch(`${API_BASE}/auth/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: formData
+  });
+  if (!res.ok) {
+    const errData = await res.json().catch(() => ({ detail: 'Login error' }));
+    throw new Error(errData.detail || 'Login failed');
+  }
+  return await res.json();
+}
 
 export async function checkBackendHealth() {
   try {
@@ -29,7 +70,7 @@ export async function fetchSampleTemplates() {
 export async function transformContent({ raw_text, formats, tone = 'professional', audience = 'executive' }) {
   const res = await fetch(`${API_BASE}/api/transform`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: getAuthHeaders(),
     body: JSON.stringify({
       raw_text,
       formats,
@@ -49,7 +90,7 @@ export async function transformContent({ raw_text, formats, tone = 'professional
 export async function regenerateSlideItem({ ico, slide_number, instructions }) {
   const res = await fetch(`${API_BASE}/api/regenerate-slide`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: getAuthHeaders(),
     body: JSON.stringify({
       ico,
       slide_number,
@@ -64,7 +105,7 @@ export async function regenerateSlideItem({ ico, slide_number, instructions }) {
 export async function regenerateFormatItem({ ico, format_type, tone, audience }) {
   const res = await fetch(`${API_BASE}/api/regenerate-format`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: getAuthHeaders(),
     body: JSON.stringify({
       ico,
       format_type,

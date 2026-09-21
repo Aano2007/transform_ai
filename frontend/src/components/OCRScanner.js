@@ -78,62 +78,64 @@ Topic: Enterprise Pilot Rollout
     <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
       <div style={{
         background: '#ffffff',
-        border: 'var(--bento-border)',
-        borderRadius: 'var(--bento-radius-md)',
-        boxShadow: 'var(--bento-shadow-sm)',
-        padding: '24px 18px',
+        border: 'var(--clay-border)',
+        borderRadius: 'var(--clay-radius-card)',
+        boxShadow: 'var(--clay-shadow-card)',
+        padding: '30px 24px',
         textAlign: 'center',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        gap: '14px'
+        gap: '16px'
       }}>
         <div style={{
-          width: '56px',
-          height: '56px',
+          width: '64px',
+          height: '64px',
           borderRadius: '50%',
-          background: 'var(--bento-primary-subtle)',
-          border: '1px solid rgba(73, 80, 87, 0.15)',
-          boxShadow: '0 4px 14px rgba(0, 0, 0, 0.05)',
+          background: 'var(--clay-card-inset)',
+          border: '2px solid rgba(255, 255, 255, 0.95)',
+          boxShadow: '8px 12px 24px rgba(73, 80, 87, 0.12), inset 3px 3px 6px rgba(255, 255, 255, 0.9), inset -3px -3px 6px rgba(73, 80, 87, 0.06)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          color: 'var(--bento-primary-dark)'
+          color: 'var(--clay-primary-dark)'
         }}>
-          {loading ? <Loader2 size={26} className="animate-spin" /> : <Camera size={26} />}
+          {loading ? <Loader2 size={28} className="animate-spin" /> : <Camera size={28} />}
         </div>
 
         <div>
-          <h4 style={{ fontSize: '15px', fontWeight: '800', color: 'var(--bento-primary-deep)' }}>
+          <h4 style={{ fontSize: '16px', fontWeight: '900', color: 'var(--clay-primary-deep)', letterSpacing: '-0.3px' }}>
             {loading ? 'Processing via WASM OCR...' : 'Snap Whiteboard or Upload Document'}
           </h4>
-          <p style={{ fontSize: '12px', color: 'var(--bento-primary-muted)', marginTop: '3px', fontWeight: '500' }}>
+          <p style={{ fontSize: '12.5px', color: 'var(--clay-primary-muted)', marginTop: '4px', fontWeight: '500' }}>
             Tesseract.js WASM runs 100% in-browser on the iQOO client.
           </p>
         </div>
 
         {loading && (
-          <div style={{ width: '100%', maxWidth: '280px', margin: '4px 0' }}>
+          <div style={{ width: '100%', maxWidth: '300px', margin: '6px 0' }}>
             <div style={{
-              height: '8px',
-              background: 'var(--bento-primary-subtle)',
-              borderRadius: '4px',
+              height: '10px',
+              background: 'var(--clay-card-inset)',
+              boxShadow: 'var(--clay-shadow-inset)',
+              borderRadius: '5px',
               overflow: 'hidden'
             }}>
               <div style={{
                 width: `${progress}%`,
                 height: '100%',
-                background: 'linear-gradient(90deg, var(--bento-primary), var(--bento-primary-dark))',
-                borderRadius: '4px',
+                background: 'linear-gradient(90deg, var(--clay-primary), var(--clay-primary-dark))',
+                borderRadius: '5px',
+                boxShadow: 'inset 1px 1px 2px rgba(255, 255, 255, 0.4)',
                 transition: 'width 0.2s ease'
               }} />
             </div>
             <div style={{
-              fontSize: '11px',
+              fontSize: '11.5px',
               fontFamily: 'var(--font-mono)',
-              color: 'var(--bento-primary-muted)',
-              marginTop: '6px',
-              fontWeight: '600'
+              color: 'var(--clay-primary-muted)',
+              marginTop: '8px',
+              fontWeight: '700'
             }}>
               {statusMsg}
             </div>
@@ -149,7 +151,7 @@ Topic: Enterprise Pilot Rollout
           style={{ display: 'none' }}
         />
 
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', justifyContent: 'center' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', justifyContent: 'center' }}>
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
@@ -166,7 +168,7 @@ Topic: Enterprise Pilot Rollout
             className="btn btn-secondary btn-sm btn-pill"
             disabled={loading}
           >
-            <Sparkles size={14} color="var(--bento-primary)" />
+            <Sparkles size={14} color="var(--clay-primary)" />
             <span>Sample Whiteboard</span>
           </button>
         </div>

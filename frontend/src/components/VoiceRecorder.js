@@ -97,51 +97,58 @@ export default function VoiceRecorder({ onTranscriptUpdate, currentText = '' }) 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
       <div style={{
-        background: active ? 'rgba(73, 80, 87, 0.04)' : '#ffffff',
-        border: active ? '1.5px solid var(--bento-primary)' : 'var(--bento-border)',
-        borderRadius: 'var(--bento-radius-md)',
-        boxShadow: active ? '0 8px 25px rgba(73, 80, 87, 0.12)' : 'var(--bento-shadow-sm)',
-        padding: '26px 20px',
+        background: active ? 'rgba(255, 255, 255, 0.95)' : '#ffffff',
+        border: active ? '1.5px solid var(--clay-primary)' : 'var(--clay-border)',
+        borderRadius: 'var(--clay-radius-card)',
+        boxShadow: active ? 'var(--clay-shadow-card-hover)' : 'var(--clay-shadow-card)',
+        padding: '30px 24px',
         textAlign: 'center',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        gap: '14px',
-        transition: 'all 0.2s ease'
+        gap: '16px',
+        transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)'
       }}>
         {active ? (
-          <div className="audio-waves">
-            <div className="audio-bar" />
-            <div className="audio-bar" />
-            <div className="audio-bar" />
-            <div className="audio-bar" />
-            <div className="audio-bar" />
-            <div className="audio-bar" />
-            <div className="audio-bar" />
-            <div className="audio-bar" />
+          <div style={{
+            background: 'var(--clay-card-inset)',
+            boxShadow: 'var(--clay-shadow-inset)',
+            padding: '12px 28px',
+            borderRadius: 'var(--clay-radius-card-sm)'
+          }}>
+            <div className="audio-waves">
+              <div className="audio-bar" />
+              <div className="audio-bar" />
+              <div className="audio-bar" />
+              <div className="audio-bar" />
+              <div className="audio-bar" />
+              <div className="audio-bar" />
+              <div className="audio-bar" />
+              <div className="audio-bar" />
+            </div>
           </div>
         ) : (
           <div style={{
-            width: '56px',
-            height: '56px',
+            width: '64px',
+            height: '64px',
             borderRadius: '50%',
-            background: 'var(--bento-primary-subtle)',
-            border: '1px solid rgba(73, 80, 87, 0.15)',
-            boxShadow: '0 4px 14px rgba(0, 0, 0, 0.05)',
+            background: 'var(--clay-card-inset)',
+            border: '2px solid rgba(255, 255, 255, 0.95)',
+            boxShadow: '8px 12px 24px rgba(73, 80, 87, 0.12), inset 3px 3px 6px rgba(255, 255, 255, 0.9), inset -3px -3px 6px rgba(73, 80, 87, 0.06)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            color: 'var(--bento-primary-dark)'
+            color: 'var(--clay-primary-dark)'
           }}>
-            <Mic size={26} />
+            <Mic size={28} />
           </div>
         )}
 
         <div>
-          <h4 style={{ fontSize: '15px', fontWeight: '800', color: 'var(--bento-primary-deep)' }}>
+          <h4 style={{ fontSize: '16px', fontWeight: '900', color: 'var(--clay-primary-deep)', letterSpacing: '-0.3px' }}>
             {active ? 'Listening (Web Speech API Edge)...' : 'Tap to Record Voice Memo'}
           </h4>
-          <p style={{ fontSize: '12px', color: 'var(--bento-primary-muted)', marginTop: '3px', fontWeight: '500' }}>
+          <p style={{ fontSize: '12.5px', color: 'var(--clay-primary-muted)', marginTop: '4px', fontWeight: '500' }}>
             100% on-device speech-to-text. Zero audio leaves your phone.
           </p>
         </div>
@@ -152,9 +159,10 @@ export default function VoiceRecorder({ onTranscriptUpdate, currentText = '' }) 
             onClick={toggleRecording}
             className={`btn ${active ? 'btn-secondary' : 'btn-primary'} btn-sm btn-pill`}
             style={{
-              background: active ? '#ffffff' : undefined,
-              color: active ? '#e03131' : undefined,
-              borderColor: active ? 'rgba(224, 49, 49, 0.3)' : undefined
+              background: active ? 'var(--clay-accent-coral-bg)' : undefined,
+              color: active ? 'var(--clay-accent-coral)' : undefined,
+              borderColor: active ? 'rgba(201, 42, 42, 0.2)' : undefined,
+              boxShadow: active ? 'var(--clay-shadow-btn-secondary)' : undefined
             }}
           >
             {active ? <MicOff size={15} /> : <Mic size={15} />}
@@ -168,7 +176,7 @@ export default function VoiceRecorder({ onTranscriptUpdate, currentText = '' }) 
               className="btn btn-secondary btn-sm btn-pill"
               title="Simulate realistic voice input stream"
             >
-              <Sparkles size={14} color="var(--bento-primary)" />
+              <Sparkles size={14} color="var(--clay-primary)" />
               <span>Simulate Voice</span>
             </button>
           )}
@@ -178,12 +186,13 @@ export default function VoiceRecorder({ onTranscriptUpdate, currentText = '' }) 
           <div style={{
             fontSize: '12px',
             fontStyle: 'italic',
-            color: 'var(--bento-primary)',
-            background: 'var(--bento-primary-subtle)',
-            border: '1px solid rgba(73, 80, 87, 0.12)',
-            padding: '6px 12px',
-            borderRadius: 'var(--bento-radius-full)',
-            marginTop: '2px'
+            color: 'var(--clay-primary)',
+            background: 'var(--clay-card-inset)',
+            boxShadow: 'var(--clay-shadow-inset)',
+            border: '1px solid rgba(255, 255, 255, 0.6)',
+            padding: '8px 16px',
+            borderRadius: 'var(--clay-radius-pill)',
+            marginTop: '4px'
           }}>
             "{interimText}"
           </div>

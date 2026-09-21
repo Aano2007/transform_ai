@@ -6,6 +6,7 @@ export default function ExportBar({
   contentToCopy = '',
   pptxUrl = null,
   docxUrl = null,
+  pdfUrl = null,
   title = 'TransformAI Deliverable'
 }) {
   const [copied, setCopied] = useState(false);
@@ -44,23 +45,23 @@ export default function ExportBar({
     <>
       <div style={{
         position: 'fixed',
-        bottom: '16px',
+        bottom: '20px',
         left: '50%',
         transform: 'translateX(-50%)',
         width: 'calc(100% - 32px)',
         maxWidth: '1000px',
-        background: 'rgba(255, 255, 255, 0.92)',
-        backdropFilter: 'blur(16px)',
-        WebkitBackdropFilter: 'blur(16px)',
-        border: 'var(--bento-border)',
-        borderRadius: 'var(--bento-radius-lg)',
-        padding: '10px 18px',
+        background: 'rgba(255, 255, 255, 0.95)',
+        backdropFilter: 'blur(18px)',
+        WebkitBackdropFilter: 'blur(18px)',
+        border: 'var(--clay-border)',
+        borderRadius: 'var(--clay-radius-card)',
+        padding: '12px 22px',
         display: 'flex',
-        gap: '10px',
+        gap: '12px',
         alignItems: 'center',
         justifyContent: 'space-between',
         zIndex: 40,
-        boxShadow: 'var(--bento-shadow-lg)'
+        boxShadow: 'var(--clay-shadow-card)'
       }}>
         <button
           type="button"
@@ -68,10 +69,10 @@ export default function ExportBar({
           className={`btn ${copied ? 'btn-secondary' : 'btn-primary'} btn-sm btn-pill`}
           style={{
             flex: 1,
-            fontWeight: '700'
+            fontWeight: '800'
           }}
         >
-          {copied ? <Check size={15} /> : <Copy size={15} />}
+          {copied ? <Check size={16} /> : <Copy size={16} />}
           <span>{copied ? 'Copied & Synced to Clipboard!' : 'Copy Formatted Content'}</span>
         </button>
 
@@ -80,7 +81,7 @@ export default function ExportBar({
             href={pptxUrl}
             download="TransformAI_Presentation.pptx"
             className="btn btn-secondary btn-sm btn-pill"
-            style={{ textDecoration: 'none', fontWeight: '700' }}
+            style={{ textDecoration: 'none', fontWeight: '800' }}
           >
             <Download size={14} />
             <span>.PPTX</span>
@@ -92,10 +93,22 @@ export default function ExportBar({
             href={docxUrl}
             download="TransformAI_Brief.docx"
             className="btn btn-secondary btn-sm btn-pill"
-            style={{ textDecoration: 'none', fontWeight: '700' }}
+            style={{ textDecoration: 'none', fontWeight: '800' }}
           >
             <FileDown size={14} />
             <span>.DOCX</span>
+          </a>
+        )}
+
+        {pdfUrl && (
+          <a
+            href={pdfUrl}
+            download="TransformAI_Brief.pdf"
+            className="btn btn-secondary btn-sm btn-pill"
+            style={{ textDecoration: 'none', fontWeight: '800' }}
+          >
+            <FileDown size={14} />
+            <span>.PDF</span>
           </a>
         )}
 
@@ -103,10 +116,10 @@ export default function ExportBar({
           type="button"
           onClick={handleShare}
           className="btn btn-secondary btn-sm btn-pill"
-          style={{ padding: '8px 12px' }}
+          style={{ padding: '9px 14px' }}
           title="Share Deliverable"
         >
-          <Share2 size={15} />
+          <Share2 size={16} />
         </button>
       </div>
 
@@ -114,22 +127,23 @@ export default function ExportBar({
       {showOfficeKitToast && (
         <div className="officekit-toast">
           <div style={{
-            width: '34px',
-            height: '34px',
-            borderRadius: '10px',
-            background: 'var(--bento-primary)',
+            width: '38px',
+            height: '38px',
+            borderRadius: '12px',
+            background: 'var(--clay-primary)',
+            boxShadow: 'inset 1px 1px 3px rgba(255, 255, 255, 0.4), inset -1px -1px 3px rgba(0, 0, 0, 0.4)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             color: '#ffffff'
           }}>
-            <Laptop size={18} />
+            <Laptop size={20} />
           </div>
           <div>
-            <div style={{ fontSize: '13.5px', fontWeight: '800', color: '#ffffff' }}>
+            <div style={{ fontSize: '14px', fontWeight: '800', color: '#ffffff' }}>
               iQOO Office Kit Synced!
             </div>
-            <div style={{ fontSize: '11px', color: '#ced4da', fontWeight: '500', fontFamily: 'var(--font-mono)' }}>
+            <div style={{ fontSize: '11px', color: '#ced4da', fontWeight: '600', fontFamily: 'var(--font-mono)' }}>
               Clipboard auto-broadcasted to Laptop via Local Wi-Fi
             </div>
           </div>
