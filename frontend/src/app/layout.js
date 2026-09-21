@@ -1,6 +1,7 @@
 import './globals.css';
 import Link from 'next/link';
 import { Zap, Sparkles } from 'lucide-react';
+import MobileBottomNav from '../components/MobileBottomNav';
 
 export const metadata = {
   title: 'TransformAI | iQOO Productivity Track',
@@ -76,8 +77,12 @@ export default function RootLayout({ children }) {
           <main style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
             {children}
           </main>
+
+          {/* Persistent Claymorphic Mobile Bottom Nav for Phones */}
+          <MobileBottomNav />
         </div>
       </body>
     </html>
   );
 }
+

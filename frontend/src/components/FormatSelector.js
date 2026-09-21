@@ -184,16 +184,7 @@ export default function FormatSelector({
       </div>
 
       {/* Tone & Audience Clay Controls */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: '1fr 1fr',
-        gap: '12px',
-        padding: '16px',
-        borderRadius: 'var(--clay-radius-inner)',
-        background: 'var(--clay-card-inset)',
-        boxShadow: 'var(--clay-shadow-inset)',
-        border: '1px solid rgba(255, 255, 255, 0.6)'
-      }}>
+      <div className="tone-audience-grid">
         <div>
           <label style={{
             fontSize: '11px',

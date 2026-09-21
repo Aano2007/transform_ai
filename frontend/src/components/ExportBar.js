@@ -42,26 +42,7 @@ export default function ExportBar({
 
   return (
     <>
-      <div style={{
-        position: 'fixed',
-        bottom: '20px',
-        left: '50%',
-        transform: 'translateX(-50%)',
-        width: 'calc(100% - 32px)',
-        maxWidth: '1000px',
-        background: 'rgba(255, 255, 255, 0.95)',
-        backdropFilter: 'blur(18px)',
-        WebkitBackdropFilter: 'blur(18px)',
-        border: 'var(--clay-border)',
-        borderRadius: 'var(--clay-radius-card)',
-        padding: '12px 22px',
-        display: 'flex',
-        gap: '12px',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        zIndex: 40,
-        boxShadow: 'var(--clay-shadow-card)'
-      }}>
+      <div className="export-bar-container">
         <button
           type="button"
           onClick={handleCopy}

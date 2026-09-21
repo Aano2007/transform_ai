@@ -105,21 +105,8 @@ export default function SlideViewer({ slides = [], ico = null, pptxUrl = null, o
         </div>
       </div>
 
-      {/* Slide Card Preview (16:9 Aspect Ratio Canvas) */}
-      <div style={{
-        position: 'relative',
-        width: '100%',
-        aspectRatio: '16/9',
-        background: 'linear-gradient(135deg, rgb(233, 236, 239) 0%, #e2e6ea 100%)',
-        border: 'var(--clay-border)',
-        boxShadow: 'var(--clay-shadow-card)',
-        borderRadius: 'var(--clay-radius-card)',
-        padding: '32px 36px',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-        overflow: 'hidden'
-      }}>
+      {/* Slide Card Preview (Responsive Aspect Ratio Canvas) */}
+      <div className="slide-card-container">
         {/* Top Accent Light Highlight */}
         <div style={{
           position: 'absolute',
