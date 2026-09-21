@@ -14,7 +14,7 @@ export const viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-  themeColor: '#f8f9fa',
+  themeColor: '#eef1f6',
 };
 
 export default function RootLayout({ children }) {
@@ -33,20 +33,20 @@ export default function RootLayout({ children }) {
           <header className="app-header">
             <Link href="/" className="brand-badge">
               <div className="brand-logo">
-                <Zap size={20} fill="#ffffff" color="#ffffff" />
+                <Zap size={22} fill="#ffffff" color="#ffffff" />
               </div>
               <div>
                 <div className="brand-title">
                   <span>TransformAI</span>
                   <span className="tag">iQOO Edge</span>
                 </div>
-                <div style={{ fontSize: '11px', color: 'var(--bento-primary-muted)', fontWeight: 600, marginTop: '-2px' }}>
-                  Headless Local Compute
+                <div style={{ fontSize: '11px', color: 'var(--clay-primary-muted)', fontWeight: 600, marginTop: '-2px' }}>
+                  Headless Local AI Engine
                 </div>
               </div>
             </Link>
 
-            {/* Bento Pill Navigation Links */}
+            {/* Clay Tactile Pill Navigation */}
             <nav className="desktop-nav-links">
               <Link href="/" className="nav-link">
                 Overview
@@ -69,7 +69,7 @@ export default function RootLayout({ children }) {
                 style={{ gap: '6px' }}
               >
                 <Sparkles size={14} />
-                <span>+ New Capture</span>
+                <span>+ New Memo</span>
               </Link>
             </div>
           </header>
