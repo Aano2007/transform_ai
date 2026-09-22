@@ -70,7 +70,7 @@ export default function VoiceRecorder({ onTranscriptUpdate, currentText = '' }) 
     recognitionRef.current = recog;
   }, [onTranscriptUpdate]);
 
-  const toggleRecording = () => {
+  const toggleRecording = async () => {
     setErrorMessage('');
     const recog = recognitionRef.current;
 
@@ -86,6 +86,19 @@ export default function VoiceRecorder({ onTranscriptUpdate, currentText = '' }) 
       setInterimText('');
       recog.stop();
     } else {
+      // Force native microphone permission prompt for Android/Capacitor WebViews
+      try {
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          // Stop stream immediately since we only needed it to trigger the OS permission prompt
+          stream.getTracks().forEach(track => track.stop());
+        }
+      } catch (err) {
+        console.error('Microphone access denied:', err);
+        setErrorMessage('Microphone permission denied. Please allow microphone access in your settings.');
+        return;
+      }
+
       // Reset finalized buffer to whatever is already in the textarea
       finalizedRef.current = currentText ? currentText.trimEnd() + ' ' : '';
       isRecordingRef.current = true;
