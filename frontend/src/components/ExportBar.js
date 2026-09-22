@@ -6,6 +6,7 @@ export default function ExportBar({
   contentToCopy = '',
   pptxUrl = null,
   docxUrl = null,
+  pdfUrl = null,
   title = 'TransformAI Deliverable'
 }) {
   const [copied, setCopied] = useState(false);
@@ -40,6 +41,27 @@ export default function ExportBar({
     }
   };
 
+  const handleDownload = async (url, fallbackName) => {
+    try {
+      if (typeof window !== 'undefined' && window.Capacitor && window.Capacitor.isNativePlatform()) {
+        const { Browser } = await import('@capacitor/browser');
+        const API_BASE = 'https://wild-waves-press.loca.lt';
+        const fullUrl = url.startsWith('http') ? url : `${API_BASE}${url}`;
+        await Browser.open({ url: fullUrl });
+        return;
+      }
+    } catch (err) {
+      console.warn('Capacitor Browser failed, falling back to native web', err);
+    }
+    
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = fallbackName;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  };
+
   return (
     <>
       <div className="export-bar-container">
@@ -57,27 +79,39 @@ export default function ExportBar({
         </button>
 
         {pptxUrl && (
-          <a
-            href={pptxUrl}
-            download="TransformAI_Presentation.pptx"
+          <button
+            type="button"
+            onClick={() => handleDownload(pptxUrl, "TransformAI_Presentation.pptx")}
             className="btn btn-secondary btn-sm btn-pill"
-            style={{ textDecoration: 'none', fontWeight: '800' }}
+            style={{ fontWeight: '800' }}
           >
             <Download size={14} />
             <span>.PPTX</span>
-          </a>
+          </button>
         )}
 
         {docxUrl && (
-          <a
-            href={docxUrl}
-            download="TransformAI_Brief.docx"
+          <button
+            type="button"
+            onClick={() => handleDownload(docxUrl, "TransformAI_Brief.docx")}
             className="btn btn-secondary btn-sm btn-pill"
-            style={{ textDecoration: 'none', fontWeight: '800' }}
+            style={{ fontWeight: '800' }}
           >
             <FileDown size={14} />
             <span>.DOCX</span>
-          </a>
+          </button>
+        )}
+
+        {pdfUrl && (
+          <button
+            type="button"
+            onClick={() => handleDownload(pdfUrl, "TransformAI_Brief.pdf")}
+            className="btn btn-secondary btn-sm btn-pill"
+            style={{ fontWeight: '800' }}
+          >
+            <FileDown size={14} />
+            <span>.PDF</span>
+          </button>
         )}
 
         <button

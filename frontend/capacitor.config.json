@@ -3,7 +3,6 @@
   "appName": "TransformAI",
   "webDir": "out",
   "server": {
-    "url": "http://10.15.179.137:3000",
     "cleartext": true
   }
 }

@@ -1,8 +1,16 @@
-const API_BASE = typeof window !== 'undefined' ? '' : 'http://127.0.0.1:8000';
+const API_BASE = 'https://my-ai-backend.loca.lt';
+
+const defaultHeaders = {
+  'bypass-tunnel-reminder': 'true',
+  'ngrok-skip-browser-warning': 'true'
+};
 
 export async function checkBackendHealth() {
   try {
-    const res = await fetch(`${API_BASE}/health`, { cache: 'no-store' });
+    const res = await fetch(`${API_BASE}/health`, { 
+      cache: 'no-store',
+      headers: defaultHeaders
+    });
     if (!res.ok) throw new Error('Health check failed');
     return await res.json();
   } catch (err) {
@@ -18,7 +26,9 @@ export async function checkBackendHealth() {
 
 export async function fetchSampleTemplates() {
   try {
-    const res = await fetch(`${API_BASE}/api/templates`);
+    const res = await fetch(`${API_BASE}/api/templates`, {
+      headers: defaultHeaders
+    });
     if (!res.ok) throw new Error('Failed to fetch templates');
     return await res.json();
   } catch (err) {
@@ -29,7 +39,10 @@ export async function fetchSampleTemplates() {
 export async function transformContent({ raw_text, formats, tone = 'professional', audience = 'executive' }) {
   const res = await fetch(`${API_BASE}/api/transform`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 
+      'Content-Type': 'application/json',
+      ...defaultHeaders
+    },
     body: JSON.stringify({
       raw_text,
       formats,
@@ -49,7 +62,10 @@ export async function transformContent({ raw_text, formats, tone = 'professional
 export async function regenerateSlideItem({ ico, slide_number, instructions }) {
   const res = await fetch(`${API_BASE}/api/regenerate-slide`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 
+      'Content-Type': 'application/json',
+      ...defaultHeaders
+    },
     body: JSON.stringify({
       ico,
       slide_number,
@@ -64,7 +80,10 @@ export async function regenerateSlideItem({ ico, slide_number, instructions }) {
 export async function regenerateFormatItem({ ico, format_type, tone, audience }) {
   const res = await fetch(`${API_BASE}/api/regenerate-format`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 
+      'Content-Type': 'application/json',
+      ...defaultHeaders
+    },
     body: JSON.stringify({
       ico,
       format_type,

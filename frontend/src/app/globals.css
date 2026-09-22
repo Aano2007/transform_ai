@@ -391,6 +391,7 @@ body::before {
   text-decoration: none;
   user-select: none;
   font-family: var(--font-sans);
+  touch-action: manipulation;
 }
 
 .btn:hover {

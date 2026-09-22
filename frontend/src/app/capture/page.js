@@ -208,7 +208,8 @@ function CaptureContent() {
                 const isActive = inputMode === ch.id;
                 const Icon = ch.icon;
                 return (
-                  <div
+                  <button
+                    type="button"
                     key={ch.id}
                     onClick={() => setInputMode(ch.id)}
                     style={{
@@ -224,7 +225,11 @@ function CaptureContent() {
                         : 'var(--clay-shadow-inset)',
                       cursor: 'pointer',
                       transform: isActive ? 'translateY(-1px)' : 'none',
-                      transition: 'all 0.18s cubic-bezier(0.16, 1, 0.3, 1)'
+                      transition: 'all 0.18s cubic-bezier(0.16, 1, 0.3, 1)',
+                      width: '100%',
+                      textAlign: 'left',
+                      outline: 'none',
+                      color: 'inherit'
                     }}
                   >
                     <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
@@ -292,7 +297,7 @@ function CaptureContent() {
                         boxShadow: 'var(--clay-shadow-inset)'
                       }} />
                     )}
-                  </div>
+                  </button>
                 );
               })}
             </div>

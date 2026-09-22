@@ -166,6 +166,7 @@ export default function SlideDetailScreen() {
         contentToCopy={slides.map(s => `${s.title}\n${(s.bullets || []).join('\n')}\nNotes: ${s.speaker_notes}`).join('\n\n---\n\n')}
         pptxUrl={data?.pptx_url || '/api/download/pptx'}
         docxUrl={data?.docx_url || '/api/download/docx'}
+        pdfUrl={data?.pdf_url || '/api/download/pdf'}
         title="TransformAI Slides"
       />
     </div>
