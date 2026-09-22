@@ -53,6 +53,28 @@ export default function ExportBar({
     }
   };
 
+  const triggerDownload = async (url, defaultFilename) => {
+    if (!url) return;
+    try {
+      // Fetch as blob to ensure cross-origin/capacitor download works reliably
+      const response = await fetch(url);
+      const blob = await response.blob();
+      const objectUrl = window.URL.createObjectURL(blob);
+      
+      const a = document.createElement('a');
+      a.href = objectUrl;
+      a.download = defaultFilename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(objectUrl);
+    } catch (err) {
+      console.error('Download failed', err);
+      // Fallback
+      window.open(url, '_blank');
+    }
+  };
+
   return (
     <>
       <div className="export-bar-container">
@@ -70,39 +92,39 @@ export default function ExportBar({
         </button>
 
         {fullPptx && (
-          <a
-            href={fullPptx}
-            download="TransformAI_Presentation.pptx"
+          <button
+            type="button"
+            onClick={() => triggerDownload(fullPptx, 'TransformAI_Presentation.pptx')}
             className="btn btn-secondary btn-sm btn-pill"
-            style={{ textDecoration: 'none', fontWeight: '800' }}
+            style={{ fontWeight: '800' }}
           >
             <Download size={14} />
             <span>.PPTX</span>
-          </a>
+          </button>
         )}
 
         {fullDocx && (
-          <a
-            href={fullDocx}
-            download="TransformAI_Brief.docx"
+          <button
+            type="button"
+            onClick={() => triggerDownload(fullDocx, 'TransformAI_Brief.docx')}
             className="btn btn-secondary btn-sm btn-pill"
-            style={{ textDecoration: 'none', fontWeight: '800' }}
+            style={{ fontWeight: '800' }}
           >
             <FileDown size={14} />
             <span>.DOCX</span>
-          </a>
+          </button>
         )}
 
         {fullPdf && (
-          <a
-            href={fullPdf}
-            download="TransformAI_Brief.pdf"
+          <button
+            type="button"
+            onClick={() => triggerDownload(fullPdf, 'TransformAI_Brief.pdf')}
             className="btn btn-secondary btn-sm btn-pill"
-            style={{ textDecoration: 'none', fontWeight: '800' }}
+            style={{ fontWeight: '800' }}
           >
             <FileText size={14} />
             <span>.PDF</span>
-          </a>
+          </button>
         )}
 
         <button

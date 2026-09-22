@@ -236,15 +236,14 @@ export default function SlideViewer({ slides = [], ico = null, pptxUrl = null, o
         </button>
 
         {fullPptx && (
-          <a
-            href={fullPptx}
-            download="TransformAI_Presentation.pptx"
+          <button
+            type="button"
+            onClick={() => triggerDownload(fullPptx, 'TransformAI_Presentation.pptx')}
             className="btn btn-primary btn-sm btn-pill"
-            style={{ textDecoration: 'none' }}
           >
             <Download size={13} />
             <span>Deck (.pptx)</span>
-          </a>
+          </button>
         )}
       </div>
 
