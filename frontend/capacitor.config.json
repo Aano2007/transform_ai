@@ -1,9 +1,5 @@
 {
   "appId": "com.transformai.app",
   "appName": "TransformAI",
-  "webDir": "out",
-  "server": {
-    "url": "http://10.37.44.112:3000",
-    "cleartext": true
-  }
+  "webDir": "out"
 }
