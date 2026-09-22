@@ -1,7 +1,8 @@
 'use client';
 import { useState, useRef } from 'react';
-import { Camera, Upload, CheckCircle2, Loader2, Sparkles, RefreshCw, Eye } from 'lucide-react';
+import { Camera, Upload, CheckCircle2, Loader2, Sparkles, RefreshCw } from 'lucide-react';
 import { createWorker } from 'tesseract.js';
+import { Camera as CapCamera, CameraResultType, CameraSource } from '@capacitor/camera';
 
 export default function OCRScanner({ onOCRComplete }) {
   const [loading, setLoading] = useState(false);
@@ -29,15 +30,14 @@ Topic: Enterprise Pilot Rollout
   ];
 
   /**
-   * Preprocess the image on an HTML5 canvas:
-   * 1. Constrain max dimension to 1600px to prevent WASM OOM and speed up recognition 5x.
-   * 2. Convert to grayscale.
-   * 3. Boost contrast to separate marker strokes from whiteboard glare/shadow.
+   * Preprocess image on canvas:
+   * 1. Constrain max dimension to 1600px.
+   * 2. Convert to grayscale luminance.
+   * 3. Boost contrast to make marker handwriting crisp.
    */
-  const preprocessWhiteboardImage = (file) => {
+  const preprocessWhiteboardImage = (fileOrDataUrl) => {
     return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = (e) => {
+      const renderOnCanvas = (src) => {
         const img = new Image();
         img.onload = () => {
           try {
@@ -62,16 +62,13 @@ Topic: Enterprise Pilot Rollout
             canvas.height = height;
             ctx.drawImage(img, 0, 0, width, height);
 
-            // Enhance contrast for whiteboard handwriting
             const imgData = ctx.getImageData(0, 0, width, height);
             const data = imgData.data;
             const contrast = 1.25;
             const factor = (259 * (contrast * 100 + 255)) / (255 * (259 - contrast * 100));
 
             for (let i = 0; i < data.length; i += 4) {
-              // Grayscale luminance
               const gray = 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
-              // Contrast adjustment
               const enhanced = Math.min(255, Math.max(0, factor * (gray - 128) + 128));
               data[i] = enhanced;
               data[i + 1] = enhanced;
@@ -81,23 +78,60 @@ Topic: Enterprise Pilot Rollout
             ctx.putImageData(imgData, 0, 0);
             resolve(canvas.toDataURL('image/jpeg', 0.92));
           } catch (err) {
-            // If canvas manipulation fails, fallback to raw data
-            resolve(e.target.result);
+            resolve(src);
           }
         };
         img.onerror = reject;
-        img.src = e.target.result;
+        img.src = src;
       };
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
+
+      if (typeof fileOrDataUrl === 'string') {
+        renderOnCanvas(fileOrDataUrl);
+      } else {
+        const reader = new FileReader();
+        reader.onload = (e) => renderOnCanvas(e.target.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(fileOrDataUrl);
+      }
     });
+  };
+
+  /**
+   * Primary capture trigger:
+   * Uses @capacitor/camera native bridge on Android (which handles activity lifecycle
+   * without restarting MainActivity), and gracefully falls back to HTML5 file input on web.
+   */
+  const handleTriggerCapture = async () => {
+    try {
+      const photo = await CapCamera.getPhoto({
+        quality: 85,
+        allowEditing: false,
+        resultType: CameraResultType.DataUrl,
+        source: CameraSource.Prompt,
+        width: 1600,
+      });
+
+      if (photo && photo.dataUrl) {
+        setPreviewUrl(photo.dataUrl);
+        setExtractedWordCount(null);
+        await processImageWithTesseract(photo.dataUrl);
+        return;
+      }
+    } catch (err) {
+      if (err?.message && (err.message.includes('User cancelled') || err.message.includes('canceled'))) {
+        return;
+      }
+      console.warn('Native camera unavailable, using web file selector:', err);
+    }
+
+    // Fallback for browsers or when native prompt is declined
+    fileInputRef.current?.click();
   };
 
   const handleFileChange = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Create immediate local preview
     const objectUrl = URL.createObjectURL(file);
     setPreviewUrl(objectUrl);
     setExtractedWordCount(null);
@@ -105,18 +139,16 @@ Topic: Enterprise Pilot Rollout
     await processImageWithTesseract(file);
   };
 
-  const processImageWithTesseract = async (file) => {
+  const processImageWithTesseract = async (imageInput) => {
     setLoading(true);
     setProgress(15);
     setStatusMsg('Optimizing image contrast & scale...');
 
     try {
-      // Step 1: Client-side canvas preprocessing
-      const processedImageDataUrl = await preprocessWhiteboardImage(file);
+      const processedImageDataUrl = await preprocessWhiteboardImage(imageInput);
       setProgress(30);
       setStatusMsg('Starting on-device Tesseract.js WASM engine...');
 
-      // Step 2: Initialize Tesseract.js WASM worker
       const worker = await createWorker('eng', 1, {
         logger: (m) => {
           if (m.status === 'recognizing text') {
@@ -141,8 +173,6 @@ Topic: Enterprise Pilot Rollout
       await worker.terminate();
 
       const rawExtracted = ret?.data?.text?.trim() || '';
-      
-      // Clean up multiple excessive linebreaks
       const cleanedText = rawExtracted
         .split('\n')
         .map((line) => line.trim())
@@ -291,11 +321,10 @@ Topic: Enterprise Pilot Rollout
           </div>
         )}
 
-        {/* Hidden File Input configured with camera capture */}
+        {/* Hidden Fallback Input without forced capture="environment" to avoid Android process kills */}
         <input
           type="file"
           accept="image/*"
-          capture="environment"
           ref={fileInputRef}
           onChange={handleFileChange}
           style={{ display: 'none' }}
@@ -304,7 +333,7 @@ Topic: Enterprise Pilot Rollout
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', justifyContent: 'center' }}>
           <button
             type="button"
-            onClick={() => fileInputRef.current?.click()}
+            onClick={handleTriggerCapture}
             className="btn btn-primary btn-sm btn-pill"
             disabled={loading}
           >
