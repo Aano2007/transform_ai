@@ -153,8 +153,8 @@ async def extract_whiteboard_text(image_bytes: bytes) -> Dict[str, Any]:
     except Exception as img_err:
         raise ValueError(f"Invalid image format or corrupted file: {str(img_err)}")
 
-    # 1. Try OpenAI Vision
-    if OPENAI_API_KEY and LLM_PROVIDER in ["auto", "openai"]:
+    # 1. Try OpenAI Vision (always use for images if key exists, since RapidAPI is text-only)
+    if OPENAI_API_KEY:
         try:
             text = await _ocr_with_openai(base64_image)
             if text:
