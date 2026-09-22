@@ -1,4 +1,4 @@
-const API_BASE = typeof window !== 'undefined' ? '' : 'http://127.0.0.1:8000';
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'http://127.0.0.1:8000';
 
 export async function checkBackendHealth() {
   try {
@@ -76,3 +76,21 @@ export async function regenerateFormatItem({ ico, format_type, tone, audience })
   if (!res.ok) throw new Error('Failed to regenerate format');
   return await res.json();
 }
+
+export async function uploadWhiteboardImage(file) {
+  const formData = new FormData();
+  formData.append('file', file);
+
+  const res = await fetch(`${API_BASE}/api/ocr/whiteboard`, {
+    method: 'POST',
+    body: formData
+  });
+
+  if (!res.ok) {
+    const errData = await res.json().catch(() => ({ detail: 'Failed to extract text from whiteboard' }));
+    throw new Error(errData.detail || 'Whiteboard OCR failed');
+  }
+
+  return await res.json();
+}
+
