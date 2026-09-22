@@ -53,26 +53,12 @@ export default function ExportBar({
     }
   };
 
-  const triggerDownload = async (url, defaultFilename) => {
+  const triggerDownload = (url) => {
     if (!url) return;
-    try {
-      // Fetch as blob to ensure cross-origin/capacitor download works reliably
-      const response = await fetch(url);
-      const blob = await response.blob();
-      const objectUrl = window.URL.createObjectURL(blob);
-      
-      const a = document.createElement('a');
-      a.href = objectUrl;
-      a.download = defaultFilename;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      window.URL.revokeObjectURL(objectUrl);
-    } catch (err) {
-      console.error('Download failed', err);
-      // Fallback
-      window.open(url, '_blank');
-    }
+    // In Capacitor Android, window.open with _blank delegates to the system browser
+    // which natively supports downloading files via Content-Disposition headers.
+    // Blob URLs are not supported by default Android WebViews for downloads.
+    window.open(url, '_blank');
   };
 
   return (

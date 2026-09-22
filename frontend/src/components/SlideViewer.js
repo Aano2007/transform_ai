@@ -37,6 +37,11 @@ export default function SlideViewer({ slides = [], ico = null, pptxUrl = null, o
     setCurrentIdx((prev) => (prev > 0 ? prev - 1 : slides.length - 1));
   };
 
+  const triggerDownload = (url) => {
+    if (!url) return;
+    window.open(url, '_blank');
+  };
+
   const handleRegenerateCurrentSlide = async () => {
     if (!ico || isRegenerating) return;
     setIsRegenerating(true);
