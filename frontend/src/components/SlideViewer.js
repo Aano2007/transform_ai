@@ -1,12 +1,14 @@
 'use client';
 import { useState } from 'react';
 import { ChevronLeft, ChevronRight, Download, RefreshCw, MessageSquare, MonitorPlay, Sparkles } from 'lucide-react';
-import { regenerateSlideItem } from '../lib/api';
+import { regenerateSlideItem, API_BASE } from '../lib/api';
 
 export default function SlideViewer({ slides = [], ico = null, pptxUrl = null, onSlideUpdated }) {
   const [currentIdx, setCurrentIdx] = useState(0);
   const [isRegenerating, setIsRegenerating] = useState(false);
   const [showNotes, setShowNotes] = useState(true);
+
+  const fullPptx = pptxUrl ? (pptxUrl.startsWith('http') ? pptxUrl : `${API_BASE}${pptxUrl.startsWith('/') ? pptxUrl : '/' + pptxUrl}`) : null;
 
   if (!slides || slides.length === 0) {
     return (
@@ -233,9 +235,9 @@ export default function SlideViewer({ slides = [], ico = null, pptxUrl = null, o
           <span>{showNotes ? 'Hide Notes' : 'Speaker Notes'}</span>
         </button>
 
-        {pptxUrl && (
+        {fullPptx && (
           <a
-            href={pptxUrl}
+            href={fullPptx}
             download="TransformAI_Presentation.pptx"
             className="btn btn-primary btn-sm btn-pill"
             style={{ textDecoration: 'none' }}

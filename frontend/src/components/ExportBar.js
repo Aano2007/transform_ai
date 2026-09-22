@@ -1,15 +1,28 @@
 'use client';
 import { useState } from 'react';
-import { Copy, Download, Share2, Check, Laptop, FileDown, CheckCircle2 } from 'lucide-react';
+import { Copy, Download, Share2, Check, Laptop, FileDown, FileText, CheckCircle2 } from 'lucide-react';
+import { API_BASE } from '../lib/api';
 
 export default function ExportBar({
   contentToCopy = '',
   pptxUrl = null,
   docxUrl = null,
+  pdfUrl = null,
   title = 'TransformAI Deliverable'
 }) {
   const [copied, setCopied] = useState(false);
   const [showOfficeKitToast, setShowOfficeKitToast] = useState(false);
+
+  const getFullUrl = (url) => {
+    if (!url) return null;
+    if (url.startsWith('http')) return url;
+    // ensure no double slashes
+    return `${API_BASE}${url.startsWith('/') ? url : '/' + url}`;
+  };
+
+  const fullPptx = getFullUrl(pptxUrl);
+  const fullDocx = getFullUrl(docxUrl);
+  const fullPdf = getFullUrl(pdfUrl);
 
   const handleCopy = async () => {
     if (!contentToCopy) return;
@@ -56,9 +69,9 @@ export default function ExportBar({
           <span>{copied ? 'Copied & Synced to Clipboard!' : 'Copy Formatted Content'}</span>
         </button>
 
-        {pptxUrl && (
+        {fullPptx && (
           <a
-            href={pptxUrl}
+            href={fullPptx}
             download="TransformAI_Presentation.pptx"
             className="btn btn-secondary btn-sm btn-pill"
             style={{ textDecoration: 'none', fontWeight: '800' }}
@@ -68,15 +81,27 @@ export default function ExportBar({
           </a>
         )}
 
-        {docxUrl && (
+        {fullDocx && (
           <a
-            href={docxUrl}
+            href={fullDocx}
             download="TransformAI_Brief.docx"
             className="btn btn-secondary btn-sm btn-pill"
             style={{ textDecoration: 'none', fontWeight: '800' }}
           >
             <FileDown size={14} />
             <span>.DOCX</span>
+          </a>
+        )}
+
+        {fullPdf && (
+          <a
+            href={fullPdf}
+            download="TransformAI_Brief.pdf"
+            className="btn btn-secondary btn-sm btn-pill"
+            style={{ textDecoration: 'none', fontWeight: '800' }}
+          >
+            <FileText size={14} />
+            <span>.PDF</span>
           </a>
         )}
 
