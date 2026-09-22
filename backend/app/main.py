@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, BackgroundTasks, Depends, status
+from fastapi import FastAPI, HTTPException, BackgroundTasks, Depends, status, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.security import OAuth2PasswordRequestForm
@@ -32,6 +32,7 @@ from app.services.db_service import (
     get_history_by_id, delete_history_by_id
 )
 from app.services.pdf_service import create_executive_pdf
+from app.services.ocr_service import extract_whiteboard_text
 from app.prompts.exec_summary import EXEC_SUMMARY_PROMPT
 from app.prompts.presentation import PRESENTATION_PROMPT
 from app.prompts.linkedin import LINKEDIN_PROMPT
@@ -374,6 +375,35 @@ async def regenerate_format(
 
     result = await generate_llm_response(prompt)
     return {"format_type": format_type, "content": result}
+
+@app.post("/api/ocr/whiteboard")
+async def scan_whiteboard(file: UploadFile = File(...)):
+    """
+    Whiteboard OCR & Handwriting Transcription Endpoint:
+    Receives an image file, preprocesses it (auto-orientation, scaling, optimization),
+    and processes it with Vision AI (OpenAI gpt-4o-mini, Ollama Vision, or graceful heuristic).
+    """
+    if not file.content_type or not file.content_type.startswith("image/"):
+        raise HTTPException(
+            status_code=400,
+            detail="Uploaded file must be a valid image (JPEG, PNG, WEBP, HEIC, etc.)"
+        )
+
+    contents = await file.read()
+    if not contents or len(contents) == 0:
+        raise HTTPException(status_code=400, detail="Uploaded image is empty.")
+
+    try:
+        result = await extract_whiteboard_text(contents)
+        return {
+            "success": True,
+            "text": result.get("text", ""),
+            "provider": result.get("provider", "unknown"),
+            "model": result.get("model", "")
+        }
+    except Exception as e:
+        print(f"[Whiteboard OCR Error]: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to transcribe whiteboard: {str(e)}")
 
 @app.get("/api/download/pptx")
 def download_pptx(file: str = "transformai_presentation.pptx"):

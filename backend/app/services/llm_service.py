@@ -4,7 +4,8 @@ import re
 from typing import Dict, Any, List
 from app.config import (
     OLLAMA_HOST, OLLAMA_MODEL,
-    OPENAI_API_KEY, OPENAI_MODEL, LLM_PROVIDER
+    OPENAI_API_KEY, OPENAI_MODEL, LLM_PROVIDER,
+    RAPIDAPI_KEY, RAPIDAPI_HOST, RAPIDAPI_URL
 )
 from app.prompts.ico_extract import ICO_EXTRACTION_SYSTEM_PROMPT
 
@@ -28,10 +29,19 @@ async def check_ollama_available() -> bool:
 async def check_active_llm_status() -> Dict[str, Any]:
     """
     Determines which LLM provider is active:
+    - RapidAPI Cloud (if RAPIDAPI_KEY is configured and provider in ['auto', 'rapidapi'])
     - OpenAI Cloud (if OPENAI_API_KEY is configured and provider in ['auto', 'openai'])
     - Local Ollama (if Ollama is responsive and provider in ['auto', 'ollama'])
     - Heuristic Fallback (if offline or unconfigured)
     """
+    if RAPIDAPI_KEY and LLM_PROVIDER in ["auto", "rapidapi"]:
+        return {
+            "provider": "rapidapi",
+            "model": "Llama (RapidAPI)",
+            "ready": True,
+            "mode": "RapidAPI Llama Cloud"
+        }
+
     if OPENAI_API_KEY and LLM_PROVIDER in ["auto", "openai"]:
         return {
             "provider": "openai",
@@ -97,28 +107,58 @@ async def _generate_ollama_response(prompt: str, system_prompt: str = "") -> str
         data = response.json()
         return data.get("response", "").strip()
 
+async def _generate_rapidapi_response(prompt: str, system_prompt: str = "") -> str:
+    headers = {
+        "Content-Type": "application/json",
+        "x-rapidapi-host": RAPIDAPI_HOST,
+        "x-rapidapi-key": RAPIDAPI_KEY
+    }
+    messages = []
+    if system_prompt:
+        messages.append({"role": "system", "content": system_prompt})
+    messages.append({"role": "user", "content": prompt})
+
+    payload = {
+        "messages": messages,
+        "web_access": False
+    }
+
+    async with httpx.AsyncClient(timeout=45.0) as client:
+        response = await client.post(RAPIDAPI_URL, headers=headers, json=payload)
+        response.raise_for_status()
+        data = response.json()
+        return data.get("result", "").strip()
+
 async def generate_llm_response(prompt: str, system_prompt: str = "") -> str:
     """
     Unified LLM response generator with automatic fallback cascade:
-    1. OpenAI (if configured)
-    2. Local Ollama (if available)
-    3. Heuristic generation
+    1. RapidAPI Llama (if configured)
+    2. OpenAI (if configured)
+    3. Local Ollama (if available)
+    4. Heuristic generation
     """
-    # 1. Try OpenAI if configured
+    # 1. Try RapidAPI if configured
+    if RAPIDAPI_KEY and LLM_PROVIDER in ["auto", "rapidapi"]:
+        try:
+            return await _generate_rapidapi_response(prompt, system_prompt)
+        except Exception as e:
+            print(f"[RapidAPI Call Error]: {e}. Falling back to next provider.")
+
+    # 2. Try OpenAI if configured
     if OPENAI_API_KEY and LLM_PROVIDER in ["auto", "openai"]:
         try:
             return await _generate_openai_response(prompt, system_prompt)
         except Exception as e:
             print(f"[OpenAI Call Error]: {e}. Falling back to Ollama or heuristic.")
 
-    # 2. Try Ollama if running
+    # 3. Try Ollama if running
     if LLM_PROVIDER in ["auto", "ollama"] and await check_ollama_available():
         try:
             return await _generate_ollama_response(prompt, system_prompt)
         except Exception as e:
             print(f"[Ollama Call Warning]: {e}. Using intelligent heuristic generation.")
 
-    # 3. Intelligent Heuristic Fallback
+    # 4. Intelligent Heuristic Fallback
     return generate_heuristic_output(prompt, system_prompt)
 
 def generate_heuristic_ico(raw_text: str) -> Dict[str, Any]:
@@ -188,6 +228,7 @@ def generate_heuristic_ico(raw_text: str) -> Dict[str, Any]:
         "executive_overview": executive_overview,
         "key_findings": key_findings if key_findings else [f"Comprehensive review of {title}."],
         "action_items": action_items,
+        "metadata": {
             "teams": teams,
             "dates": dates if dates else ["Upcoming Review"],
             "metrics": metrics
