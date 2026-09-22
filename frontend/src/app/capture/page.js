@@ -121,7 +121,7 @@ function CaptureContent() {
     {
       id: 'camera',
       label: 'Whiteboard OCR',
-      detail: 'On-device Tesseract.js WASM Engine',
+      detail: 'AI Vision Handwriting & Diagram Engine',
       icon: Camera,
     },
     {

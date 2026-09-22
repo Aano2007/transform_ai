@@ -2,6 +2,7 @@ import './globals.css';
 import { AuthProvider } from '../context/AuthContext';
 import Header from '../components/Header';
 import MobileBottomNav from '../components/MobileBottomNav';
+import AppLifecycleHandler from '../components/AppLifecycleHandler';
 
 export const metadata = {
   title: 'TransformAI | Edge Productivity Engine',
@@ -30,7 +31,8 @@ export default function RootLayout({ children }) {
       </head>
       <body>
         <AuthProvider>
-        <div className="app-shell">
+          <AppLifecycleHandler />
+          <div className="app-shell">
           <Header />
 
           <main style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>

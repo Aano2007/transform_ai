@@ -77,20 +77,32 @@ export async function regenerateFormatItem({ ico, format_type, tone, audience })
   return await res.json();
 }
 
-export async function uploadWhiteboardImage(file) {
-  const formData = new FormData();
-  formData.append('file', file);
+export async function uploadWhiteboardImage(fileOrBlob) {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 20000);
 
-  const res = await fetch(`${API_BASE}/api/ocr/whiteboard`, {
-    method: 'POST',
-    body: formData
-  });
+  try {
+    const formData = new FormData();
+    if (fileOrBlob instanceof Blob && !(fileOrBlob instanceof File)) {
+      formData.append('file', fileOrBlob, 'whiteboard.jpg');
+    } else {
+      formData.append('file', fileOrBlob);
+    }
 
-  if (!res.ok) {
-    const errData = await res.json().catch(() => ({ detail: 'Failed to extract text from whiteboard' }));
-    throw new Error(errData.detail || 'Whiteboard OCR failed');
+    const res = await fetch(`${API_BASE}/api/ocr/whiteboard`, {
+      method: 'POST',
+      body: formData,
+      signal: controller.signal
+    });
+
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({ detail: 'Failed to extract text from whiteboard' }));
+      throw new Error(errData.detail || 'Whiteboard OCR failed');
+    }
+
+    return await res.json();
+  } finally {
+    clearTimeout(timeoutId);
   }
-
-  return await res.json();
 }
 
