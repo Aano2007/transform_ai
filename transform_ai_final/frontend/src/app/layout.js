@@ -1,7 +1,7 @@
 import './globals.css';
+import './apple-design.css';
 import { AuthProvider } from '../context/AuthContext';
 import Header from '../components/Header';
-import MobileBottomNav from '../components/MobileBottomNav';
 import AppLifecycleHandler from '../components/AppLifecycleHandler';
 
 export const metadata = {
@@ -39,8 +39,6 @@ export default function RootLayout({ children }) {
             {children}
           </main>
 
-          {/* Persistent Claymorphic Mobile Bottom Nav for Phones */}
-          <MobileBottomNav />
         </div>
         </AuthProvider>
       </body>
