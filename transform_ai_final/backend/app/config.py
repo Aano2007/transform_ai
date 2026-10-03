@@ -20,13 +20,6 @@ OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini").strip()
 # Google Gemini Cloud Settings
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "").strip()
 
-# NVIDIA NIM Settings
-NVIDIA_API_KEY = os.getenv("NVIDIA_API_KEY", "").strip()
-NVIDIA_BASE_URL = "https://ai.api.nvidia.com/v1"
-NVIDIA_ASR_MODEL = os.getenv("NVIDIA_ASR_MODEL", "nvidia/parakeet-tdt-0.6b-v2").strip()
-NVIDIA_OCR_MODEL = os.getenv("NVIDIA_OCR_MODEL", "nvidia/nemotron-ocr-v2").strip()
-NVIDIA_LLM_MODEL = os.getenv("NVIDIA_LLM_MODEL", "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning").strip()
-
 # Ollama Local Settings
 OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://127.0.0.1:11434").strip()
 OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "llama3.2:3b").strip()

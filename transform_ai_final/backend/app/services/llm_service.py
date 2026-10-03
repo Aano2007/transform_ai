@@ -5,8 +5,7 @@ from typing import Dict, Any, List
 from app.config import (
     OLLAMA_HOST, OLLAMA_MODEL,
     OPENAI_API_KEY, OPENAI_MODEL, LLM_PROVIDER,
-    RAPIDAPI_KEY, RAPIDAPI_HOST, RAPIDAPI_URL,
-    NVIDIA_API_KEY, NVIDIA_BASE_URL, NVIDIA_LLM_MODEL
+    RAPIDAPI_KEY, RAPIDAPI_HOST, RAPIDAPI_URL
 )
 from app.prompts.ico_extract import ICO_EXTRACTION_SYSTEM_PROMPT
 
@@ -32,7 +31,6 @@ async def check_active_llm_status() -> Dict[str, Any]:
     Determines which LLM provider is active:
     - RapidAPI Cloud (if RAPIDAPI_KEY is configured and provider in ['auto', 'rapidapi'])
     - OpenAI Cloud (if OPENAI_API_KEY is configured and provider in ['auto', 'openai'])
-    - NVIDIA NIM (if NVIDIA_API_KEY is configured and provider in ['auto', 'nvidia'])
     - Local Ollama (if Ollama is responsive and provider in ['auto', 'ollama'])
     - Heuristic Fallback (if offline or unconfigured)
     """
@@ -50,14 +48,6 @@ async def check_active_llm_status() -> Dict[str, Any]:
             "model": OPENAI_MODEL,
             "ready": True,
             "mode": f"OpenAI Cloud ({OPENAI_MODEL})"
-        }
-
-    if NVIDIA_API_KEY and LLM_PROVIDER in ["auto", "nvidia"]:
-        return {
-            "provider": "nvidia",
-            "model": NVIDIA_LLM_MODEL,
-            "ready": True,
-            "mode": f"NVIDIA NIM ({NVIDIA_LLM_MODEL})"
         }
 
     ollama_ready = await check_ollama_available()
@@ -139,36 +129,13 @@ async def _generate_rapidapi_response(prompt: str, system_prompt: str = "") -> s
         data = response.json()
         return data.get("result", "").strip()
 
-async def _generate_nvidia_response(prompt: str, system_prompt: str = "") -> str:
-    url = f"{NVIDIA_BASE_URL}/{NVIDIA_LLM_MODEL}/completions"
-    headers = {
-        "Authorization": f"Bearer {NVIDIA_API_KEY}",
-        "Accept": "application/json",
-        "Content-Type": "application/json"
-    }
-
-    payload = {
-        "prompt": f"{system_prompt}\n\n{prompt}" if system_prompt else prompt,
-        "max_tokens": 2048,
-        "temperature": 0.3,
-        "top_p": 0.9,
-        "stream": False
-    }
-
-    async with httpx.AsyncClient(timeout=45.0) as client:
-        response = await client.post(url, headers=headers, json=payload)
-        response.raise_for_status()
-        data = response.json()
-        return data.get("content", "").strip()
-
 async def generate_llm_response(prompt: str, system_prompt: str = "") -> str:
     """
     Unified LLM response generator with automatic fallback cascade:
     1. RapidAPI Llama (if configured)
     2. OpenAI (if configured)
-    3. NVIDIA NIM (if configured)
-    4. Local Ollama (if available)
-    5. Heuristic generation
+    3. Local Ollama (if available)
+    4. Heuristic generation
     """
     # 1. Try RapidAPI if configured
     if RAPIDAPI_KEY and LLM_PROVIDER in ["auto", "rapidapi"]:
@@ -182,23 +149,16 @@ async def generate_llm_response(prompt: str, system_prompt: str = "") -> str:
         try:
             return await _generate_openai_response(prompt, system_prompt)
         except Exception as e:
-            print(f"[OpenAI Call Error]: {e}. Falling back to next provider.")
+            print(f"[OpenAI Call Error]: {e}. Falling back to Ollama or heuristic.")
 
-    # 3. Try NVIDIA NIM if configured
-    if NVIDIA_API_KEY and LLM_PROVIDER in ["auto", "nvidia"]:
-        try:
-            return await _generate_nvidia_response(prompt, system_prompt)
-        except Exception as e:
-            print(f"[NVIDIA NIM Call Error]: {e}. Falling back to next provider.")
-
-    # 4. Try Ollama if running
+    # 3. Try Ollama if running
     if LLM_PROVIDER in ["auto", "ollama"] and await check_ollama_available():
         try:
             return await _generate_ollama_response(prompt, system_prompt)
         except Exception as e:
             print(f"[Ollama Call Warning]: {e}. Using intelligent heuristic generation.")
 
-    # 5. Intelligent Heuristic Fallback
+    # 4. Intelligent Heuristic Fallback
     return generate_heuristic_output(prompt, system_prompt)
 
 def generate_heuristic_ico(raw_text: str) -> Dict[str, Any]:

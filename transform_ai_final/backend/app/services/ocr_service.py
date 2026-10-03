@@ -11,10 +11,7 @@ from app.config import (
     GEMINI_API_KEY,
     OLLAMA_HOST,
     OLLAMA_VISION_MODEL,
-    LLM_PROVIDER,
-    NVIDIA_API_KEY,
-    NVIDIA_BASE_URL,
-    NVIDIA_OCR_MODEL
+    LLM_PROVIDER
 )
 
 WHITEBOARD_SYSTEM_PROMPT = """You are an expert AI vision system specialized in reading whiteboards, diagrams, handwritten meeting notes, and sticky notes.
@@ -154,44 +151,14 @@ async def _ocr_with_gemini(base64_image: str) -> str:
                 return parts[0]["text"].strip()
         return ""
 
-async def _ocr_with_nvidia(base64_image: str) -> str:
-    """Perform whiteboard OCR using NVIDIA NeMo Retriever OCR via NIM."""
-    url = f"{NVIDIA_BASE_URL}/{NVIDIA_OCR_MODEL}/ocr"
-    headers = {
-        "Authorization": f"Bearer {NVIDIA_API_KEY}",
-        "Accept": "application/json",
-        "Content-Type": "application/json"
-    }
-
-    payload = {
-        "input": [
-            {
-                "type": "image",
-                "image": {
-                    "url": f"data:image/jpeg;base64,{base64_image}"
-                }
-            }
-        ],
-        "prompt": "Transcribe all text from this image into structured Markdown format, preserving layout and formatting.",
-        "max_tokens": 2000,
-        "temperature": 0.2
-    }
-
-    async with httpx.AsyncClient(timeout=45.0) as client:
-        response = await client.post(url, headers=headers, json=payload)
-        response.raise_for_status()
-        data = response.json()
-        return data.get("content", "").strip()
-
 async def extract_whiteboard_text(image_bytes: bytes) -> Dict[str, Any]:
     """
     Main orchestrator:
     1. Preprocesses and optimizes image (EXIF orientation, downscaling, compression)
     2. Routes to OpenAI Vision if configured and active
     3. Routes to Google Gemini Vision if configured
-    4. Routes to NVIDIA OCR if configured
-    5. Routes to Ollama Vision if local engine is running
-    6. If all cloud vision engines fail or are unconfigured, returns success=False
+    4. Routes to Ollama Vision if local engine is running
+    5. If all cloud vision engines fail or are unconfigured, returns success=False
        so the client immediately triggers on-device real-time Tesseract OCR without dummy data.
     """
     try:
@@ -228,21 +195,7 @@ async def extract_whiteboard_text(image_bytes: bytes) -> Dict[str, Any]:
         except Exception as e:
             print(f"[OCR] Gemini Vision attempt failed: {e}")
 
-    # 3. Try NVIDIA OCR (if key configured)
-    if NVIDIA_API_KEY:
-        try:
-            text = await _ocr_with_nvidia(base64_image)
-            if text:
-                return {
-                    "success": True,
-                    "text": text,
-                    "provider": "nvidia_ocr",
-                    "model": NVIDIA_OCR_MODEL
-                }
-        except Exception as e:
-            print(f"[OCR] NVIDIA OCR attempt failed: {e}")
-
-    # 4. Try Ollama Vision
+    # 3. Try Ollama Vision
     if LLM_PROVIDER in ["auto", "ollama"]:
         try:
             text = await _ocr_with_ollama(base64_image)
@@ -256,11 +209,11 @@ async def extract_whiteboard_text(image_bytes: bytes) -> Dict[str, Any]:
         except Exception as e:
             print(f"[OCR] Ollama Vision attempt failed: {e}")
 
-    # 5. No cloud vision engine active / available
+    # 4. No cloud vision engine active / available
     print("[OCR] Cloud Vision engines unavailable. Returning status to client for on-device real-time OCR.")
     return {
         "success": False,
         "text": "",
         "provider": "none",
-        "error": "Cloud Vision AI unavailable (OpenAI/Gemini/NVIDIA quota exhausted or unconfigured). Running on-device OCR."
+        "error": "Cloud Vision AI unavailable (OpenAI/Gemini quota exhausted or unconfigured). Running on-device OCR."
     }
